@@ -1,5 +1,5 @@
 
-ECE 4750 Group 09 [![Build Status](https://magnum.travis-ci.com/cornell-ece4750/lab-group09.svg?token=XYZ)](https://magnum.travis-ci.com/cornell-ece4750/lab-group09)
+ECE 4750 Group 09 [![Build Status](https://travis-ci.com/cornell-ece4750/lab-group09.svg?token=iujC79zTw1Tyskhn3uMp&branch=master)](https://travis-ci.com/cornell-ece4750/lab-group09)
 ==========================================================================
 
 This is the code repository for your ECE 4750 lab assignments. You will
