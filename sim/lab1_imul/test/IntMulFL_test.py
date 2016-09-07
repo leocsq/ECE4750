@@ -81,6 +81,21 @@ small_pos_pos_msgs = [
    req(  10,  48 ), resp(  480 ),
 ]
 
+small_neg_pos_msgs = [
+  req(  -2,  3 ), resp(   -6 ),
+  req(  -4,  5 ), resp(  -20 ),
+  req(  -3,  4 ), resp(  -12 ),
+  req( -10, 13 ), resp( -130 ),
+  req(  -8,  7 ), resp(  -56 ),
+]
+
+small_neg_neg_msgs = [
+  req(  -2,  -3 ), resp(   6 ),
+  req(  -4,  -5 ), resp(  20 ),
+  req(  -3,  -4 ), resp(  12 ),
+  req( -10, -13 ), resp( 130 ),
+  req(  -8,  -7 ), resp(  56 ),
+]
 # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 # Define additional lists of request/response messages to create
 # additional directed and random test cases.
@@ -93,7 +108,8 @@ small_pos_pos_msgs = [
 test_case_table = mk_test_case_table([
   (                      "msgs                 src_delay sink_delay"),
   [ "small_pos_pos",     small_pos_pos_msgs,   0,        0          ],
-
+  [ "small_neg_pos",     small_neg_pos_msgs,   0,        0          ],
+  [ "small_neg_neg",     small_neg_neg_msgs,   0,        0          ],
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to leverage the additional lists
   # of request/response messages defined above, but also to test
