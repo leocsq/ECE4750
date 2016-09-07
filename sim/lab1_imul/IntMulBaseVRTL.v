@@ -5,7 +5,7 @@
 `ifndef LAB1_IMUL_INT_MUL_BASE_V
 `define LAB1_IMUL_INT_MUL_BASE_V
 
-//`include "vc/trace.v"
+`include "vc/trace.v"
 `include "vc/muxes.v"
 `include "vc/regs.v"
 `include "vc/arithmetic.v"
@@ -74,10 +74,12 @@ module lab1_imul_IntMulBaseDpath
   
   // Left shifter
   
-  vc_LeftLogicalShifter#(c_nbits,6) l_shift
+  //logic [2:0] shnum;
+  
+  vc_LeftLogicalShifter#(c_nbits,3) l_shift
   (
     .in    (a_reg_out),
-    .shamt (6'd1),
+    .shamt (3'd1),
     .out   (l_shift_out)
   );
 
@@ -107,10 +109,10 @@ module lab1_imul_IntMulBaseDpath
   
   // Right shifter
   
-  vc_RightLogicalShifter#(c_nbits,6) r_shift
+  vc_RightLogicalShifter#(c_nbits,3) r_shift
   (
     .in    (b_reg_out),
-    .shamt (6'd1),
+    .shamt (3'd1),
     .out   (r_shift_out)
   );
 
@@ -134,10 +136,10 @@ module lab1_imul_IntMulBaseDpath
   vc_EnReg#(c_nbits) result_reg
   (
     .clk   (clk),
-	 .reset (reset),
+	.reset (reset),
     .d     (result_mux_out),
     .q     (result_reg_out),
-	 .en    (result_en)
+	.en    (result_en)
   );
   
   // Adder
@@ -165,6 +167,7 @@ module lab1_imul_IntMulBaseDpath
 
   assign resp_msg = result_reg_out;
   assign b_lsb = b_reg_out[0]; 
+  //assign shnum = b_reg_out[1]? 3'd1 : (b_reg_out[2]? 3'd2 : (b_reg_out[3]? 3'd3 : 3'd4));
 
 endmodule
 
@@ -334,12 +337,6 @@ module lab1_imul_IntMulBaseCtrl
 
 endmodule
 
-
-
-
-
-
-
 //========================================================================
 // Integer Multiplier Fixed-Latency Implementation
 //========================================================================
@@ -375,13 +372,13 @@ module lab1_imul_IntMulBaseVRTL
 
   logic        b_lsb;
 
-  // Control unit
+  // Datapath
 
-  lab1_imul_IntMulBaseCtrl ctrl
+  lab1_imul_IntMulBaseDpath dpath
   (
     .clk(clk),
     .reset(reset),
-	 .req_msg(req_msg),
+	.req_msg(req_msg),
     .resp_msg(resp_msg),
     .result_en(result_en),   
     .a_mux_sel(a_mux_sel),  
@@ -391,13 +388,13 @@ module lab1_imul_IntMulBaseVRTL
     .b_lsb(b_lsb) 
   );
 
-  // Datapath
+  // Control unit
 
-  lab1_imul_IntMulBaseDpath dpath
+  lab1_imul_IntMulBaseCtrl ctrl
   (
     .clk(clk),
     .reset(reset),
-	 .req_val(req_val),
+	.req_val(req_val),
     .req_rdy(req_rdy),
     .resp_val(resp_val),
     .resp_rdy(resp_rdy),
@@ -412,7 +409,7 @@ module lab1_imul_IntMulBaseVRTL
   //----------------------------------------------------------------------
   // Line Tracing
   //----------------------------------------------------------------------
-/*
+
   `ifndef SYNTHESIS
 
   logic [`VC_TRACE_NBITS-1:0] str;
