@@ -70,15 +70,11 @@ def resp( a ):
 #----------------------------------------------------------------------
 
 small_pos_pos_msgs = [
-  #req(  2,  3 ), resp(   6 ),
-  #req(  4,  5 ), resp(  20 ),
-  #req(  3,  4 ), resp(  12 ),
-  #req( 10, 13 ), resp( 130 ),
-  #req(  8,  7 ), resp(  56 ),
-   req(  33,  48), resp(  1584 ),
-   req(  48,  33 ), resp(  1584 ),
-   req(  10,  33 ), resp(  330 ),
-   req(  10,  48 ), resp(  480 ),
+  req(  2,  3 ), resp(   6 ),
+  req(  4,  5 ), resp(  20 ),
+  req(  3,  4 ), resp(  12 ),
+  req( 10, 13 ), resp( 130 ),
+  req(  8,  7 ), resp(  56 ),   
 ]
 
 small_neg_pos_msgs = [
@@ -96,6 +92,20 @@ small_neg_neg_msgs = [
   req( -10, -13 ), resp( 130 ),
   req(  -8,  -7 ), resp(  56 ),
 ]
+
+random.seed(0xdeadbeef)
+random_msgs = []
+for i in xrange(5):
+    a = random.randint(0xfffffffc,0xffffffff)
+    b = random.randint(0xfffffffc,0xffffffff)
+    c = a*b
+    random_msgs.extend([req(a,b),resp(c)])
+    
+r = Bits(4,random.randint(0,0xf))
+s = Bits(4,random.randint(0,0xf))
+print("r=%d,s=%d"%(r,s))
+print(random.randint(0,9))
+
 # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 # Define additional lists of request/response messages to create
 # additional directed and random test cases.
@@ -110,6 +120,9 @@ test_case_table = mk_test_case_table([
   [ "small_pos_pos",     small_pos_pos_msgs,   0,        0          ],
   [ "small_neg_pos",     small_neg_pos_msgs,   0,        0          ],
   [ "small_neg_neg",     small_neg_neg_msgs,   0,        0          ],
+  [ "random_msgs"  ,     random_msgs,          0,        0          ],
+  [ "random_msgs_4*5",   random_msgs,          4,        5          ],
+  [ "samll_pos_pos_3*8", small_pos_pos_msgs,   r,        s          ]
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to leverage the additional lists
   # of request/response messages defined above, but also to test
