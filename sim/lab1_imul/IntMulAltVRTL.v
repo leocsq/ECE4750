@@ -30,11 +30,11 @@ module lab1_imul_IntMulAltDpath
 
   // Control signals
 
-  input  logic        result_en,   // Enable for Result register
-  input  logic        a_mux_sel,  // Sel for mux in front of A reg
-  input  logic        b_mux_sel,  // sel for mux in front of B reg
-  input  logic        result_mux_sel,  // Sel for mux in front of Result reg
-  input  logic        add_mux_sel,  // sel for mux in back of Adder
+  input  logic        result_en,     // Enable for Result register
+  input  logic        a_mux_sel,     // Sel for mux in front of A reg
+  input  logic        b_mux_sel,     // sel for mux in front of B reg
+  input  logic        result_mux_sel,// Sel for mux in front of Result reg
+  input  logic        add_mux_sel,   // sel for mux in back of Adder
 
   // Status signals
 
@@ -217,29 +217,14 @@ module lab1_imul_IntMulAltCtrl
 
   logic [1:0] state_reg;
   logic [1:0] state_next;
-  //logic [5:0] counter;
-  //logic count_done;
+ 
 
   always @(posedge clk) begin    //always_ff @( posedge clk ) begin
     if ( reset ) begin
       state_reg <= STATE_IDLE;
-		//counter <= 0;
-		//count_done <= 0;
     end
     else begin
       state_reg <= state_next;
-		/*if ( state_reg == STATE_CALC ) begin
-		  if ( counter == 6'd32 ) begin
-		    counter <= 0;
-			 count_done <= 1;
-		  end
-		  else begin
-		    counter <= counter + 1; 
-		  end
-		end
-		else begin
-		  count_done <= 0;  
-		end */
     end
   end
 
@@ -253,7 +238,7 @@ module lab1_imul_IntMulAltCtrl
 
   assign req_go       = req_val  && req_rdy;
   assign resp_go      = resp_val && resp_rdy;
-  assign is_calc_done = is_b_zero;   //count_done;
+  assign is_calc_done = is_b_zero;   
 
   always @ (*) begin          //always_comb begin
 
