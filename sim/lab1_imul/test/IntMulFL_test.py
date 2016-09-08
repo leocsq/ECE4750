@@ -155,7 +155,7 @@ for i in xrange(5):
     a = random.randint(-255,0)
     b = random.randint(-255,0)
     c = a*b
-    random_small_neg_pos_msgs.extend([req(a,b),resp(c)])
+    random_small_neg_neg_msgs.extend([req(a,b),resp(c)])
 
 #----------------------------------------------------------------------
 # Test Case:  large positive * positive
@@ -235,13 +235,13 @@ for i in xrange(5):
 # Test Case:  direct many ones
 #----------------------------------------------------------------------
 many_ones_msgs = [
-  req(   0xFFFFF, 0xF   ), resp( 0xEFFFF1   ),
+  req(   0xF, 0xFFFFF   ), resp( 0xEFFFF1   ),
 ] 
 #----------------------------------------------------------------------
 # Test Case:  direct many zeros
 #----------------------------------------------------------------------
 many_zeros_msgs = [
-  req(  0x8000, 0x10 ), resp( 0x80000 ),
+  req(  0x10, 0x8000 ), resp( 0x80000 ),
 ]
 #----------------------------------------------------------------------
 # Test Case:  random  many zeros
@@ -273,29 +273,29 @@ for i in xrange(5):
 #-------------------------------------------------------------------------
 
 test_case_table = mk_test_case_table([
-  (                      "msgs                 src_delay sink_delay"),
-  [ "small_pos_pos",     small_pos_pos_msgs,    0,        0          ],
-  [ "small_neg_pos",     small_neg_pos_msgs,    0,        0          ],
-  [ "small_pos_neg",     small_pos_neg_msgs,    0,        0          ],
-  [ "small_neg_neg",     small_neg_neg_msgs,    0,        0          ],
-  [ "samll_pos_pos",     small_pos_pos_msgs,    0,        0          ],
-  [ "large_pos_pos",     large_pos_pos_msgs,    0,        0          ],
-  [ "large_neg_pos",     large_neg_pos_msgs,    0,        0          ],
-  [ "large_pos_neg",     large_pos_neg_msgs,    0,        0          ],
-  [ "large_neg_neg",     large_neg_neg_msgs,    0,        0          ],
-  [ "many_ones",         many_ones_msgs,        0,        0          ],
-  [ "many_zeros",        many_zeros_msgs,       0,        0          ],
+  (                              "msgs                 src_delay sink_delay"),
+  [ "small_pos_pos",              small_pos_pos_msgs,        0,   0   ],
+  [ "small_neg_pos",              small_neg_pos_msgs,        0,   0   ],
+  [ "small_pos_neg",              small_pos_neg_msgs,        0,   0   ],
+  [ "small_neg_neg",              small_neg_neg_msgs,        0,   0   ],
+  [ "samll_pos_pos",              small_pos_pos_msgs,        0,   0   ],
+  [ "large_pos_pos",              large_pos_pos_msgs,        0,   0   ],
+  [ "large_neg_pos",              large_neg_pos_msgs,        0,   0   ],
+  [ "large_pos_neg",              large_pos_neg_msgs,        0,   0   ],
+  [ "large_neg_neg",              large_neg_neg_msgs,        0,   0   ],
+  [ "many_ones",                  many_ones_msgs,            0,   0   ],
+  [ "many_zeros",                 many_zeros_msgs,           0,   0   ],
   
-  [ "random_small_pos_pos", random_small_pos_pos_msgs,      0,   0   ],
-  [ "random_small_pos_neg", random_small_pos_neg_msgs,      0,   0   ],
-  [ "random_small_neg_pos", random_small_neg_pos_msgs,      0,   0   ],
-  [ "random_small_neg_neg", random_small_neg_neg_msgs,      0,   0   ],
-  [ "random_large_pos_pos", random_large_pos_pos_msgs,      0,   0   ],
-  [ "random_large_neg_pos", random_large_neg_pos_msgs,      0,   0   ],
-  [ "random_large_pos_neg", random_large_pos_neg_msgs,      0,   0   ],
-  [ "random_large_neg_neg", random_large_neg_neg_msgs,      0,   0   ],
-  [ "random_manyones",      random_manyones_msgs,           0,   0   ],
-  [ "random_manyzeros",     random_manyzeros_msgs,          0,   0   ],
+  [ "random_small_pos_pos",       random_small_pos_pos_msgs, 0,   0   ],
+  [ "random_small_pos_neg",       random_small_pos_neg_msgs, 0,   0   ],
+  [ "random_small_neg_pos",       random_small_neg_pos_msgs, 0,   0   ],
+  [ "random_small_neg_neg",       random_small_neg_neg_msgs, 0,   0   ],
+  [ "random_large_pos_pos",       random_large_pos_pos_msgs, 0,   0   ],
+  [ "random_large_neg_pos",       random_large_neg_pos_msgs, 0,   0   ],
+  [ "random_large_pos_neg",       random_large_pos_neg_msgs, 0,   0   ],
+  [ "random_large_neg_neg",       random_large_neg_neg_msgs, 0,   0   ],
+  [ "random_manyones",            random_manyones_msgs,      0,   0   ],
+  [ "random_manyzeros",           random_manyzeros_msgs,     0,   0   ],
   
   [ "random_delay_small_pos_pos", random_small_pos_pos_msgs, 5,   5   ],
   [ "random_delay_small_pos_neg", random_small_pos_neg_msgs, 5,   5   ],
