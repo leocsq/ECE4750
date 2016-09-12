@@ -40,14 +40,14 @@ module vc_Regfile_1r1w
 
   // Write on positive clock edge
 
-  always @( posedge clk )
+  always_ff @( posedge clk )
     if ( write_en )
       rfile[write_addr] <= write_data;
 
   // Assertions
 
   /*
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( write_en );
 
@@ -106,7 +106,7 @@ module vc_ResetRegfile_1r1w
   generate
     for ( i = 0; i < p_num_entries; i = i+1 )
     begin : wport
-      always @( posedge clk )
+      always_ff @( posedge clk )
         if ( reset )
           rfile[i] <= p_reset_value;
         else if ( write_en && (i == write_addr) )
@@ -117,7 +117,7 @@ module vc_ResetRegfile_1r1w
   // Assertions
 
   /*
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( write_en );
 
@@ -176,14 +176,14 @@ module vc_Regfile_2r1w
 
   // Write on positive clock edge
 
-  always @( posedge clk )
+  always_ff @( posedge clk )
     if ( write_en )
       rfile[write_addr] <= write_data;
 
   // Assertions
 
   /*
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( write_en );
 
@@ -248,7 +248,7 @@ module vc_Regfile_2r2w
 
   // Write on positive clock edge
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
 
     if ( write_en0 )
       rfile[write_addr0] <= write_data0;
@@ -261,7 +261,7 @@ module vc_Regfile_2r2w
   // Assertions
 
   /*
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( write_en0 );
       `VC_ASSERT_NOT_X( write_en1 );
@@ -288,6 +288,56 @@ module vc_Regfile_2r2w
     end
   end
   */
+
+endmodule
+
+//------------------------------------------------------------------------
+// Register file specialized for r0 == 0
+//------------------------------------------------------------------------
+
+module vc_Regfile_2r1w_zero
+(
+  input  logic        clk,
+  input  logic        reset,
+
+  input  logic  [4:0] rd_addr0,
+  output logic [31:0] rd_data0,
+
+  input  logic  [4:0] rd_addr1,
+  output logic [31:0] rd_data1,
+
+  input  logic        wr_en,
+  input  logic  [4:0] wr_addr,
+  input  logic [31:0] wr_data
+);
+
+  // these wires are to be hooked up to the actual register file read
+  // ports
+
+  logic [31:0] rf_read_data0;
+  logic [31:0] rf_read_data1;
+
+  vc_Regfile_2r1w
+  #(
+    .p_data_nbits  (32),
+    .p_num_entries (32)
+  )
+  rfile
+  (
+    .clk         (clk),
+    .reset       (reset),
+    .read_addr0  (rd_addr0),
+    .read_data0  (rf_read_data0),
+    .read_addr1  (rd_addr1),
+    .read_data1  (rf_read_data1),
+    .write_en    (wr_en),
+    .write_addr  (wr_addr),
+    .write_data  (wr_data)
+  );
+
+  // we pick 0 value when either read address is 0
+  assign rd_data0 = ( rd_addr0 == 5'd0 ) ? 32'd0 : rf_read_data0;
+  assign rd_data1 = ( rd_addr1 == 5'd0 ) ? 32'd0 : rf_read_data1;
 
 endmodule
 

@@ -25,7 +25,7 @@ module vc_Reg
   input  logic [p_nbits-1:0] d    // Data input
 );
 
-  always @( posedge clk )
+  always_ff @( posedge clk )
     q <= d;
 
 endmodule
@@ -45,7 +45,7 @@ module vc_ResetReg
   input  logic [p_nbits-1:0] d      // Data input
 );
 
-  always @( posedge clk )
+  always_ff @( posedge clk )
     q <= reset ? p_reset_value : d;
 
 endmodule
@@ -65,7 +65,7 @@ module vc_EnReg
   input  logic               en     // Enable input
 );
 
-  always @( posedge clk )
+  always_ff @( posedge clk )
     if ( en )
       q <= d;
 
@@ -74,7 +74,7 @@ module vc_EnReg
   `ifndef SYNTHESIS
 
   /*
-  always @( posedge clk )
+  always_ff @( posedge clk )
     if ( !reset )
       `VC_ASSERT_NOT_X( en );
   */
@@ -99,7 +99,7 @@ module vc_EnResetReg
   input  logic               en     // Enable input
 );
 
-  always @( posedge clk )
+  always_ff @( posedge clk )
     if ( reset || en )
       q <= reset ? p_reset_value : d;
 
@@ -108,7 +108,7 @@ module vc_EnResetReg
   `ifndef SYNTHESIS
 
   /*
-  always @( posedge clk )
+  always_ff @( posedge clk )
     if ( !reset )
       `VC_ASSERT_NOT_X( en );
   */

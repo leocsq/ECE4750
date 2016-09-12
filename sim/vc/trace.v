@@ -60,7 +60,7 @@ module vc_Trace
 
   // Track cycle count
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     cycles <= ( reset ) ? 0 : cycles_next;
   end
 

@@ -65,7 +65,7 @@ module vc_TestSink
   // Register reset
 
   logic reset_reg;
-  always @( posedge clk )
+  always_ff @( posedge clk )
     reset_reg <= reset;
 
   //----------------------------------------------------------------------
@@ -104,7 +104,7 @@ module vc_TestSink
       verbose = 0;
   end
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( reset ) begin
       failed <= 0;
     end
@@ -154,7 +154,7 @@ module vc_TestSink
   // Assertions
   //----------------------------------------------------------------------
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( val );
       `VC_ASSERT_NOT_X( rdy );

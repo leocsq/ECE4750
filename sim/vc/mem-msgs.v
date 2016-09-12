@@ -51,65 +51,17 @@
 // field corresponding to the request that generated the response.
 
 //------------------------------------------------------------------------
-// Memory Request Message: Message fields ordered from right to left
+// Memory Request Struct: Using a packed struct to represent the message
 //------------------------------------------------------------------------
-// We use the following short names to make all of these preprocessor
-// macros more succinct.
+typedef struct packed {
+  logic [2:0]  type_;
+  logic [7:0]  opaque;
+  logic [31:0] addr;
+  logic [1:0]  len;
+  logic [31:0] data;
+} mem_req_4B_t;
 
-// Data field
-
-`define VC_MEM_REQ_MSG_DATA_NBITS(o_,a_,d_)                             \
-  d_
-
-`define VC_MEM_REQ_MSG_DATA_MSB(o_,a_,d_)                               \
-  ( `VC_MEM_REQ_MSG_DATA_NBITS(o_,a_,d_) - 1 )
-
-`define VC_MEM_REQ_MSG_DATA_FIELD(o_,a_,d_)                             \
-  (`VC_MEM_REQ_MSG_DATA_MSB(o_,a_,d_)):                                 \
-  0
-
-// Length field
-
-`define VC_MEM_REQ_MSG_LEN_NBITS(o_,a_,d_)                              \
-  ($clog2(d_/8))
-
-`define VC_MEM_REQ_MSG_LEN_MSB(o_,a_,d_)                                \
-  (   `VC_MEM_REQ_MSG_DATA_MSB(o_,a_,d_)                                \
-    + `VC_MEM_REQ_MSG_LEN_NBITS(o_,a_,d_) )
-
-`define VC_MEM_REQ_MSG_LEN_FIELD(o_,a_,d_)                              \
-  (`VC_MEM_REQ_MSG_LEN_MSB(o_,a_,d_)):                                  \
-  (`VC_MEM_REQ_MSG_DATA_MSB(o_,a_,d_) + 1)
-
-// Address field
-
-`define VC_MEM_REQ_MSG_ADDR_NBITS(o_,a_,d_)                             \
-  a_
-
-`define VC_MEM_REQ_MSG_ADDR_MSB(o_,a_,d_)                               \
-  (   `VC_MEM_REQ_MSG_LEN_MSB(o_,a_,d_)                                 \
-    + `VC_MEM_REQ_MSG_ADDR_NBITS(o_,a_,d_) )
-
-`define VC_MEM_REQ_MSG_ADDR_FIELD(o_,a_,d_)                             \
-  (`VC_MEM_REQ_MSG_ADDR_MSB(o_,a_,d_)):                                 \
-  (`VC_MEM_REQ_MSG_LEN_MSB(o_,a_,d_) + 1)
-
-// Opaque field
-
-`define VC_MEM_REQ_MSG_OPAQUE_NBITS(o_,a_,d_)                           \
-  o_
-
-`define VC_MEM_REQ_MSG_OPAQUE_MSB(o_,a_,d_)                             \
-  (   `VC_MEM_REQ_MSG_ADDR_MSB(o_,a_,d_)                                \
-    + `VC_MEM_REQ_MSG_OPAQUE_NBITS(o_,a_,d_) )
-
-`define VC_MEM_REQ_MSG_OPAQUE_FIELD(o_,a_,d_)                           \
-  (`VC_MEM_REQ_MSG_OPAQUE_MSB(o_,a_,d_)):                               \
-  (`VC_MEM_REQ_MSG_ADDR_MSB(o_,a_,d_) + 1)
-
-// Type field
-
-`define VC_MEM_REQ_MSG_TYPE_NBITS(o_,a_,d_) 3
+// memory request type values
 `define VC_MEM_REQ_MSG_TYPE_READ     3'd0
 `define VC_MEM_REQ_MSG_TYPE_WRITE    3'd1
 
@@ -120,139 +72,33 @@
 `define VC_MEM_REQ_MSG_TYPE_AMO_OR     3'd5
 `define VC_MEM_REQ_MSG_TYPE_X          3'dx
 
-`define VC_MEM_REQ_MSG_TYPE_MSB(o_,a_,d_)                               \
-  (   `VC_MEM_REQ_MSG_OPAQUE_MSB(o_,a_,d_)                              \
-    + `VC_MEM_REQ_MSG_TYPE_NBITS(o_,a_,d_) )
-
-`define VC_MEM_REQ_MSG_TYPE_FIELD(o_,a_,d_)                             \
-  (`VC_MEM_REQ_MSG_TYPE_MSB(o_,a_,d_)):                                 \
-  (`VC_MEM_REQ_MSG_OPAQUE_MSB(o_,a_,d_) + 1)
-
-// Total size of message
-
-`define VC_MEM_REQ_MSG_NBITS(o_,a_,d_)                                  \
-  (   `VC_MEM_REQ_MSG_TYPE_NBITS(o_,a_,d_)                              \
-    + `VC_MEM_REQ_MSG_OPAQUE_NBITS(o_,a_,d_)                            \
-    + `VC_MEM_REQ_MSG_ADDR_NBITS(o_,a_,d_)                              \
-    + `VC_MEM_REQ_MSG_LEN_NBITS(o_,a_,d_)                               \
-    + `VC_MEM_REQ_MSG_DATA_NBITS(o_,a_,d_) )
-
-//------------------------------------------------------------------------
-// Memory Request Message: Pack message
-//------------------------------------------------------------------------
-
-module vc_MemReqMsgPack
-#(
-  parameter p_opaque_nbits = 8,
-  parameter p_addr_nbits   = 32,
-  parameter p_data_nbits   = 32,
-
-  // Shorter names for message type, not to be set from outside the module
-  parameter o = p_opaque_nbits,
-  parameter a = p_addr_nbits,
-  parameter d = p_data_nbits
-)(
-  // Input message
-
-  input  logic [`VC_MEM_REQ_MSG_TYPE_NBITS(o,a,d)-1:0]   type_,
-  input  logic [`VC_MEM_REQ_MSG_OPAQUE_NBITS(o,a,d)-1:0] opaque,
-  input  logic [`VC_MEM_REQ_MSG_ADDR_NBITS(o,a,d)-1:0]   addr,
-  input  logic [`VC_MEM_REQ_MSG_LEN_NBITS(o,a,d)-1:0]    len,
-  input  logic [`VC_MEM_REQ_MSG_DATA_NBITS(o,a,d)-1:0]   data,
-
-  // Output bits
-
-  output logic [`VC_MEM_REQ_MSG_NBITS(o,a,d)-1:0]        msg
-);
-
-  assign msg[`VC_MEM_REQ_MSG_TYPE_FIELD(o,a,d)]   = type_;
-  assign msg[`VC_MEM_REQ_MSG_OPAQUE_FIELD(o,a,d)] = opaque;
-  assign msg[`VC_MEM_REQ_MSG_ADDR_FIELD(o,a,d)]   = addr;
-  assign msg[`VC_MEM_REQ_MSG_LEN_FIELD(o,a,d)]    = len;
-  assign msg[`VC_MEM_REQ_MSG_DATA_FIELD(o,a,d)]   = data;
-
-endmodule
-
-//------------------------------------------------------------------------
-// Memory Request Message: Unpack message
-//------------------------------------------------------------------------
-
-module vc_MemReqMsgUnpack
-#(
-  parameter p_opaque_nbits = 8,
-  parameter p_addr_nbits   = 32,
-  parameter p_data_nbits   = 32,
-
-  // Shorter names for message type, not to be set from outside the module
-  parameter o = p_opaque_nbits,
-  parameter a = p_addr_nbits,
-  parameter d = p_data_nbits
-)(
-
-  // Input bits
-
-  input  logic [`VC_MEM_REQ_MSG_NBITS(o,a,d)-1:0]        msg,
-
-  // Output message
-
-  output logic [`VC_MEM_REQ_MSG_TYPE_NBITS(o,a,d)-1:0]   type_,
-  output logic [`VC_MEM_REQ_MSG_OPAQUE_NBITS(o,a,d)-1:0] opaque,
-  output logic [`VC_MEM_REQ_MSG_ADDR_NBITS(o,a,d)-1:0]   addr,
-  output logic [`VC_MEM_REQ_MSG_LEN_NBITS(o,a,d)-1:0]    len,
-  output logic [`VC_MEM_REQ_MSG_DATA_NBITS(o,a,d)-1:0]   data
-);
-
-  assign type_  = msg[`VC_MEM_REQ_MSG_TYPE_FIELD(o,a,d)];
-  assign opaque = msg[`VC_MEM_REQ_MSG_OPAQUE_FIELD(o,a,d)];
-  assign addr   = msg[`VC_MEM_REQ_MSG_ADDR_FIELD(o,a,d)];
-  assign len    = msg[`VC_MEM_REQ_MSG_LEN_FIELD(o,a,d)];
-  assign data   = msg[`VC_MEM_REQ_MSG_DATA_FIELD(o,a,d)];
-
-endmodule
-
 //------------------------------------------------------------------------
 // Memory Request Message: Trace message
 //------------------------------------------------------------------------
 
-module vc_MemReqMsgTrace
-#(
-  parameter p_opaque_nbits = 8,
-  parameter p_addr_nbits   = 32,
-  parameter p_data_nbits   = 32,
-
-  // Shorter names for message type, not to be set from outside the module
-  parameter o = p_opaque_nbits,
-  parameter a = p_addr_nbits,
-  parameter d = p_data_nbits
-)(
-  input logic                                    clk,
-  input logic                                    reset,
-  input logic                                    val,
-  input logic                                    rdy,
-  input logic [`VC_MEM_REQ_MSG_NBITS(o,a,d)-1:0] msg
+module vc_MemReqMsg4BTrace
+(
+  input logic         clk,
+  input logic         reset,
+  input logic         val,
+  input logic         rdy,
+  input mem_req_4B_t  msg
 );
 
-  // Extract fields
-
-  logic [`VC_MEM_REQ_MSG_TYPE_NBITS(o,a,d)-1:0]   type_;
-  logic [`VC_MEM_REQ_MSG_OPAQUE_NBITS(o,a,d)-1:0] opaque;
-  logic [`VC_MEM_REQ_MSG_ADDR_NBITS(o,a,d)-1:0]   addr;
-  logic [`VC_MEM_REQ_MSG_LEN_NBITS(o,a,d)-1:0]    len;
-  logic [`VC_MEM_REQ_MSG_DATA_NBITS(o,a,d)-1:0]   data;
-
-  vc_MemReqMsgUnpack#(o,a,d) mem_req_msg_unpack
-  (
-    .msg    (msg),
-    .type_  (type_),
-    .opaque (opaque),
-    .addr   (addr),
-    .len    (len),
-    .data   (data)
-  );
+  logic [2:0]   type_;
+  assign type_  = msg.type_;
+  logic [7:0]   opaque;
+  assign opaque = msg.opaque;
+  logic [31:0]  addr;
+  assign addr   = msg.addr;
+  logic [1:0]   len;
+  assign len    = msg.len;
+  logic [31:0]  data;
+  assign data   = msg.data;
 
   // Short names
 
-  localparam c_msg_nbits = `VC_MEM_REQ_MSG_NBITS(o,a,d);
+  localparam c_msg_nbits = $bits(mem_req_4B_t);
   localparam c_read      = `VC_MEM_REQ_MSG_TYPE_READ;
   localparam c_write     = `VC_MEM_REQ_MSG_TYPE_WRITE;
   localparam c_write_init  = `VC_MEM_REQ_MSG_TYPE_WRITE_INIT;
@@ -267,10 +113,10 @@ module vc_MemReqMsgTrace
 
     // Convert type into a string
 
-    if ( type_ === {`VC_MEM_REQ_MSG_TYPE_NBITS(o,a,d){1'bx}} )
-      type_str = "xxxx";
+    if ( msg.type_ === `VC_MEM_REQ_MSG_TYPE_X )
+      type_str = "xx";
     else begin
-      case ( type_ )
+      case ( msg.type_ )
         c_read     : type_str = "rd";
         c_write    : type_str = "wr";
         c_write_init : type_str = "wn";
@@ -284,15 +130,15 @@ module vc_MemReqMsgTrace
       $sformat( str, "%s", type_str );
     end
     else if ( vc_trace.level == 2 ) begin
-      $sformat( str, "%s:%x", type_str, addr );
+      $sformat( str, "%s:%x", type_str, msg.addr );
     end
     else if ( vc_trace.level == 3 ) begin
       if ( type_ == c_read ) begin
-        $sformat( str, "%s:%x:%x %s", type_str, opaque, addr,
-                  {`VC_TRACE_NBITS_TO_NCHARS(d){" "}} );
+        $sformat( str, "%s:%x:%x %s", type_str, msg.opaque, msg.addr,
+                  {8{" "}} );
       end
       else
-        $sformat( str, "%s:%x:%x:%x", type_str, opaque, addr, data );
+        $sformat( str, "%s:%x:%x:%x", type_str, msg.opaque, msg.addr, msg.data );
     end
 
     // Trace with val/rdy signals
@@ -344,64 +190,18 @@ endmodule
 // field corresponding to the request that generated the response.
 
 //------------------------------------------------------------------------
-// Memory Response Message: Message fields ordered from right to left
+// Memory Request Struct: Using a packed struct to represent the message
 //------------------------------------------------------------------------
-// We use the following short names to make all of these preprocessor
-// macros more succinct.
+typedef struct packed {
+  logic [2:0]  type_;
+  logic [7:0]  opaque;
+  logic [1:0]  test;
+  logic [1:0]  len;
+  logic [31:0] data;
+} mem_resp_4B_t;
 
-// Data field
+// Values for the type field
 
-`define VC_MEM_RESP_MSG_DATA_NBITS(o_,d_)                               \
-  d_
-
-`define VC_MEM_RESP_MSG_DATA_MSB(o_,d_)                                 \
-  ( `VC_MEM_RESP_MSG_DATA_NBITS(o_,d_) - 1 )
-
-`define VC_MEM_RESP_MSG_DATA_FIELD(o_,d_)                               \
-  (`VC_MEM_RESP_MSG_DATA_MSB(o_,d_)):                                   \
-  0
-
-// Length field
-
-`define VC_MEM_RESP_MSG_LEN_NBITS(o_,d_)                                \
-  ($clog2(d_/8))
-
-`define VC_MEM_RESP_MSG_LEN_MSB(o_,d_)                                  \
-  (   `VC_MEM_RESP_MSG_DATA_MSB(o_,d_)                                  \
-    + `VC_MEM_RESP_MSG_LEN_NBITS(o_,d_) )
-
-`define VC_MEM_RESP_MSG_LEN_FIELD(o_,d_)                                \
-  (`VC_MEM_RESP_MSG_LEN_MSB(o_,d_)):                                    \
-  (`VC_MEM_RESP_MSG_DATA_MSB(o_,d_) + 1)
-
-// Test field
-`define VC_MEM_RESP_MSG_TEST_NBITS(o_,d_)                               \
-  2
-
-`define VC_MEM_RESP_MSG_TEST_MSB(o_,d_)                                 \
-  (   `VC_MEM_RESP_MSG_LEN_MSB(o_,d_)                                   \
-    + `VC_MEM_RESP_MSG_TEST_NBITS(o_,d_) )
-
-`define VC_MEM_RESP_MSG_TEST_FIELD(o_,d_)                               \
-  (`VC_MEM_RESP_MSG_TEST_MSB(o_,d_)):                                   \
-  (`VC_MEM_RESP_MSG_LEN_MSB(o_,d_) + 1)
-
-// Opaque field
-
-`define VC_MEM_RESP_MSG_OPAQUE_NBITS(o_,d_)                             \
-  o_
-
-`define VC_MEM_RESP_MSG_OPAQUE_MSB(o_,d_)                               \
-  (   `VC_MEM_RESP_MSG_TEST_MSB(o_,d_)                                  \
-    + `VC_MEM_RESP_MSG_OPAQUE_NBITS(o_,d_) )
-
-`define VC_MEM_RESP_MSG_OPAQUE_FIELD(o_,d_)                             \
-  (`VC_MEM_RESP_MSG_OPAQUE_MSB(o_,d_)):                                 \
-  (`VC_MEM_RESP_MSG_TEST_MSB(o_,d_) + 1)
-
-// Type field
-
-`define VC_MEM_RESP_MSG_TYPE_NBITS(o_,d_) 3
 `define VC_MEM_RESP_MSG_TYPE_READ     3'd0
 `define VC_MEM_RESP_MSG_TYPE_WRITE    3'd1
 
@@ -412,132 +212,34 @@ endmodule
 `define VC_MEM_RESP_MSG_TYPE_AMO_OR     3'd5
 `define VC_MEM_RESP_MSG_TYPE_X          3'dx
 
-`define VC_MEM_RESP_MSG_TYPE_MSB(o_,d_)                                 \
-  (   `VC_MEM_RESP_MSG_OPAQUE_MSB(o_,d_)                                \
-    + `VC_MEM_RESP_MSG_TYPE_NBITS(o_,d_) )
-
-`define VC_MEM_RESP_MSG_TYPE_FIELD(o_,d_)                               \
-  (`VC_MEM_RESP_MSG_TYPE_MSB(o_,d_)):                                   \
-  (`VC_MEM_RESP_MSG_OPAQUE_MSB(o_,d_) + 1)
-
-// Total size of message
-
-`define VC_MEM_RESP_MSG_NBITS(o_,d_)                                    \
-  (   `VC_MEM_RESP_MSG_TYPE_NBITS(o_,d_)                                \
-    + `VC_MEM_RESP_MSG_OPAQUE_NBITS(o_,d_)                              \
-    + `VC_MEM_RESP_MSG_TEST_NBITS(o_,d_)                                \
-    + `VC_MEM_RESP_MSG_LEN_NBITS(o_,d_)                                 \
-    + `VC_MEM_RESP_MSG_DATA_NBITS(o_,d_) )
-
-//------------------------------------------------------------------------
-// Memory Response Message: Pack message
-//------------------------------------------------------------------------
-
-module vc_MemRespMsgPack
-#(
-  parameter p_opaque_nbits = 8,
-  parameter p_data_nbits   = 32,
-
-  // Shorter names for message type, not to be set from outside the module
-  parameter o = p_opaque_nbits,
-  parameter d = p_data_nbits
-)(
-  // Input message
-
-  input  logic [`VC_MEM_RESP_MSG_TYPE_NBITS(o,d)-1:0]   type_,
-  input  logic [`VC_MEM_RESP_MSG_OPAQUE_NBITS(o,d)-1:0] opaque,
-  input  logic [`VC_MEM_RESP_MSG_TEST_NBITS(o,d)-1:0]   test,
-  input  logic [`VC_MEM_RESP_MSG_LEN_NBITS(o,d)-1:0]    len,
-  input  logic [`VC_MEM_RESP_MSG_DATA_NBITS(o,d)-1:0]   data,
-
-  // Output bits
-
-  output logic [`VC_MEM_RESP_MSG_NBITS(o,d)-1:0]        msg
-);
-
-  assign msg[`VC_MEM_RESP_MSG_TYPE_FIELD(o,d)]   = type_;
-  assign msg[`VC_MEM_RESP_MSG_OPAQUE_FIELD(o,d)] = opaque;
-  assign msg[`VC_MEM_RESP_MSG_TEST_FIELD(o,d)]   = test;
-  assign msg[`VC_MEM_RESP_MSG_LEN_FIELD(o,d)]    = len;
-  assign msg[`VC_MEM_RESP_MSG_DATA_FIELD(o,d)]   = data;
-
-endmodule
-
-//------------------------------------------------------------------------
-// Memory Response Message: Unpack message
-//------------------------------------------------------------------------
-
-module vc_MemRespMsgUnpack
-#(
-  parameter p_opaque_nbits = 8,
-  parameter p_data_nbits   = 32,
-
-  // Shorter names for message type, not to be set from outside the module
-  parameter o = p_opaque_nbits,
-  parameter d = p_data_nbits
-)(
-
-  // Input bits
-
-  input  logic [`VC_MEM_RESP_MSG_NBITS(o,d)-1:0]        msg,
-
-  // Output message
-
-  output logic [`VC_MEM_RESP_MSG_TYPE_NBITS(o,d)-1:0]   type_,
-  output logic [`VC_MEM_RESP_MSG_OPAQUE_NBITS(o,d)-1:0] opaque,
-  output logic [`VC_MEM_RESP_MSG_TEST_NBITS(o,d)-1:0]   test,
-  output logic [`VC_MEM_RESP_MSG_LEN_NBITS(o,d)-1:0]    len,
-  output logic [`VC_MEM_RESP_MSG_DATA_NBITS(o,d)-1:0]   data
-);
-
-  assign type_   = msg[`VC_MEM_RESP_MSG_TYPE_FIELD(o,d)];
-  assign opaque  = msg[`VC_MEM_RESP_MSG_OPAQUE_FIELD(o,d)];
-  assign test    = msg[`VC_MEM_RESP_MSG_TEST_FIELD(o,d)];
-  assign len     = msg[`VC_MEM_RESP_MSG_LEN_FIELD(o,d)];
-  assign data    = msg[`VC_MEM_RESP_MSG_DATA_FIELD(o,d)];
-
-endmodule
-
 //------------------------------------------------------------------------
 // Memory Response Message: Trace message
 //------------------------------------------------------------------------
 
-module vc_MemRespMsgTrace
-#(
-  parameter p_opaque_nbits = 8,
-  parameter p_data_nbits   = 32,
-
-  // Shorter names for message type, not to be set from outside the module
-  parameter o = p_opaque_nbits,
-  parameter d = p_data_nbits
-)(
-  input logic                                     clk,
-  input logic                                     reset,
-  input logic                                     val,
-  input logic                                     rdy,
-  input logic [`VC_MEM_RESP_MSG_NBITS(o,d)-1:0] msg
+module vc_MemRespMsg4BTrace
+(
+  input logic          clk,
+  input logic          reset,
+  input logic          val,
+  input logic          rdy,
+  input mem_resp_4B_t  msg
 );
 
-  // Extract fields
-
-  logic [`VC_MEM_RESP_MSG_TYPE_NBITS(o,d)-1:0]   type_;
-  logic [`VC_MEM_RESP_MSG_OPAQUE_NBITS(o,d)-1:0] opaque;
-  logic [`VC_MEM_RESP_MSG_LEN_NBITS(o,d)-1:0]    len;
-  logic [`VC_MEM_RESP_MSG_DATA_NBITS(o,d)-1:0]   data;
-
-  vc_MemRespMsgUnpack#(o,d) mem_req_msg_unpack
-  (
-    .msg     (msg),
-    .type_   (type_),
-    .opaque  (opaque),
-    .test    (),
-    .len     (len),
-    .data    (data)
-  );
+  // unpack message fields -- makes them visible in gtkwave
+  logic [2:0]   type_;
+  assign type_  = msg.type_;
+  logic [7:0]   opaque;
+  assign opaque = msg.opaque;
+  logic [1:0]   test;
+  assign test   = msg.test;
+  logic [1:0]   len;
+  assign len    = msg.len;
+  logic [31:0]  data;
+  assign data   = msg.data;
 
   // Short names
 
-  localparam c_msg_nbits  = `VC_MEM_RESP_MSG_NBITS(o,d);
+  localparam c_msg_nbits  = $bits(mem_resp_4B_t);
   localparam c_read       = `VC_MEM_RESP_MSG_TYPE_READ;
   localparam c_write      = `VC_MEM_RESP_MSG_TYPE_WRITE;
   localparam c_write_init = `VC_MEM_RESP_MSG_TYPE_WRITE_INIT;
@@ -552,14 +254,14 @@ module vc_MemRespMsgTrace
 
     // Convert type into a string
 
-    if ( type_ === {`VC_MEM_RESP_MSG_TYPE_NBITS(o,d){1'bx}} )
-      type_str = "xxxx";
+    if ( type_ === `VC_MEM_RESP_MSG_TYPE_X )
+      type_str = "xx";
     else begin
       case ( type_ )
-        c_read     : type_str = "rd";
-        c_write    : type_str = "wr";
+        c_read       : type_str = "rd";
+        c_write      : type_str = "wr";
         c_write_init : type_str = "wn";
-        default    : type_str = "??";
+        default      : type_str = "??";
       endcase
     end
 
@@ -571,7 +273,7 @@ module vc_MemRespMsgTrace
     else if ( vc_trace.level == 3 ) begin
       if ( type_ == c_write || type_ == c_write_init ) begin
         $sformat( str, "%s:%x %s", type_str, opaque,
-                  {`VC_TRACE_NBITS_TO_NCHARS(d){" "}} );
+                  {8{" "}} );
       end
       else
         $sformat( str, "%s:%x:%x", type_str, opaque, data );

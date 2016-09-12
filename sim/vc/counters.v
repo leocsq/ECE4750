@@ -68,7 +68,7 @@ module vc_BasicCounter
   //----------------------------------------------------------------------
 
   /*
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( increment );
       `VC_ASSERT_NOT_X( decrement );
