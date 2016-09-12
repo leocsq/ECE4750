@@ -30,7 +30,7 @@ install:
 
  # Install PyMTL
 
- - pip -q install git+https://github.com/cornell-brg/pymtl.git
+ - pip -q install git+https://github.com/cornell-brg/pymtl.git@ece4750
  - pip list
 
 #------------------------------------------------------------------------
@@ -49,5 +49,6 @@ before_script:
 #------------------------------------------------------------------------
 
 script:
- - py.test ../lab1_imul
+ - py.test --verbose ../lab1_imul
+ - python ../lab1_imul/imul_sim_staff_eval.py
 
