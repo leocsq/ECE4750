@@ -7,7 +7,7 @@
 # still have it appear clean to git.
 
 .\#*
-release/work
+scripts/work
 build*/
 autom4te.cache/
 __pycache__/
@@ -15,3 +15,5 @@ __pycache__/
 .DS_Store
 .cache/
 *~
+.lock*
+*.swp

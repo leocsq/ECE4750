@@ -58,7 +58,7 @@ module vc_TestUnorderedSink
   // Register reset
 
   logic reset_reg;
-  always @( posedge clk )
+  always_ff @( posedge clk )
     reset_reg <= reset;
 
   //----------------------------------------------------------------------
@@ -100,7 +100,7 @@ module vc_TestUnorderedSink
       verbose = 0;
   end
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( reset ) begin
       failed <= 0;
 
@@ -195,7 +195,7 @@ module vc_TestUnorderedSink
   // Assertions
   //----------------------------------------------------------------------
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( val );
       `VC_ASSERT_NOT_X( rdy );

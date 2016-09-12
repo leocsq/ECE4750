@@ -44,7 +44,7 @@ module vc_TestRandDelay
 
   logic [31:0] rand_num;
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( max_delay == 0 )
       rand_num <= 0;
     else
@@ -89,7 +89,7 @@ module vc_TestRandDelay
   logic [c_state_sz-1:0] state_next;
   logic [c_state_sz-1:0] state;
 
-  always @ ( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( reset ) begin
       state <= c_state_idle;
     end
@@ -102,7 +102,7 @@ module vc_TestRandDelay
   // State transitions
   //----------------------------------------------------------------------
 
-  always @(*) begin
+  always_comb begin
 
     // Default is to stay in the same state
 
@@ -136,7 +136,7 @@ module vc_TestRandDelay
   // State output
   //----------------------------------------------------------------------
 
-  always @(*) begin
+  always_comb begin
 
     case ( state )
 
@@ -181,7 +181,7 @@ module vc_TestRandDelay
   // Assertions
   //----------------------------------------------------------------------
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( max_delay );
       `VC_ASSERT_NOT_X( in_val    );

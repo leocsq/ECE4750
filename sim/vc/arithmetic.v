@@ -20,11 +20,14 @@ module vc_Adder
   output logic               cout
 );
 
-  assign {cout,out} = in0 + in1 + cin;
+  // We need to convert cin into a 32-bit value to
+  // avoid verilator warnings
+
+  assign {cout,out} = in0 + in1 + {{(p_nbits-1){1'b0}},cin};
 
 endmodule
 
-module vc_SimpleAdder
+module vc_BaseAdder
 #(
   parameter p_nbits = 1
 )(

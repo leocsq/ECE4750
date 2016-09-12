@@ -296,7 +296,7 @@ module vc_TestMem_2ports
 
   integer memory_cleared = 1;
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
 
     // We clear all of the test memory to X's on mem_clear. As mentioned
     // above, this only happens if we clear a test memory more than once.
@@ -427,7 +427,7 @@ module vc_TestMem_2ports
 
   // val/rdy signals should never be x's
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( memreq0_val  );
       `VC_ASSERT_NOT_X( memresp0_rdy );

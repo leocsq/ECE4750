@@ -77,7 +77,7 @@ module vc_TestDelay
   logic [c_state_sz-1:0] state_next;
   logic [c_state_sz-1:0] state;
 
-  always @ ( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( reset ) begin
       state <= c_state_idle;
     end
@@ -90,7 +90,7 @@ module vc_TestDelay
   // State transitions
   //----------------------------------------------------------------------
 
-  always @(*) begin
+  always_comb begin
 
     // Default is to stay in the same state
 
@@ -124,7 +124,7 @@ module vc_TestDelay
   // State output
   //----------------------------------------------------------------------
 
-  always @(*) begin
+  always_comb begin
 
     case ( state )
 
@@ -169,7 +169,7 @@ module vc_TestDelay
   // Assertions
   //----------------------------------------------------------------------
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( delay_amt );
       `VC_ASSERT_NOT_X( in_val    );

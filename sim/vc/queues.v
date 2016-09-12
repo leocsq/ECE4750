@@ -54,7 +54,7 @@ module vc_QueueCtrl1
   logic full;
   logic full_next;
 
-  always @ (posedge clk) begin
+  always_ff @(posedge clk) begin
     full <= reset ? 1'b0 : full_next;
   end
 
@@ -478,7 +478,7 @@ module vc_Queue
   // Assertions
 
   /*
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( enq_val );
       `VC_ASSERT_NOT_X( enq_rdy );

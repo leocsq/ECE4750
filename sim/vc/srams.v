@@ -45,7 +45,7 @@ module vc_CombinationalSRAM_1rw
 
   /* verilator lint_off WIDTH */
 
-  always @(*) begin
+  always_comb begin
     if ( read_en )
       read_data = mem[read_addr];
     else
@@ -60,7 +60,7 @@ module vc_CombinationalSRAM_1rw
   generate
     for ( i = 0; i < c_data_nbytes; i = i + 1 )
     begin : test
-      always @( posedge clk ) begin
+      always_ff @( posedge clk ) begin
         if ( write_en && write_byte_en[i] )
           mem[write_addr][ (i+1)*8-1 : i*8 ] <= write_data[ (i+1)*8-1 : i*8 ];
       end
@@ -70,7 +70,7 @@ module vc_CombinationalSRAM_1rw
   // Assertions
 
   /*
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( read_en );
       `VC_ASSERT_NOT_X( write_en );
@@ -133,7 +133,7 @@ module vc_SynchronousSRAM_1rw
   // read data is all X's if the read is not enable at all to avoid
   // (potentially) incorrectly assuming the SRAM latches the read data.
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( read_en )
       read_data <= mem[read_addr];
     else
@@ -146,7 +146,7 @@ module vc_SynchronousSRAM_1rw
   generate
     for ( i = 0; i < c_data_nbytes; i = i + 1 )
     begin : test
-      always @( posedge clk ) begin
+      always_ff @( posedge clk ) begin
         if ( write_en && write_byte_en[i] )
           mem[write_addr][ (i+1)*8-1 : i*8 ] <= write_data[ (i+1)*8-1 : i*8 ];
       end
@@ -156,7 +156,7 @@ module vc_SynchronousSRAM_1rw
   // Assertions
 
   /*
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( read_en );
       `VC_ASSERT_NOT_X( write_en );

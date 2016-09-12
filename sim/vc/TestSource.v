@@ -62,7 +62,7 @@ module vc_TestSource
   // Register reset
 
   logic reset_reg;
-  always @( posedge clk )
+  always_ff @( posedge clk )
     reset_reg <= reset;
 
   //----------------------------------------------------------------------
@@ -81,7 +81,7 @@ module vc_TestSource
   //
   // So now we keep the done signal high until the test source is reset.
 
-  always @ ( * ) begin
+  always_comb begin
     if ( reset_reg ) begin
       done <= 1'b0;
     end else begin
@@ -114,7 +114,7 @@ module vc_TestSource
   // Assertions
   //----------------------------------------------------------------------
 
-  always @( posedge clk ) begin
+  always_ff @( posedge clk ) begin
     if ( !reset ) begin
       `VC_ASSERT_NOT_X( val );
       `VC_ASSERT_NOT_X( rdy );

@@ -105,7 +105,7 @@ endmodule
                                                                         \
   always #5 clk = ~clk;                                                 \
                                                                         \
-  always @(*)                                                           \
+  always_comb                                                           \
     if ( vc_test.case_num == 0 )                                        \
     begin                                                               \
       #20;                                                              \
@@ -115,7 +115,7 @@ endmodule
         vc_test.next_case_num = vc_test.case_num + 1;                   \
     end                                                                 \
                                                                         \
-  always @( posedge clk )                                               \
+  always_ff @( posedge clk )                                            \
     vc_test.case_num <= vc_test.next_case_num;
 
 //------------------------------------------------------------------------
@@ -125,7 +125,7 @@ endmodule
 // before endmodule.
 
 `define VC_TEST_SUITE_END                                               \
-  always @( posedge clk ) begin                                         \
+  always_ff @( posedge clk ) begin                                      \
                                                                         \
     if ( vc_test.num_cycles_cases_done > 3 ) begin                      \
       $display("");                                                     \

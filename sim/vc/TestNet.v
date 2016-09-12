@@ -92,7 +92,7 @@ module vc_TestNet
     assign net_str[`VC_PORT_PICK_FIELD(6*8,p_num_ports-in-1)] =
                                                         in_queue_str;
 
-    always @(*) begin
+    always_comb begin
       if ( in_queue_deq_val && in_queue_deq_rdy )
         $sformat( in_queue_str, "(%x>%x)",
                   in_queue_deq_msg[`VC_NET_MSG_OPAQUE_FIELD(p,o,s)],
@@ -163,7 +163,7 @@ module vc_TestNet
     //logic [5*8-1:0] arb_str;
     //assign net_str[`VC_PORT_PICK_FIELD(5*8,p_num_ports-out-1)] = arb_str;
 
-    always @(*) begin
+    always_comb begin
       arb_out_msg = 0;
       grants_bin = 0;
       for ( i = 0; i < p_num_ports; i = i + 1 ) begin
@@ -186,7 +186,7 @@ module vc_TestNet
   endgenerate
 
   logic [31:0] i;
-  always @(*) begin
+  always_comb begin
     for ( i = 0; i < p_num_ports; i = i + 1 ) begin
       deq_rdy[i] = | in_rdy_arr[`VC_PORT_PICK_FIELD(p_num_ports,i)];
     end
