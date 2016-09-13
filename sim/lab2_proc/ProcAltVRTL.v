@@ -1,5 +1,5 @@
 //=========================================================================
-// 5-Stage Base Pipelined Processor
+// 5-Stage Simple Pipelined Processor
 //=========================================================================
 
 `ifndef LAB2_PROC_PIPELINED_PROC_BASE_V
