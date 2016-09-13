@@ -27,7 +27,7 @@ module vc_Adder
 
 endmodule
 
-module vc_BaseAdder
+module vc_SimpleAdder
 #(
   parameter p_nbits = 1
 )(
