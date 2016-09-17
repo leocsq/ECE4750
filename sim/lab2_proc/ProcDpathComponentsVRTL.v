@@ -18,8 +18,6 @@ module lab2_proc_ImmGenVRTL
   output logic [31:0] imm
 );
 
-  rv2isa_InstTasks rv2isa();
-
   always_comb begin
     case ( imm_type )
       3'd0: // I-type

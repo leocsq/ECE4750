@@ -128,40 +128,48 @@
 module rv2isa_InstTasks();
 
   //----------------------------------------------------------------------
-  // Immediate decoding
+  // Immediate decoding -- only outputs signals at the width required for
+  // line tracing
   //----------------------------------------------------------------------
-  function [31:0] imm_i( input [`RV2ISA_INST_NBITS-1:0] inst );
+  function [10:0] imm_i( input [`RV2ISA_INST_NBITS-1:0] inst );
   begin
     // I-type immediate
-    imm_i = { {21{inst[31]}}, inst[30:25], inst[24:21], inst[20] };
+    imm_i = { inst[31], inst[30:25], inst[24:21], inst[20] };
   end
   endfunction
 
-  function [31:0] imm_s( input [`RV2ISA_INST_NBITS-1:0] inst );
+  function [4:0] imm_shamt( input [`RV2ISA_INST_NBITS-1:0] inst );
+  begin
+    // I-type immediate, specialized for shift amounts
+    imm_shamt = { inst[24:21], inst[20] };
+  end
+  endfunction
+
+  function [10:0] imm_s( input [`RV2ISA_INST_NBITS-1:0] inst );
   begin
     // S-type immediate
-    imm_s = { {21{inst[31]}}, inst[30:25], inst[11:8], inst[7] };
+    imm_s = { inst[31], inst[30:25], inst[11:8], inst[7] };
   end
   endfunction
 
-  function [31:0] imm_b( input [`RV2ISA_INST_NBITS-1:0] inst );
+  function [12:0] imm_b( input [`RV2ISA_INST_NBITS-1:0] inst );
   begin
     // B-type immediate
-    imm_b = { {20{inst[31]}}, inst[7], inst[30:25], inst[11:8], 1'b0 };
+    imm_b = { inst[31], inst[7], inst[30:25], inst[11:8], 1'b0 };
   end
   endfunction
 
-  function [31:0] imm_u( input [`RV2ISA_INST_NBITS-1:0] inst );
+  function [19:0] imm_u_sh12( input [`RV2ISA_INST_NBITS-1:0] inst );
   begin
-    // U-type immediate
-    imm_u = { inst[31], inst[30:20], inst[19:12], 12'b0 };
+    // U-type immediate, shifted right by 12
+    imm_u_sh12 = { inst[31], inst[30:20], inst[19:12] };
   end
   endfunction
 
-  function [31:0] imm_j( input [`RV2ISA_INST_NBITS-1:0] inst );
+  function [20:0] imm_j( input [`RV2ISA_INST_NBITS-1:0] inst );
   begin
     // J-type immediate
-    imm_j = { {12{inst[31]}}, inst[19:12], inst[20], inst[30:25], inst[24:21], 1'b0 };
+    imm_j = { inst[31], inst[19:12], inst[20], inst[30:25], inst[24:21], 1'b0 };
   end
   endfunction
 
@@ -179,7 +187,7 @@ module rv2isa_InstTasks();
   logic [`RV2ISA_INST_RD_NBITS-1:0]  rd;
   logic [`RV2ISA_INST_CSR_NBITS-1:0] csr;
 
-  function [28*8-1:0] disasm( input [`RV2ISA_INST_NBITS-1:0] inst );
+  function [25*8-1:0] disasm( input [`RV2ISA_INST_NBITS-1:0] inst );
   begin
 
     // Unpack the fields
@@ -191,17 +199,17 @@ module rv2isa_InstTasks();
 
     // Create fixed-width register specifiers
 
-    if ( rs1 < 9 )
+    if ( rs1 <= 9 )
       $sformat( rs1_str, "x0%0d", rs1 );
     else
       $sformat( rs1_str, "x%d",  rs1 );
 
-    if ( rs2 < 9 )
+    if ( rs2 <= 9 )
       $sformat( rs2_str, "x0%0d", rs2 );
     else
       $sformat( rs2_str, "x%d",  rs2 );
 
-    if ( rd < 9 )
+    if ( rd <= 9 )
       $sformat( rd_str, "x0%0d", rd );
     else
       $sformat( rd_str, "x%d",  rd );
@@ -222,51 +230,51 @@ module rv2isa_InstTasks();
     // Actual disassembly
 
     casez ( inst )
-      `RV2ISA_INST_CSRR  : $sformat( disasm, "csrr  %s, %s      ",   rd_str, csr_str );
-      `RV2ISA_INST_CSRW  : $sformat( disasm, "csrw  %s, %s      ",   csr_str, rs1_str );
-      `RV2ISA_INST_NOP   : $sformat( disasm, "nop                       " );
-      `RV2ISA_ZERO       : $sformat( disasm, "                          " );
+      `RV2ISA_INST_CSRR  : $sformat( disasm, "csrr   %s, %s  ",        rd_str,  csr_str );
+      `RV2ISA_INST_CSRW  : $sformat( disasm, "csrw   %s, %s  ",        csr_str, rs1_str );
+      `RV2ISA_INST_NOP   : $sformat( disasm, "nop                    " );
+      `RV2ISA_ZERO       : $sformat( disasm, "                       " );
 
-      `RV2ISA_INST_ADD   : $sformat( disasm, "add   %s, %s, %s       ",    rd_str, rs1_str, rs2_str );
-      `RV2ISA_INST_SUB   : $sformat( disasm, "sub   %s, %s, %s       ",    rd_str, rs1_str, rs2_str );
-      `RV2ISA_INST_AND   : $sformat( disasm, "and   %s, %s, %s       ",    rd_str, rs1_str, rs2_str );
-      `RV2ISA_INST_OR    : $sformat( disasm, "or    %s, %s, %s       ",    rd_str, rs1_str, rs2_str );
-      `RV2ISA_INST_XOR   : $sformat( disasm, "xor   %s, %s, %s       ",    rd_str, rs1_str, rs2_str );
-      `RV2ISA_INST_SLT   : $sformat( disasm, "slt   %s, %s, %s       ",    rd_str, rs1_str, rs2_str );
-      `RV2ISA_INST_SLTU  : $sformat( disasm, "sltu  %s, %s, %s       ",    rd_str, rs1_str, rs2_str );
-      `RV2ISA_INST_MUL   : $sformat( disasm, "mul   %s, %s, %s       ",    rd_str, rs1_str, rs2_str );
+      `RV2ISA_INST_ADD   : $sformat( disasm, "add    %s, %s, %s   ",   rd_str,  rs1_str, rs2_str );
+      `RV2ISA_INST_SUB   : $sformat( disasm, "sub    %s, %s, %s   ",   rd_str,  rs1_str, rs2_str );
+      `RV2ISA_INST_AND   : $sformat( disasm, "and    %s, %s, %s   ",   rd_str,  rs1_str, rs2_str );
+      `RV2ISA_INST_OR    : $sformat( disasm, "or     %s, %s, %s   ",   rd_str,  rs1_str, rs2_str );
+      `RV2ISA_INST_XOR   : $sformat( disasm, "xor    %s, %s, %s   ",   rd_str,  rs1_str, rs2_str );
+      `RV2ISA_INST_SLT   : $sformat( disasm, "slt    %s, %s, %s   ",   rd_str,  rs1_str, rs2_str );
+      `RV2ISA_INST_SLTU  : $sformat( disasm, "sltu   %s, %s, %s   ",   rd_str,  rs1_str, rs2_str );
+      `RV2ISA_INST_MUL   : $sformat( disasm, "mul    %s, %s, %s   ",   rd_str,  rs1_str, rs2_str );
 
-      `RV2ISA_INST_ADDI  : $sformat( disasm, "addi  %s, %s, 0x%x",     rd_str, rs1_str, imm_i(inst) );
-      `RV2ISA_INST_ANDI  : $sformat( disasm, "andi  %s, %s, 0x%x",     rd_str, rs1_str, imm_i(inst) );
-      `RV2ISA_INST_ORI   : $sformat( disasm, "ori   %s, %s, 0x%x",     rd_str, rs1_str, imm_i(inst) );
-      `RV2ISA_INST_XORI  : $sformat( disasm, "xori  %s, %s, 0x%x",     rd_str, rs1_str, imm_i(inst) );
-      `RV2ISA_INST_SLTI  : $sformat( disasm, "slti  %s, %s, 0x%x",     rd_str, rs1_str, imm_i(inst) );
-      `RV2ISA_INST_SLTIU : $sformat( disasm, "sltiu %s, %s, 0x%x",     rd_str, rs1_str, imm_i(inst) );
+      `RV2ISA_INST_ADDI  : $sformat( disasm, "addi   %s, %s, 0x%x ",   rd_str,  rs1_str, imm_i(inst) );
+      `RV2ISA_INST_ANDI  : $sformat( disasm, "andi   %s, %s, 0x%x ",   rd_str,  rs1_str, imm_i(inst) );
+      `RV2ISA_INST_ORI   : $sformat( disasm, "ori    %s, %s, 0x%x ",   rd_str,  rs1_str, imm_i(inst) );
+      `RV2ISA_INST_XORI  : $sformat( disasm, "xori   %s, %s, 0x%x ",   rd_str,  rs1_str, imm_i(inst) );
+      `RV2ISA_INST_SLTI  : $sformat( disasm, "slti   %s, %s, 0x%x ",   rd_str,  rs1_str, imm_i(inst) );
+      `RV2ISA_INST_SLTIU : $sformat( disasm, "sltiu  %s, %s, 0x%x ",   rd_str,  rs1_str, imm_i(inst) );
 
-      `RV2ISA_INST_SRA   : $sformat( disasm, "sra   %s, %s, 0x%x",   rd_str, rs1_str, imm_i(inst) );
-      `RV2ISA_INST_SRL   : $sformat( disasm, "srl   %s, %s, 0x%x",   rd_str, rs1_str, imm_i(inst) );
-      `RV2ISA_INST_SLL   : $sformat( disasm, "sll   %s, %s, 0x%x",   rd_str, rs1_str, imm_i(inst) );
-      `RV2ISA_INST_SRAI  : $sformat( disasm, "srai  %s, %s, 0x%x",   rd_str, rs1_str, imm_i(inst) );
-      `RV2ISA_INST_SRLI  : $sformat( disasm, "srli  %s, %s, 0x%x",   rd_str, rs1_str, imm_i(inst) );
-      `RV2ISA_INST_SLLI  : $sformat( disasm, "slli  %s, %s, 0x%x",   rd_str, rs1_str, imm_i(inst) );
+      `RV2ISA_INST_SRA   : $sformat( disasm, "sra    %s, %s, 0x%x  ",  rd_str,  rs1_str, imm_shamt(inst) );
+      `RV2ISA_INST_SRL   : $sformat( disasm, "srl    %s, %s, 0x%x  ",  rd_str,  rs1_str, imm_shamt(inst) );
+      `RV2ISA_INST_SLL   : $sformat( disasm, "sll    %s, %s, 0x%x  ",  rd_str,  rs1_str, imm_shamt(inst) );
+      `RV2ISA_INST_SRAI  : $sformat( disasm, "srai   %s, %s, 0x%x  ",  rd_str,  rs1_str, imm_shamt(inst) );
+      `RV2ISA_INST_SRLI  : $sformat( disasm, "srli   %s, %s, 0x%x  ",  rd_str,  rs1_str, imm_shamt(inst) );
+      `RV2ISA_INST_SLLI  : $sformat( disasm, "slli   %s, %s, 0x%x  ",  rd_str,  rs1_str, imm_shamt(inst) );
 
-      `RV2ISA_INST_LUI   : $sformat( disasm, "lui   %s, 0x%x     ",    rd_str, imm_u(inst) >>> 12 );
-      `RV2ISA_INST_AUIPC : $sformat( disasm, "auipc %s, 0x%x     ",    rd_str, imm_u(inst) >>> 12 );
+      `RV2ISA_INST_LUI   : $sformat( disasm, "lui    %s, 0x%x    ",    rd_str,  imm_u_sh12(inst));
+      `RV2ISA_INST_AUIPC : $sformat( disasm, "auipc  %s, 0x%x    ",    rd_str,  imm_u_sh12(inst));
 
-      `RV2ISA_INST_LW    : $sformat( disasm, "lw    %s, 0x%x(%s)",    rd_str, imm_i(inst), rs1_str );
-      `RV2ISA_INST_SW    : $sformat( disasm, "ls    %s, 0x%x(%s)",    rs2_str, imm_i(inst), rs1_str );
+      `RV2ISA_INST_LW    : $sformat( disasm, "lw     %s, 0x%x(%s) ",   rd_str,  imm_i(inst), rs1_str );
+      `RV2ISA_INST_SW    : $sformat( disasm, "sw     %s, 0x%x(%s) ",   rs2_str, imm_s(inst), rs1_str );
 
-      `RV2ISA_INST_JAL   : $sformat( disasm, "jal   %s, 0x%x     ",   rd_str, imm_j(inst) );
-      `RV2ISA_INST_JALR  : $sformat( disasm, "jalr  %s, %s, 0x%x",   rd_str, rs1_str, imm_i(inst) );
+      `RV2ISA_INST_JAL   : $sformat( disasm, "jal    %s, 0x%x   ",     rd_str, imm_j(inst) );
+      `RV2ISA_INST_JALR  : $sformat( disasm, "jalr   %s, %s, 0x%x ",   rd_str, rs1_str, imm_i(inst) );
 
-      `RV2ISA_INST_BEQ   : $sformat( disasm, "beq   %s, %s, 0x%x",   rs1_str, rs2_str, imm_b(inst) );
-      `RV2ISA_INST_BNE   : $sformat( disasm, "bne   %s, %s, 0x%x",   rs1_str, rs2_str, imm_b(inst) );
-      `RV2ISA_INST_BLT   : $sformat( disasm, "blt   %s, %s, 0x%x",   rs1_str, rs2_str, imm_b(inst) );
-      `RV2ISA_INST_BGE   : $sformat( disasm, "bge   %s, %s, 0x%x",   rs1_str, rs2_str, imm_b(inst) );
-      `RV2ISA_INST_BLTU  : $sformat( disasm, "bltu  %s, %s, 0x%x",   rs1_str, rs2_str, imm_b(inst) );
-      `RV2ISA_INST_BGEU  : $sformat( disasm, "bgeu  %s, %s, 0x%x",   rs1_str, rs2_str, imm_b(inst) );
+      `RV2ISA_INST_BEQ   : $sformat( disasm, "beq    %s, %s, 0x%x",    rs1_str, rs2_str, imm_b(inst) );
+      `RV2ISA_INST_BNE   : $sformat( disasm, "bne    %s, %s, 0x%x",    rs1_str, rs2_str, imm_b(inst) );
+      `RV2ISA_INST_BLT   : $sformat( disasm, "blt    %s, %s, 0x%x",    rs1_str, rs2_str, imm_b(inst) );
+      `RV2ISA_INST_BGE   : $sformat( disasm, "bge    %s, %s, 0x%x",    rs1_str, rs2_str, imm_b(inst) );
+      `RV2ISA_INST_BLTU  : $sformat( disasm, "bltu   %s, %s, 0x%x",    rs1_str, rs2_str, imm_b(inst) );
+      `RV2ISA_INST_BGEU  : $sformat( disasm, "bgeu   %s, %s, 0x%x",    rs1_str, rs2_str, imm_b(inst) );
 
-      default            : $sformat( disasm, "illegal inst              " );
+      default            : $sformat( disasm, "illegal inst           " );
     endcase
 
   end
