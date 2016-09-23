@@ -38,12 +38,19 @@ def test_add( name, test, dump_vcd ):
 import inst_sub
 
 @pytest.mark.parametrize( "name,test", [
-  asm_test( inst_sub.gen_basic_test     ) ,
-
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
   # scenarios.
+  # added by Feng Qi 09/23
   # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  asm_test( inst_sub.gen_basic_test     ) , 
+  asm_test( inst_sub.gen_dest_dep_test  ) ,
+  asm_test( inst_sub.gen_src0_dep_test  ) ,
+  asm_test( inst_sub.gen_src1_dep_test  ) ,
+  asm_test( inst_sub.gen_srcs_dep_test  ) ,
+  asm_test( inst_sub.gen_srcs_dest_test ) ,
+  asm_test( inst_sub.gen_value_test     ) ,
+  asm_test( inst_sub.gen_random_test    ) ,  
 ])
 def test_sub( name, test, dump_vcd ):
   run_test( ProcFL, test, dump_vcd )

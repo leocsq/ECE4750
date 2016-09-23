@@ -49,3 +49,80 @@ def gen_basic_test():
 # ''' LAB TASK ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 # Define additional directed and random test cases.
 # '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#-------------------------------------------------------------------------
+# gen_basic_test
+#-------------------------------------------------------------------------
+def gen_dest_dep_test():
+  return [
+    gen_rr_dest_dep_test( 5, "sub",   1,  1,  0 ),
+    gen_rr_dest_dep_test( 4, "sub",   2, -1,  3 ),
+    gen_rr_dest_dep_test( 3, "sub",  -3,  1, -4 ),
+    gen_rr_dest_dep_test( 2, "sub",  -4, -1, -3 ),
+    gen_rr_dest_dep_test( 1, "sub",   5,  1,  4 ),
+    gen_rr_dest_dep_test( 0, "sub",   6,  1,  5 ),
+  ]
+
+#-------------------------------------------------------------------------
+# gen_src0_dep_test
+#-------------------------------------------------------------------------
+
+def gen_src0_dep_test():
+  return [
+    gen_rr_src0_dep_test( 5, "sub",   7,  1,   6 ),
+    gen_rr_src0_dep_test( 4, "sub",   8, -1,   9 ),
+    gen_rr_src0_dep_test( 3, "sub",  -9,  1,  -10),
+    gen_rr_src0_dep_test( 2, "sub", -10, -1,  -9 ),
+    gen_rr_src0_dep_test( 1, "sub",  11,  1,  10 ),
+    gen_rr_src0_dep_test( 0, "sub",  12,  1,  11 ),
+  ]
+  
+#-------------------------------------------------------------------------
+# gen_src1_dep_test
+#-------------------------------------------------------------------------
+
+def gen_src1_dep_test():
+  return [
+    gen_rr_src1_dep_test( 5, "sub",  13,  1,  12 ),
+    gen_rr_src1_dep_test( 4, "sub",  14, -1,  15 ),
+    gen_rr_src1_dep_test( 3, "sub", -15,  1, -16 ),
+    gen_rr_src1_dep_test( 2, "sub", -16, -1, -15 ),
+    gen_rr_src1_dep_test( 1, "sub",  17,  1,  16 ),
+    gen_rr_src1_dep_test( 0, "sub",  18,  1,  17 ),
+  ]
+
+#-------------------------------------------------------------------------
+# gen_srcs_dep_test
+#-------------------------------------------------------------------------
+
+def gen_srcs_dep_test():
+  return [
+    gen_rr_srcs_dep_test( 5, "sub",  19,  1,  18 ),
+    gen_rr_srcs_dep_test( 4, "sub",  20, -1,  21 ),
+    gen_rr_srcs_dep_test( 3, "sub", -21,  1, -22 ),
+    gen_rr_srcs_dep_test( 2, "sub", -22, -1, -21 ),
+    gen_rr_srcs_dep_test( 1, "sub",  23,  1,  22 ),
+    gen_rr_srcs_dep_test( 0, "sub",  24,  1,  23 ),
+  ]
+
+#-------------------------------------------------------------------------
+# gen_srcs_dest_test
+#-------------------------------------------------------------------------
+
+def gen_srcs_dest_test():
+  return [
+    gen_rr_src0_eq_dest_test( "sub", 25, 1, 24 ),
+    gen_rr_src1_eq_dest_test( "sub", 26, 1, 25 ),
+    gen_rr_src0_eq_src1_test( "sub", 27, 0 ),
+    gen_rr_srcs_eq_dest_test( "sub", 28, 0 ),
+  ]
+
+#-------------------------------------------------------------------------
+# gen_value_test
+#-------------------------------------------------------------------------
+
+def gen_value_test():
+  return [
+
+    gen_rr_value_test( "sub", 0x00000000, 0x00000000, 0x00000000 ),
+    gen_rr_value_test( "sub", 0x00000001, 0x00000002, 0xffffffff ),
+  ]  
