@@ -52,6 +52,7 @@ import inst_sub
   asm_test( inst_sub.gen_value_test     ) ,
   asm_test( inst_sub.gen_random_test    ) ,  
 ])
+
 def test_sub( name, test, dump_vcd ):
   run_test( ProcFL, test, dump_vcd )
 
