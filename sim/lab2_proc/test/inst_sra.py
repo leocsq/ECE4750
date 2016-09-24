@@ -148,17 +148,8 @@ def gen_value_test():
 def gen_random_test():
   asm_code = []
   for i in xrange(100):
-    #src0 = Bits( 32, random.randint(0,0x7fffffff) )
-    #src1 = Bits( 32, random.randint(0,0x7fffffff) )
-    #dest = src0>>src1
-    #src0 = random.randint(0,2147483647)
-    
     src0 = random.randint(0,4294967295)
-    src1 = random.randint(0,4294967295)
-    #src1 = random.randint(0,2147483647)    
+    src1 = random.randint(0,4294967295)   
     dest = src0 >> src1
-    #asm_code.append( gen_rr_value_test( "sra", src0.uint(), src1.uint(), dest.uint() ) )
-
-    #asm_code.append( gen_rr_value_test( "sra", src0, src1, dest ) )
   return asm_code
 
