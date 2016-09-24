@@ -150,7 +150,7 @@ import inst_slt
   asm_test( inst_slt.gen_srcs_dep_test  ) ,
   asm_test( inst_slt.gen_srcs_dest_test ) ,
   asm_test( inst_slt.gen_value_test     ) ,
-  #asm_test( inst_slt.gen_random_test    ) ,
+  asm_test( inst_slt.gen_random_test    ) ,
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
   # scenarios.

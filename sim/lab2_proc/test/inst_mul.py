@@ -71,7 +71,7 @@ def gen_src0_dep_test():
   return [
     gen_rr_src0_dep_test( 5, "mul",   8,  1,   8 ),
     gen_rr_src0_dep_test( 4, "mul",  -7, -1,   7 ),
-    gen_rr_src0_dep_test( 3, "mul",  -8,  1,  -8),
+    gen_rr_src0_dep_test( 3, "mul",  -8,  1,  -8 ),
     gen_rr_src0_dep_test( 2, "mul",  11, -1, -11 ),
     gen_rr_src0_dep_test( 1, "mul",  12,  1,  12 ),
     gen_rr_src0_dep_test( 0, "mul",  13,  1,  13 ),

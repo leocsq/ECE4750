@@ -55,12 +55,12 @@ def gen_basic_test():
 
 def gen_dest_dep_test():
   return [
-    gen_rr_dest_dep_test( 5, "slt",   1,  1,  2 ),
-    gen_rr_dest_dep_test( 4, "slt",   1, -1,  1 ),
-    gen_rr_dest_dep_test( 3, "slt",   0,  1, -2 ),
-    gen_rr_dest_dep_test( 2, "slt",   0, -1, -5 ),
-    gen_rr_dest_dep_test( 1, "slt",   0,  7,  1 ),
-    gen_rr_dest_dep_test( 0, "slt",   1,  0, -1 ),
+    gen_rr_dest_dep_test( 5, "slt",   1,  1,  0 ),
+    gen_rr_dest_dep_test( 4, "slt",   2, -1,  0 ),
+    gen_rr_dest_dep_test( 3, "slt",  -3,  1,  1 ),
+    gen_rr_dest_dep_test( 2, "slt",  -4, -1,  1 ),
+    gen_rr_dest_dep_test( 1, "slt",   5,  1,  0 ),
+    gen_rr_dest_dep_test( 0, "slt",   6,  1,  0 ),
   ]
 
 #-------------------------------------------------------------------------
@@ -69,12 +69,12 @@ def gen_dest_dep_test():
 
 def gen_src0_dep_test():
   return [
-    gen_rr_src0_dep_test( 5, "slt",   1,  1,   8 ),
-    gen_rr_src0_dep_test( 4, "slt",   1, -1,   7 ),
-    gen_rr_src0_dep_test( 3, "slt",   0,  1,  -8 ),
-    gen_rr_src0_dep_test( 2, "slt",   0, -1, -11 ),
-    gen_rr_src0_dep_test( 1, "slt",   1,  1,  12 ),
-    gen_rr_src0_dep_test( 0, "slt",   0,  0, -13 ),
+    gen_rr_src0_dep_test( 5, "slt",   7,  1,   0 ),
+    gen_rr_src0_dep_test( 4, "slt",   8, -1,   0 ),
+    gen_rr_src0_dep_test( 3, "slt",  -9,  1,   1 ),
+    gen_rr_src0_dep_test( 2, "slt", -10, -1,   1 ),
+    gen_rr_src0_dep_test( 1, "slt",  11,  1,   0 ),
+    gen_rr_src0_dep_test( 0, "slt",  12,  1,   0 ),
   ]
 
 #-------------------------------------------------------------------------
@@ -83,12 +83,12 @@ def gen_src0_dep_test():
 
 def gen_src1_dep_test():
   return [
-    gen_rr_src1_dep_test( 5, "slt",   1,  1,  14 ),
-    gen_rr_src1_dep_test( 4, "slt",   1, -1,  13 ),
-    gen_rr_src1_dep_test( 3, "slt",   0,  1, -14 ),
-    gen_rr_src1_dep_test( 2, "slt",   0, -1, -17 ),
-    gen_rr_src1_dep_test( 1, "slt",   1,  1,  18 ),
-    gen_rr_src1_dep_test( 0, "slt",   1,  1,  19 ),
+    gen_rr_src1_dep_test( 5, "slt",  13,  1,   0 ),
+    gen_rr_src1_dep_test( 4, "slt",  14, -1,   0 ),
+    gen_rr_src1_dep_test( 3, "slt", -15,  1,   1 ),
+    gen_rr_src1_dep_test( 2, "slt", -16, -1,   1 ),
+    gen_rr_src1_dep_test( 1, "slt",  17,  1,   0 ),
+    gen_rr_src1_dep_test( 0, "slt",  18,  1,   0 ),
   ]
 
 #-------------------------------------------------------------------------
@@ -97,12 +97,12 @@ def gen_src1_dep_test():
 
 def gen_srcs_dep_test():
   return [
-    gen_rr_srcs_dep_test( 5, "slt",   1,  1,  20 ),
-    gen_rr_srcs_dep_test( 4, "slt",   1, -1,  19 ),
-    gen_rr_srcs_dep_test( 3, "slt",   0,  1, -20 ),
-    gen_rr_srcs_dep_test( 2, "slt",   0, -1, -23 ),
-    gen_rr_srcs_dep_test( 1, "slt",   1,  1,  24 ),
-    gen_rr_srcs_dep_test( 0, "slt",   1,  1,  25 ),
+    gen_rr_srcs_dep_test( 5, "slt",  19,  1,   0 ),
+    gen_rr_srcs_dep_test( 4, "slt",  20, -1,   0 ),
+    gen_rr_srcs_dep_test( 3, "slt", -21,  1,   1 ),
+    gen_rr_srcs_dep_test( 2, "slt", -22, -1,   1 ),
+    gen_rr_srcs_dep_test( 1, "slt",  23,  1,   0 ),
+    gen_rr_srcs_dep_test( 0, "slt",  24,  1,   0 ),
   ]
 
 #-------------------------------------------------------------------------
@@ -149,7 +149,7 @@ def gen_value_test():
 # gen_random_test
 #-------------------------------------------------------------------------
 
-'''def gen_random_test():
+def gen_random_test():
   asm_code = []
   for i in xrange(100):
     src0 = Bits( 32, random.randint(0,0xffffffff) )
@@ -159,5 +159,5 @@ def gen_value_test():
     else:
       dest = 0x00000000	
     asm_code.append( gen_rr_value_test( "slt", src0.uint(), src1.uint(), dest.uint() ) )
-  return asm_code'''
+  return asm_code
 
