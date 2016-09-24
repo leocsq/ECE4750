@@ -154,6 +154,7 @@ def gen_random_test():
   for i in xrange(100):
     src0 = Bits( 32, random.randint(0,0xffffffff) )
     src1 = Bits( 32, random.randint(0,0xffffffff) )
-    dest = (src0 * src1)&0xffffffff
+    #dest = (src0 * src1)&0xffffffff
+    dest = Bits(32, src0*src1,trunc=True)
     asm_code.append( gen_rr_value_test( "mul", src0.uint(), src1.uint(), dest.uint() ) )
   return asm_code
