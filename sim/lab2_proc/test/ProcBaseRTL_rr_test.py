@@ -142,7 +142,13 @@ import inst_slt
 
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_slt.gen_basic_test     ) ,
-
+  asm_test( inst_slt.gen_dest_dep_test  ) ,
+  asm_test( inst_slt.gen_src0_dep_test  ) ,
+  asm_test( inst_slt.gen_src1_dep_test  ) ,
+  asm_test( inst_slt.gen_srcs_dep_test  ) ,
+  asm_test( inst_slt.gen_srcs_dest_test ) ,
+  asm_test( inst_slt.gen_value_test     ) ,
+  asm_test( inst_slt.gen_random_test    ) ,
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
   # scenarios.
