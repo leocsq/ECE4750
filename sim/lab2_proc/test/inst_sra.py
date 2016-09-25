@@ -1,5 +1,9 @@
 #=========================================================================
 # sra
+# - Summary   : Shift right arithmetic by register value (sign-extend)
+# - Assembly  : sra rd, rs1, rs2
+# - Semantics : R[rd] = R[rs1] >>> R[rs2][4:0]
+# - Format    : R-type
 #=========================================================================
 
 import random

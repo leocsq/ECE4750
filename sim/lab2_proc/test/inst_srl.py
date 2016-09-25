@@ -1,5 +1,9 @@
 #=========================================================================
 # srl
+# - Summary   : Shift right logical by register value (append zeroes)
+# - Assembly  : srl rd, rs1, rs2
+# - Semantics : R[rd] = R[rs1] >> R[rs2][4:0]
+# - Format    : R-type
 #=========================================================================
 
 import random
@@ -52,7 +56,7 @@ def gen_basic_test():
 def gen_dest_dep_test():
   return [
     gen_rr_dest_dep_test( 5, "srl",   1,  1,  0 ),
-    gen_rr_dest_dep_test( 4, "srl",   2,  1,  1 ),
+    gen_rr_dest_dep_test( 4, "srl",   2, -1,  0 ),
     gen_rr_dest_dep_test( 3, "srl",   3,  1,  1 ),
     gen_rr_dest_dep_test( 2, "srl",   4,  2,  1 ),
     gen_rr_dest_dep_test( 1, "srl",   5,  2,  1 ),
@@ -64,7 +68,7 @@ def gen_dest_dep_test():
 
 def gen_src0_dep_test():
   return [
-    gen_rr_src0_dep_test( 5, "srl",   7,  1,   3 ),
+    gen_rr_src0_dep_test( 5, "srl",   7, -1,   0 ),
     gen_rr_src0_dep_test( 4, "srl",   8,  2,   2 ),
     gen_rr_src0_dep_test( 3, "srl",   9,  3,   1 ),
     gen_rr_src0_dep_test( 2, "srl", -10, 20,   4095 ),
@@ -120,18 +124,18 @@ def gen_value_test():
     gen_rr_value_test( "srl", 0x00000001, 0x00000001, 0x00000000 ),
     gen_rr_value_test( "srl", 0x00000007, 0x00000003, 0x00000000 ),
     
-    gen_rr_value_test( "srl", 0x00010000, 0x00000004, 0x00001000 ),
-    gen_rr_value_test( "srl", 0x80000000, 0x00000005, 0x04000000 ),
-    gen_rr_value_test( "srl", 0x89000000, 0x00000007, 0x01120000 ),
+    gen_rr_value_test( "srl", 0x00010000, 0x000f0004, 0x00001000 ),
+    gen_rr_value_test( "srl", 0x80000000, 0xf0000005, 0x04000000 ),
+    gen_rr_value_test( "srl", 0x89000000, 0xf0000007, 0x01120000 ),
 
     gen_rr_value_test( "srl", 0x00000000, 0x00007fff, 0x00000000 ),
     gen_rr_value_test( "srl", 0x00007fff, 0x0000000b, 0x0000000f ),
     gen_rr_value_test( "srl", 0x7fffffff, 0x0000000a, 0x001fffff ),
 
     gen_rr_value_test( "srl", 0x80000000, 0x00007fff, 0x00000001 ),
-    gen_rr_value_test( "srl", 0x7fffffff, 0x0000000d, 0x0003ffff ), 
+    gen_rr_value_test( "srl", 0x7fffffff, 0xf000000d, 0x0003ffff ), 
        
-   # gen_rr_value_test( "srl", 0x00000000, 0xffffffff, 0x00000000 ),
+    gen_rr_value_test( "srl", 0x00000000, 0xffffffff, 0x00000000 ),
     gen_rr_value_test( "srl", 0xfffffffb, 0x00000001, 0x7ffffffd ),
     gen_rr_value_test( "srl", 0xffffffff, 0x0000000f, 0x0001ffff ),    
   ]
@@ -144,9 +148,9 @@ def gen_random_test():
   for i in xrange(100):
     src0 = Bits( 32, random.randint(0,0xffffffff) )
     src1 = Bits( 32, random.randint(0,0xffffffff) )
-    if src1[31] > 0:
-      dest = Bits(32, 0)
-    else:
-      #how  to define??
+    #src0 = Bits( 32, random.randint(0,0x7fffffff) )
+    #src1 = Bits( 32, random.randint(0x7fffffff ,0xffffffff) )
+    temp = src1[0:5]
+    dest = src0>>temp
     asm_code.append( gen_rr_value_test( "srl", src0.uint(), src1.uint(), dest.uint()) )
   return asm_code
