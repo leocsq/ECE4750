@@ -45,10 +45,6 @@ def gen_basic_test():
     nop
     nop
   """
-
-# ''' LAB TASK ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# Define additional directed and random test cases.
-# '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # gen_dest_dep_test
 #-------------------------------------------------------------------------
@@ -125,19 +121,19 @@ def gen_value_test():
     gen_rr_value_test( "srl", 0x00000007, 0x00000003, 0x00000000 ),
     
     gen_rr_value_test( "srl", 0x00010000, 0x00000004, 0x00001000 ),
-    gen_rr_value_test( "srl", 0x80000000, 0x00000005, 0x0c000000 ),
-    gen_rr_value_test( "srl", 0x89000000, 0x00000008, 0x00890000 ),
+    gen_rr_value_test( "srl", 0x80000000, 0x00000005, 0x04000000 ),
+    gen_rr_value_test( "srl", 0x89000000, 0x00000007, 0x01120000 ),
 
-    gen_rr_value_test( "srl", 0x00000000, 0x00007fff, 0x00000001 ),
-    gen_rr_value_test( "srl", 0x7fffffff, 0x00000000, 0x00000000 ),
-    gen_rr_value_test( "srl", 0x7fffffff, 0x00007fff, 0x00000000 ),
+    gen_rr_value_test( "srl", 0x00000000, 0x00007fff, 0x00000000 ),
+    gen_rr_value_test( "srl", 0x00007fff, 0x0000000b, 0x0000000f ),
+    gen_rr_value_test( "srl", 0x7fffffff, 0x0000000a, 0x001fffff ),
 
-    gen_rr_value_test( "srl", 0x80000000, 0x00007fff, 0x0000ffff ),
-    gen_rr_value_test( "srl", 0x7fffffff, 0xffff8000, 0x00000001 ), 
+    gen_rr_value_test( "srl", 0x80000000, 0x00007fff, 0x00000001 ),
+    gen_rr_value_test( "srl", 0x7fffffff, 0x0000000d, 0x0003ffff ), 
        
-    gen_rr_value_test( "srl", 0x00000000, 0xffffffff, 0x00000000 ),
+   # gen_rr_value_test( "srl", 0x00000000, 0xffffffff, 0x00000000 ),
     gen_rr_value_test( "srl", 0xfffffffb, 0x00000001, 0x7ffffffd ),
-    gen_rr_value_test( "srl", 0xffffffff, 0xffffffff, 0xffffffff ),    
+    gen_rr_value_test( "srl", 0xffffffff, 0x0000000f, 0x0001ffff ),    
   ]
 #-------------------------------------------------------------------------
 # gen_random_test
