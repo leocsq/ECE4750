@@ -1,5 +1,10 @@
 #=========================================================================
 # sll
+
+# - Summary   : Shift left logical by register value (append zeroes)
+# - Assembly  : sll rd, rs1, rs2
+# - Semantics : R[rd] = R[rs1] << R[rs2][4:0]
+# - Format    : R-type
 #=========================================================================
 
 import random
@@ -128,16 +133,16 @@ def gen_value_test():
     gen_rr_value_test( "sll", 0x80000000, 0x00000005, 0x00000000 ),
     gen_rr_value_test( "sll", 0x89000000, 0x00000005, 0x20000000 ),
 
-    gen_rr_value_test( "sll", 0x00000000, 0x00007fff, 0x00000000 ),
+    gen_rr_value_test( "sll", 0x00000000, 0x0000000f, 0x00000000 ),
     gen_rr_value_test( "sll", 0x00007fff, 0x00000010, 0x7fff0000 ),
     gen_rr_value_test( "sll", 0x00007fff, 0x0000000c, 0x07fff000 ),
 
-    gen_rr_value_test( "sll", 0x00080000, 0x0000000c, 0x80000000 ),
+    gen_rr_value_test( "sll", 0x00080000, 0x0000002c, 0x80000000 ),
     gen_rr_value_test( "sll", 0x00800000, 0x00000007, 0x40000000 ), 
        
     gen_rr_value_test( "sll", 0xfffffff7, 0x00000001, 0xffffffee ),
     gen_rr_value_test( "sll", 0xfffffffb, 0x00000001, 0xfffffff6 ),
-    gen_rr_value_test( "sll", 0xffffffff, 0x0000000f, 0xffff8000 ),    
+    gen_rr_value_test( "sll", 0xffffffff, 0x0000003f, 0x80000000 ),    
   ]
 #-------------------------------------------------------------------------
 # gen_random_test
@@ -146,8 +151,8 @@ def gen_value_test():
 def gen_random_test():
   asm_code = []
   for i in xrange(100):
-    src0 = random.randint(0,4294967295)
-    src1 = random.randint(0,4294967295)   
-    dest = src0 << src1
-    #asm_code.append( gen_rr_value_test( "sll", src0, src1, dest) )
+    src0 = Bits( 32, random.randint(0,0xffffffff) )
+    src1 = Bits( 32, random.randint(0,0xffffffff) )
+    dest = src0 << src1[0:5]
+    asm_code.append( gen_rr_value_test( "sll", src0.uint(), src1.uint(), dest.uint()) )
   return asm_code

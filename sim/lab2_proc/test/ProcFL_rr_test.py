@@ -217,7 +217,7 @@ import inst_sll
   asm_test( inst_sll.gen_srcs_dep_test  ) ,
   asm_test( inst_sll.gen_srcs_dest_test ) ,
   asm_test( inst_sll.gen_value_test     ) ,
-  #asm_test( inst_sll.gen_random_test    ) ,
+  asm_test( inst_sll.gen_random_test    ) ,
 
 ])
 def test_sll( name, test, dump_vcd ):
