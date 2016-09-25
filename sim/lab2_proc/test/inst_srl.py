@@ -53,10 +53,10 @@ def gen_dest_dep_test():
   return [
     gen_rr_dest_dep_test( 5, "srl",   1,  1,  0 ),
     gen_rr_dest_dep_test( 4, "srl",   2,  1,  1 ),
-    gen_rr_dest_dep_test( 3, "srl",  -3,  1, -2 ),
-    gen_rr_dest_dep_test( 2, "srl",  -4,  2, -1 ),
+    gen_rr_dest_dep_test( 3, "srl",   3,  1,  1 ),
+    gen_rr_dest_dep_test( 2, "srl",   4,  2,  1 ),
     gen_rr_dest_dep_test( 1, "srl",   5,  2,  1 ),
-    gen_rr_dest_dep_test( 0, "srl",  -6,  2, -2 ),
+    gen_rr_dest_dep_test( 0, "srl",   6,  2,  1 ),
   ]
 #-------------------------------------------------------------------------
 # gen_src0_dep_test
@@ -77,9 +77,9 @@ def gen_src0_dep_test():
 
 def gen_src1_dep_test():
   return [
-    gen_rr_src1_dep_test( 5, "srl",  13,  1,   6 ),
-    gen_rr_src1_dep_test( 4, "srl",  14,  2,   3 ),
-    gen_rr_src1_dep_test( 3, "srl",  15,  3,   1),
+    gen_rr_src1_dep_test( 5, "srl",  13,  1,    6 ),
+    gen_rr_src1_dep_test( 4, "srl",  14,  2,    3 ),
+    gen_rr_src1_dep_test( 3, "srl",  15,  3,    1 ),
     gen_rr_src1_dep_test( 2, "srl", -16,  1,   2147483640 ),
     gen_rr_src1_dep_test( 1, "srl", -17, 20,   4095 ),
     gen_rr_src1_dep_test( 0, "srl", -18, 26,   63 ),
@@ -142,8 +142,11 @@ def gen_value_test():
 def gen_random_test():
   asm_code = []
   for i in xrange(100):
-    src0 = random.randint(0,4294967295)
-    src1 = random.randint(0,4294967295)   
-    dest = src0 >> src1
-    asm_code.append( gen_rr_value_test( "srl", src0, src1, dest) )
+    src0 = Bits( 32, random.randint(0,0xffffffff) )
+    src1 = Bits( 32, random.randint(0,0xffffffff) )
+    if src1[31] > 0:
+      dest = Bits(32, 0)
+    else:
+      #how  to define??
+    asm_code.append( gen_rr_value_test( "srl", src0.uint(), src1.uint(), dest.uint()) )
   return asm_code
