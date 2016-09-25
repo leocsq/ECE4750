@@ -212,7 +212,7 @@ import inst_sll
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_sll.gen_basic_test     ) ,
   asm_test( inst_sll.gen_basic_test     ) ,
-  #asm_test( inst_sll.gen_src0_dep_test  ) ,  
+  asm_test( inst_sll.gen_src0_dep_test  ) ,  
   #asm_test( inst_sll.gen_src1_dep_test  ) ,
   #asm_test( inst_sll.gen_srcs_dep_test  ) ,
   #asm_test( inst_sll.gen_srcs_dest_test ) ,

@@ -65,20 +65,20 @@ def gen_dest_dep_test():
 #-------------------------------------------------------------------------
 # gen_src0_dep_test
 #-------------------------------------------------------------------------
-'''
+
 def gen_src0_dep_test():
   return [
-    gen_rr_src0_dep_test( 5, "srl",   7,  1,   3 ),
-    gen_rr_src0_dep_test( 4, "srl",   8,  2,   2 ),
-    gen_rr_src0_dep_test( 3, "srl",   9,  3,   1 ),
-    gen_rr_src0_dep_test( 2, "srl", -10, 20,   4095 ),
-    gen_rr_src0_dep_test( 1, "srl", -11, 24,   255 ),
-    gen_rr_src0_dep_test( 0, "srl", -12, 26,   63 ),
+    gen_rr_src0_dep_test( 5, "sll",   7,  1,  15 ),
+    gen_rr_src0_dep_test( 4, "sll",   8,  2,  32 ),
+    gen_rr_src0_dep_test( 3, "sll",   9,  3,  72 ),
+    #gen_rr_src0_dep_test( 2, "sll", -10, 20,   4095 ),
+    #gen_rr_src0_dep_test( 1, "sll", -11, 24,   255 ),
+    #gen_rr_src0_dep_test( 0, "sll", -12, 26,   63 ),
   ]
 #-------------------------------------------------------------------------
 # gen_src1_dep_test
 #-------------------------------------------------------------------------
-
+'''
 def gen_src1_dep_test():
   return [
     gen_rr_src1_dep_test( 5, "srl",  13,  1,   6 ),
