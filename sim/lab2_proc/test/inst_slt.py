@@ -128,36 +128,36 @@ def gen_value_test():
     gen_rr_value_test( "slt", 0x00000001, 0x00000001, 0x00000000 ),
     gen_rr_value_test( "slt", 0x00000003, 0x00000007, 0x00000001 ),
 
-    gen_rr_value_test( "slt", 0x00000000, 0xffff8000, 0x00000001 ),
-    gen_rr_value_test( "slt", 0x80000000, 0x00000000, 0x00000000 ),
+    gen_rr_value_test( "slt", 0x00000000, 0xffff8000, 0x00000000 ),
+    gen_rr_value_test( "slt", 0x80000000, 0x00000000, 0x00000001 ),
     gen_rr_value_test( "slt", 0x80000000, 0xffff8000, 0x00000001 ),
 
     gen_rr_value_test( "slt", 0x00000000, 0x00007fff, 0x00000001 ),
     gen_rr_value_test( "slt", 0x7fffffff, 0x00000000, 0x00000000 ),
     gen_rr_value_test( "slt", 0x7fffffff, 0x00007fff, 0x00000000 ),
 
-    gen_rr_value_test( "slt", 0x80000000, 0x00007fff, 0x00000000 ),
-    gen_rr_value_test( "slt", 0x7fffffff, 0xffff8000, 0x00000001 ),
+    gen_rr_value_test( "slt", 0x80000000, 0x00007fff, 0x00000001 ),
+    gen_rr_value_test( "slt", 0x7fffffff, 0xffff8000, 0x00000000 ),
 
-    gen_rr_value_test( "slt", 0x00000000, 0xffffffff, 0x00000001 ),
-    gen_rr_value_test( "slt", 0xffffffff, 0x00000001, 0x00000000 ),
+    gen_rr_value_test( "slt", 0x00000000, 0xffffffff, 0x00000000 ),
+    gen_rr_value_test( "slt", 0xffffffff, 0x00000001, 0x00000001 ),
     gen_rr_value_test( "slt", 0xffffffff, 0xffffffff, 0x00000000 ),
 
   ]
 
 #-------------------------------------------------------------------------
-# gen_random_test
+# gen_random_test//comblem
 #-------------------------------------------------------------------------
 
 def gen_random_test():
   asm_code = []
   for i in xrange(100):
-    src0 = Bits( 32, random.randint(0,0xffffffff) )
-    src1 = Bits( 32, random.randint(0,0xffffffff) )
+    src0 = random.randint(0,4294967295)
+    src1 = random.randint(0,4294967295)  
     if src0<src1:
-      dest = 0x00000001
+      dest = 1
     else:
-      dest = 0x00000000	
-    asm_code.append( gen_rr_value_test( "slt", src0.uint(), src1.uint(), dest.uint() ) )
+      dest = 0 
+    asm_code.append( gen_rr_value_test( "slt", src0, src1, dest) )
   return asm_code
 

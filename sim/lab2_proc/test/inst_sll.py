@@ -68,25 +68,25 @@ def gen_dest_dep_test():
 
 def gen_src0_dep_test():
   return [
-    gen_rr_src0_dep_test( 5, "sll",   7,  1,  15 ),
+    gen_rr_src0_dep_test( 5, "sll",   7,  1,  14 ),
     gen_rr_src0_dep_test( 4, "sll",   8,  2,  32 ),
     gen_rr_src0_dep_test( 3, "sll",   9,  3,  72 ),
-    #gen_rr_src0_dep_test( 2, "sll", -10, 20,   4095 ),
-    #gen_rr_src0_dep_test( 1, "sll", -11, 24,   255 ),
-    #gen_rr_src0_dep_test( 0, "sll", -12, 26,   63 ),
+    gen_rr_src0_dep_test( 2, "sll", -10,  1, -20 ),
+    gen_rr_src0_dep_test( 1, "sll", -11,  2, -44 ),
+    gen_rr_src0_dep_test( 0, "sll", -12,  3, -96 ),
   ]
 #-------------------------------------------------------------------------
 # gen_src1_dep_test
 #-------------------------------------------------------------------------
-'''
+
 def gen_src1_dep_test():
-  return [
-    gen_rr_src1_dep_test( 5, "srl",  13,  1,   6 ),
-    gen_rr_src1_dep_test( 4, "srl",  14,  2,   3 ),
-    gen_rr_src1_dep_test( 3, "srl",  15,  3,   1),
-    gen_rr_src1_dep_test( 2, "srl", -16,  1,   2147483640 ),
-    gen_rr_src1_dep_test( 1, "srl", -17, 20,   4095 ),
-    gen_rr_src1_dep_test( 0, "srl", -18, 26,   63 ),
+  return [ 
+    gen_rr_src1_dep_test( 5, "sll",  13,  1,   26 ),
+    gen_rr_src1_dep_test( 4, "sll",  14,  2,   56 ),
+    gen_rr_src1_dep_test( 3, "sll",  15,  3,  120 ),
+    gen_rr_src1_dep_test( 2, "sll", -16,  1,  -32 ),
+    gen_rr_src1_dep_test( 1, "sll", -17,  2,  -68 ),
+    gen_rr_src1_dep_test( 0, "sll", -18,  3, -144 ),
   ]
 #-------------------------------------------------------------------------
 # gen_srcs_dep_test
@@ -94,12 +94,12 @@ def gen_src1_dep_test():
 
 def gen_srcs_dep_test():
   return [
-    gen_rr_srcs_dep_test( 5, "srl",  19,  1,   9 ),
-    gen_rr_srcs_dep_test( 4, "srl",  20,  2,   5 ),
-    gen_rr_srcs_dep_test( 3, "srl",  21,  3,   2 ),
-    gen_rr_srcs_dep_test( 2, "srl", -22,  1,   2147483637 ),
-    gen_rr_srcs_dep_test( 1, "srl", -23,  3,   536870909 ),
-    gen_rr_srcs_dep_test( 0, "srl", -24,  5,   134217727 ),
+    gen_rr_srcs_dep_test( 5, "sll",  19,  1,   38 ),
+    gen_rr_srcs_dep_test( 4, "sll",  20,  2,   80 ),
+    gen_rr_srcs_dep_test( 3, "sll",  21,  3,  168 ),
+    gen_rr_srcs_dep_test( 2, "sll", -22,  1,  -44 ),
+    gen_rr_srcs_dep_test( 1, "sll", -23,  3, -184 ),
+    gen_rr_srcs_dep_test( 0, "sll", -24,  5, -768 ),
   ]
 
 #-------------------------------------------------------------------------
@@ -108,36 +108,36 @@ def gen_srcs_dep_test():
 
 def gen_srcs_dest_test():
   return [
-    gen_rr_src0_eq_dest_test( "srl",  25, 1, 12 ),
-    gen_rr_src1_eq_dest_test( "srl", -26, 3, 536870908),
-    gen_rr_src0_eq_src1_test( "srl", 27, 0 ),
-    gen_rr_srcs_eq_dest_test( "srl", 28, 0 ),
+    gen_rr_src0_eq_dest_test( "sll",  25, 1,   50 ),
+    gen_rr_src1_eq_dest_test( "sll", -26, 3, -208 ),
+    gen_rr_src0_eq_src1_test( "sll", 27, 0xd8000000 ),
+    gen_rr_srcs_eq_dest_test( "sll", 28, 0xc0000000 ),
   ]
 #-------------------------------------------------------------------------
-# gen_value_test // imcomplete
+# gen_value_test 
 #-------------------------------------------------------------------------
 
 def gen_value_test():
   return [
 
-    gen_rr_value_test( "srl", 0x00000000, 0x00000000, 0x00000000 ),
-    gen_rr_value_test( "srl", 0x00000001, 0x00000001, 0x00000000 ),
-    gen_rr_value_test( "srl", 0x00000007, 0x00000003, 0x00000000 ),
+    gen_rr_value_test( "sll", 0x00000000, 0x00000000, 0x00000000 ),
+    gen_rr_value_test( "sll", 0x00000001, 0x00000001, 0x00000002 ),
+    gen_rr_value_test( "sll", 0x00000007, 0x00000003, 0x00000038 ),
     
-    gen_rr_value_test( "srl", 0x00010000, 0x00000004, 0x00001000 ),
-    gen_rr_value_test( "srl", 0x80000000, 0x00000005, 0x0c000000 ),
-    gen_rr_value_test( "srl", 0x89000000, 0x00000008, 0x00890000 ),
+    gen_rr_value_test( "sll", 0x00010000, 0x00000004, 0x00100000 ),
+    gen_rr_value_test( "sll", 0x80000000, 0x00000005, 0x00000000 ),
+    gen_rr_value_test( "sll", 0x89000000, 0x00000005, 0x20000000 ),
 
-    gen_rr_value_test( "srl", 0x00000000, 0x00007fff, 0x00000001 ),
-    gen_rr_value_test( "srl", 0x7fffffff, 0x00000000, 0x00000000 ),
-    gen_rr_value_test( "srl", 0x7fffffff, 0x00007fff, 0x00000000 ),
+    gen_rr_value_test( "sll", 0x00000000, 0x00007fff, 0x00000000 ),
+    gen_rr_value_test( "sll", 0x00007fff, 0x00000010, 0x7fff0000 ),
+    gen_rr_value_test( "sll", 0x00007fff, 0x0000000c, 0x07fff000 ),
 
-    gen_rr_value_test( "srl", 0x80000000, 0x00007fff, 0x0000ffff ),
-    gen_rr_value_test( "srl", 0x7fffffff, 0xffff8000, 0x00000001 ), 
+    gen_rr_value_test( "sll", 0x00080000, 0x0000000c, 0x80000000 ),
+    gen_rr_value_test( "sll", 0x00800000, 0x00000007, 0x40000000 ), 
        
-    gen_rr_value_test( "srl", 0x00000000, 0xffffffff, 0x00000000 ),
-    gen_rr_value_test( "srl", 0xfffffffb, 0x00000001, 0x7ffffffd ),
-    gen_rr_value_test( "srl", 0xffffffff, 0xffffffff, 0xffffffff ),    
+    gen_rr_value_test( "sll", 0xfffffff7, 0x00000001, 0xffffffee ),
+    gen_rr_value_test( "sll", 0xfffffffb, 0x00000001, 0xfffffff6 ),
+    gen_rr_value_test( "sll", 0xffffffff, 0x0000000f, 0xffff8000 ),    
   ]
 #-------------------------------------------------------------------------
 # gen_random_test
@@ -148,6 +148,6 @@ def gen_random_test():
   for i in xrange(100):
     src0 = random.randint(0,4294967295)
     src1 = random.randint(0,4294967295)   
-    dest = src0 >> src1
+    dest = src0 << src1
+    #asm_code.append( gen_rr_value_test( "sll", src0, src1, dest) )
   return asm_code
-'''

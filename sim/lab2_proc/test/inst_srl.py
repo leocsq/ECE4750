@@ -145,4 +145,5 @@ def gen_random_test():
     src0 = random.randint(0,4294967295)
     src1 = random.randint(0,4294967295)   
     dest = src0 >> src1
+    asm_code.append( gen_rr_value_test( "srl", src0, src1, dest) )
   return asm_code

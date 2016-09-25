@@ -141,7 +141,7 @@ import inst_slt
   asm_test( inst_slt.gen_srcs_dep_test  ) ,
   asm_test( inst_slt.gen_srcs_dest_test ) ,
   asm_test( inst_slt.gen_value_test     ) ,
-  asm_test( inst_slt.gen_random_test    ) ,
+  #asm_test( inst_slt.gen_random_test    ) ,
 ])
 def test_slt( name, test, dump_vcd ):
   run_test( ProcFL, test, dump_vcd )
@@ -179,7 +179,7 @@ import inst_sra
   asm_test( inst_sra.gen_srcs_dep_test  ) ,
   asm_test( inst_sra.gen_srcs_dest_test ) ,
   asm_test( inst_sra.gen_value_test     ) ,
-  asm_test( inst_sra.gen_random_test    ) ,
+  #asm_test( inst_sra.gen_random_test    ) ,
 ])
 def test_sra( name, test, dump_vcd ):
   run_test( ProcFL, test, dump_vcd )
@@ -213,11 +213,11 @@ import inst_sll
   asm_test( inst_sll.gen_basic_test     ) ,
   asm_test( inst_sll.gen_basic_test     ) ,
   asm_test( inst_sll.gen_src0_dep_test  ) ,  
-  #asm_test( inst_sll.gen_src1_dep_test  ) ,
-  #asm_test( inst_sll.gen_srcs_dep_test  ) ,
-  #asm_test( inst_sll.gen_srcs_dest_test ) ,
-  #asm_test( inst_sll.gen_value_test     ) ,
-  #asm_test( inst_sll.gen_random_test    ) ,
+  asm_test( inst_sll.gen_src1_dep_test  ) ,
+  asm_test( inst_sll.gen_srcs_dep_test  ) ,
+  asm_test( inst_sll.gen_srcs_dest_test ) ,
+  asm_test( inst_sll.gen_value_test     ) ,
+  asm_test( inst_sll.gen_random_test    ) ,
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
   # scenarios.
