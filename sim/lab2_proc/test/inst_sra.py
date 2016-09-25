@@ -126,22 +126,18 @@ def gen_value_test():
   return [
 
     gen_rr_value_test( "sra", 0x00000000, 0x00000000, 0x00000000 ),
-    gen_rr_value_test( "sra", 0x00000001, 0x00000001, 0x00000000 ),
+    gen_rr_value_test( "sra", 0x00000001, 0x00004001, 0x00000000 ),
     gen_rr_value_test( "sra", 0x00000007, 0x00000003, 0x00000000 ),
     
     gen_rr_value_test( "sra", 0x00010000, 0x00000004, 0x00001000 ),
     gen_rr_value_test( "sra", 0x80000000, 0x00000005, 0xfc000000 ),
-    gen_rr_value_test( "sra", 0x89000000, 0x00000008, 0xff890000 ),
+    gen_rr_value_test( "sra", 0x89000000, 0x00000038, 0xffffff89 ),
 
-    #gen_rr_value_test( "sra", 0x00000000, 0x00007fff, 0x00000001 ),
-    #gen_rr_value_test( "sra", 0x7fffffff, 0x00000000, 0x00000000 ),
-    #gen_rr_value_test( "sra", 0x7fffffff, 0x00007fff, 0x00000000 ),
-
-    #gen_rr_value_test( "sra", 0x80000000, 0x00007fff, 0xffffffff ),
-    #gen_rr_value_test( "sra", 0x7fffffff, 0xffff8000, 0x00000001 ), 
+    gen_rr_value_test( "sra", 0x80000000, 0x00007fff, 0xffffffff ),
+    gen_rr_value_test( "sra", 0x7fffffff, 0xffff8000, 0x7fffffff ), 
        
     gen_rr_value_test( "sra", 0x00000000, 0xffffffff, 0x00000000 ),
-    gen_rr_value_test( "sra", 0xfffffffb, 0x00000001, 0xfffffffd ),
+    gen_rr_value_test( "sra", 0xfffffffb, 0x00000021, 0xfffffffd ),
     gen_rr_value_test( "sra", 0xffffffff, 0xffffffff, 0xffffffff ),    
   ]
 
@@ -152,9 +148,15 @@ def gen_value_test():
 def gen_random_test():
   asm_code = []
   for i in xrange(100):
-    src0 = random.randint(0,4294967295)
-    src1 = random.randint(0,4294967295)   
-    dest = src0 >> src1
-    asm_code.append( gen_rr_value_test( "sra", src0, src1, dest) )
+    src0 = Bits( 32, random.randint(0,0x7fffffff) )
+    src1 = Bits( 32, random.randint(0,0xffffffff) ) 
+    if src0[31]==0:
+      dest = src0>>src1[0:5]
+    else:
+      temp = src0>>src1[0:5]
+      dtemp = Bits(32,0xffffffff)
+      dtemp[0:5] = temp
+      dest = dtemp
+    asm_code.append( gen_rr_value_test( "sra", src0.uint(), src1.uint(), dest.uint()) )
   return asm_code
 

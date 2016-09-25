@@ -148,8 +148,6 @@ def gen_random_test():
   for i in xrange(100):
     src0 = Bits( 32, random.randint(0,0xffffffff) )
     src1 = Bits( 32, random.randint(0,0xffffffff) )
-    #src0 = Bits( 32, random.randint(0,0x7fffffff) )
-    #src1 = Bits( 32, random.randint(0x7fffffff ,0xffffffff) )
     temp = src1[0:5]
     dest = src0>>temp
     asm_code.append( gen_rr_value_test( "srl", src0.uint(), src1.uint(), dest.uint()) )

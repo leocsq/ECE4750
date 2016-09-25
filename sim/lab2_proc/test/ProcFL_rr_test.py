@@ -179,7 +179,7 @@ import inst_sra
   asm_test( inst_sra.gen_srcs_dep_test  ) ,
   asm_test( inst_sra.gen_srcs_dest_test ) ,
   asm_test( inst_sra.gen_value_test     ) ,
-  #asm_test( inst_sra.gen_random_test    ) ,
+  asm_test( inst_sra.gen_random_test    ) ,
 ])
 def test_sra( name, test, dump_vcd ):
   run_test( ProcFL, test, dump_vcd )
