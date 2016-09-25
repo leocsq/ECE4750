@@ -158,6 +158,6 @@ def gen_random_test():
       dest = 1
     else:
       dest = 0 
-    asm_code.append( gen_rr_value_test( "slt", src0, src1, dest) )
+    #asm_code.append( gen_rr_value_test( "slt", src0, src1, dest) )
   return asm_code
 
