@@ -55,17 +55,17 @@ def gen_basic_test():
 
 def gen_dest_dep_test():
   return [
-    gen_rr_dest_dep_test( 5, "srl",   1,  1,  0 ),
-    gen_rr_dest_dep_test( 4, "srl",   2,  1,  1 ),
-    gen_rr_dest_dep_test( 3, "srl",  -3,  1, -2 ),
-    gen_rr_dest_dep_test( 2, "srl",  -4,  2, -1 ),
-    gen_rr_dest_dep_test( 1, "srl",   5,  2,  1 ),
-    gen_rr_dest_dep_test( 0, "srl",  -6,  2, -2 ),
+    gen_rr_dest_dep_test( 5, "sll",   1,  1,  2 ),
+    gen_rr_dest_dep_test( 4, "sll",   2,  1,  4 ),
+    gen_rr_dest_dep_test( 3, "sll",  -3,  1, -6 ),
+    gen_rr_dest_dep_test( 2, "sll",  -4,  2,-16 ),
+    gen_rr_dest_dep_test( 1, "sll",   5,  3,  0 ),
+    gen_rr_dest_dep_test( 0, "sll",  -6,  3,-48 ),
   ]
 #-------------------------------------------------------------------------
 # gen_src0_dep_test
 #-------------------------------------------------------------------------
-
+'''
 def gen_src0_dep_test():
   return [
     gen_rr_src0_dep_test( 5, "srl",   7,  1,   3 ),
@@ -150,3 +150,4 @@ def gen_random_test():
     src1 = random.randint(0,4294967295)   
     dest = src0 >> src1
   return asm_code
+'''
