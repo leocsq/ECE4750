@@ -192,7 +192,7 @@ def gen_random_test():
   return asm_code
 
 #-------------------------------------------------------------------------
-# gen_back_to_back_test
+# gen_back_to_back_test//whats the use?
 #-------------------------------------------------------------------------
 
 def gen_back_to_back_test():
