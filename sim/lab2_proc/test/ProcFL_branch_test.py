@@ -20,7 +20,15 @@ import inst_beq
 
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_beq.gen_basic_test ) ,
-
+  asm_test( inst_beq.gen_src0_dep_taken_test    ),
+  asm_test( inst_beq.gen_src0_dep_nottaken_test ),
+  asm_test( inst_beq.gen_src1_dep_taken_test    ),
+  asm_test( inst_beq.gen_src1_dep_nottaken_test ),
+  asm_test( inst_beq.gen_srcs_dep_taken_test    ),
+  asm_test( inst_beq.gen_srcs_dep_nottaken_test ),
+  asm_test( inst_beq.gen_src0_eq_src1_test      ), 
+  asm_test( inst_beq.gen_value_test             ),
+  asm_test( inst_beq.gen_random_test            ),   
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
   # scenarios.

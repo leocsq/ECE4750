@@ -1,5 +1,9 @@
 #=========================================================================
 # lw
+# - Summary   : Load word from memory
+# - Assembly  : lw rd, imm(rs1)
+# - Semantics : R[rd] = M_4B[ R[rs1] + sext(imm) ]
+# - Format    : I-type, I-immediate
 #=========================================================================
 
 import random
