@@ -126,23 +126,29 @@ def gen_value_test():
   return [
 
     gen_rr_value_test( "sra", 0x00000000, 0x00000000, 0x00000000 ),
-    gen_rr_value_test( "sra", 0x00000001, 0x00004001, 0x00000000 ),
-    gen_rr_value_test( "sra", 0x00000007, 0x00000003, 0x00000000 ),
+    gen_rr_value_test( "sra", 0x0000f000, 0x00000001, 0x00007800 ),
     
-    gen_rr_value_test( "sra", 0x00010000, 0x00000004, 0x00001000 ),
+    gen_rr_value_test( "sra", 0x0000f000, 0x00000011, 0x00000000 ),    
+    gen_rr_value_test( "sra", 0x00fff000, 0x00000011, 0x0000007f ),
+    
+    gen_rr_value_test( "sra", 0x0000f000, 0x00000021, 0x00007800 ),    
+    gen_rr_value_test( "sra", 0x00fff000, 0x00000021, 0x007ff800 ),
+        
     gen_rr_value_test( "sra", 0x80000000, 0x00000005, 0xfc000000 ),
+    gen_rr_value_test( "sra", 0x80000000, 0x00000025, 0xfc000000 ),    
     gen_rr_value_test( "sra", 0x89000000, 0x00000038, 0xffffff89 ),
-
-    gen_rr_value_test( "sra", 0x80000000, 0x00007fff, 0xffffffff ),
-    gen_rr_value_test( "sra", 0x7fffffff, 0xffff8000, 0x7fffffff ), 
-       
-    gen_rr_value_test( "sra", 0x00000000, 0xffffffff, 0x00000000 ),
-    gen_rr_value_test( "sra", 0xfffffffb, 0x00000021, 0xfffffffd ),
-    gen_rr_value_test( "sra", 0xffffffff, 0xffffffff, 0xffffffff ),    
+    
+    gen_rr_value_test( "sra", 0x80000000, 0xffff0005, 0xfc000000 ),
+    gen_rr_value_test( "sra", 0x80000000, 0xffff0025, 0xfc000000 ),       
+    gen_rr_value_test( "sra", 0x89000000, 0xffffff38, 0xffffff89 ),
+    
+    gen_rr_value_test( "sra", 0x7fffffff, 0x00007fff, 0x00000000 ),
+    gen_rr_value_test( "sra", 0x7fffffff, 0xffff8010, 0x00007fff ), 
+   
   ]
 
 #-------------------------------------------------------------------------
-# gen_random_test//***
+# gen_random_test
 #-------------------------------------------------------------------------
 
 def gen_random_test():
@@ -157,6 +163,7 @@ def gen_random_test():
       temp = src0>>stemp
       temp1 = ~temp
       temp2 = temp1 + temp
+      temp1 = temp1<<stemp
       temp1 = temp1>>stemp  
       dest = temp2-temp1
     asm_code.append( gen_rr_value_test( "sra", src0.uint(), src1.uint(), dest.uint()) )
