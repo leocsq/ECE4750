@@ -56,9 +56,9 @@ def gen_basic_test():
 def gen_dest_dep_test():
   return [
     gen_rr_dest_dep_test( 5, "slt",   1,  1,  0 ),
-    gen_rr_dest_dep_test( 4, "slt",   2, -1,  0 ),
-    gen_rr_dest_dep_test( 3, "slt",  -3,  1,  1 ),
-    gen_rr_dest_dep_test( 2, "slt",  -4, -1,  1 ),
+    gen_rr_dest_dep_test( 4, "slt",   0, -1,  0 ),
+    gen_rr_dest_dep_test( 3, "slt",   0,  1,  1 ),
+    gen_rr_dest_dep_test( 2, "slt",   1, -1,  0 ),
     gen_rr_dest_dep_test( 1, "slt",   5,  1,  0 ),
     gen_rr_dest_dep_test( 0, "slt",   6,  1,  0 ),
   ]

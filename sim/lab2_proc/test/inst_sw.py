@@ -57,7 +57,7 @@ def gen_dest_dep_test():
   return [
 
     #gen_ld_dest_dep_test( 5, "sw", 0x2000, 0x00010203,),
-    gen_ld_dest_dep_test( 5, "sw", 0x00010203, 0x2000 ),
+    gen_sd_dest_dep_test( 5, "sw", 0x00010203, 0x2000 ),
     #gen_ld_dest_dep_test( 4, "sw", 0x2004, 0x04050607 ),
     #gen_ld_dest_dep_test( 3, "sw", 0x2008, 0x08090a0b ),
     #gen_ld_dest_dep_test( 2, "sw", 0x200c, 0x0c0d0e0f ),

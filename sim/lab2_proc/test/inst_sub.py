@@ -122,9 +122,13 @@ def gen_srcs_dest_test():
 
 def gen_value_test():
   return [
-
     gen_rr_value_test( "sub", 0x00000000, 0x00000000, 0x00000000 ),
     gen_rr_value_test( "sub", 0x00000001, 0x00000002, 0xffffffff ),
+    gen_rr_value_test( "sub", 0x00004000, 0x00003f50, 0x000000B0 ),
+    gen_rr_value_test( "sub", 0x00800000, 0x007ff111, 0x00000eef ),    
+    gen_rr_value_test( "sub", 0x7fff0000, 0x4fff0000, 0x30000000 ),
+    gen_rr_value_test( "sub", 0xffffffff, 0xffff0000, 0x0000ffff ),
+    gen_rr_value_test( "sub", 0xffff8000, 0xffff0800, 0x00007800 ),
   ]
   
 #-------------------------------------------------------------------------

@@ -68,7 +68,7 @@ def gen_src0_dep_test():
   return [
     gen_rr_src0_dep_test( 5, "add",   7,  1,   8 ),
     gen_rr_src0_dep_test( 4, "add",   8, -1,   7 ),
-    gen_rr_src0_dep_test( 3, "add",  -9,  1,  -8),
+    gen_rr_src0_dep_test( 3, "add",  -9,  1,  -8 ),
     gen_rr_src0_dep_test( 2, "add", -10, -1, -11 ),
     gen_rr_src0_dep_test( 1, "add",  11,  1,  12 ),
     gen_rr_src0_dep_test( 0, "add",  12,  1,  13 ),

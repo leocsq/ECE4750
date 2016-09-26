@@ -574,6 +574,53 @@ def gen_ld_value_test( inst, offset, base, result ):
 
 # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+#-------------------------------------------------------------------------
+# gen_sd_template
+#-------------------------------------------------------------------------
+# Template for store instructions. We first write the base register before
+# executing the instruction under test. We parameterize the number of
+# nops after writing the base register and the instruction under test to
+# enable using this template for testing various bypass paths. We also
+# parameterize the register specifiers to enable using this template to
+# test situations where the base register is equal to the destination
+# register.
+
+def gen_sd_template(
+  num_nops_base, num_nops_dest,
+  reg_base,
+  inst, offset, result, base
+):
+  return """
+
+    # Move base value into register
+    csrr {reg_base}, mngr2proc < {base}
+    {nops_base}
+
+    # Instruction under test
+    {inst} x3, {offset}({reg_base})
+    {nops_dest}
+
+    # Check the result
+    csrw proc2mngr, x3 > {result}
+
+  """.format(
+    nops_base = gen_nops(num_nops_base),
+    nops_dest = gen_nops(num_nops_dest),
+    **locals()
+  )
+
+
+#-------------------------------------------------------------------------
+# gen_sd_dest_dep_test
+#-------------------------------------------------------------------------
+# Test the destination bypass path by varying how many nops are
+# inserted between the instruction under test and reading the destination
+# register with a csrr instruction.
+
+def gen_sd_dest_dep_test( num_nops, inst, result, base ):
+  return gen_sd_template( 8, num_nops, "x1", inst, 0, result, base )
+  
+  
 #=========================================================================
 # TestHarness
 #=========================================================================

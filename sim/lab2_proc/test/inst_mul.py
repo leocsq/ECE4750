@@ -128,20 +128,13 @@ def gen_value_test():
     gen_rr_value_test( "mul", 0x00000001, 0x00000001, 0x00000001 ),
     gen_rr_value_test( "mul", 0x00000003, 0x00000007, 0x00000015 ),
 
-    gen_rr_value_test( "mul", 0x00000001, 0xffff8000, 0xffff8000 ),
-    #gen_rr_value_test( "mul", 0x80000000, 0x10000000, 0x80000000 ),
-    gen_rr_value_test( "mul", 0x80000000, 0xffff8000, 0x0000000 ),
+    gen_rr_value_test( "mul", 0x0000000f, 0x0fff8000, 0xeff88000 ),
+    gen_rr_value_test( "mul", 0x0f000000, 0x0000000b, 0xa5000000 ),
+    gen_rr_value_test( "mul", 0x7fffffff, 0x00007fff, 0x7fff8001 ),
+    gen_rr_value_test( "mul", 0x00006aaa, 0x6f0f0f0f, 0xfc3c35f6 ),
 
-    #gen_rr_value_test( "mul", 0x00000000, 0x00007fff, 0x00000000 ),
-    #gen_rr_value_test( "mul", 0x7fffffff, 0x00000000, 0x00000000 ),
-    gen_rr_value_test( "mul", 0x7fffffff, 0x00007fff,  0x7fff8001 ),
-
-    gen_rr_value_test( "mul", 0x00000002, 0x00007fff, 0x0000fffe ),
-    gen_rr_value_test( "mul", 0x00000005, 0xffff8000, 0xfffd8000 ),
-
-    #gen_rr_value_test( "mul", 0x00000000, 0xffffffff, 0xffffffff ),
-    gen_rr_value_test( "mul", 0xffffffff, 0x00000001, 0xffffffff ),
-    #gen_rr_value_test( "mul", 0xffffffff, 0xffffffff, 0xfffffffe ),
+    gen_rr_value_test( "mul", 0xffff0000, 0xffff8000, 0x80000000 ),
+    gen_rr_value_test( "mul", 0xffffffff, 0x00bbffff, 0xff440001 ),
 
   ]
 
