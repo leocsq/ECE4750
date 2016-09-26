@@ -157,7 +157,7 @@ def gen_random_test():
       temp = src0>>stemp
       temp1 = ~temp
       temp2 = temp1 + temp
-      temp1 = temp1>>stemp
+      temp1 = temp1>>stemp  
       dest = temp2-temp1
     asm_code.append( gen_rr_value_test( "sra", src0.uint(), src1.uint(), dest.uint()) )
   return asm_code

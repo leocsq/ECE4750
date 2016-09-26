@@ -127,22 +127,20 @@ def gen_value_test():
 
     gen_rr_value_test( "sll", 0x00000000, 0x00000000, 0x00000000 ),
     gen_rr_value_test( "sll", 0x00000001, 0x00000001, 0x00000002 ),
-    gen_rr_value_test( "sll", 0x00000007, 0x00000003, 0x00000038 ),
+    gen_rr_value_test( "sll", 0x00000f07, 0x00000003, 0x00007838 ),
     
-    gen_rr_value_test( "sll", 0x00010000, 0x00000004, 0x00100000 ),
-    gen_rr_value_test( "sll", 0x80000000, 0x00000005, 0x00000000 ),
+    gen_rr_value_test( "sll", 0x00000f07, 0x00000010, 0x0f070000 ),
+    gen_rr_value_test( "sll", 0x00000f07, 0x00000013, 0x78380000 ),
+    gen_rr_value_test( "sll", 0x00000f07, 0x00000020, 0x00000f07 ),
+    gen_rr_value_test( "sll", 0x00000f07, 0x00000021, 0x00001e0e ),
+    gen_rr_value_test( "sll", 0x00000f07, 0xffffff21, 0x00001e0e ),
+            
     gen_rr_value_test( "sll", 0x89000000, 0x00000005, 0x20000000 ),
-
-    gen_rr_value_test( "sll", 0x00000000, 0x0000000f, 0x00000000 ),
-    gen_rr_value_test( "sll", 0x00007fff, 0x00000010, 0x7fff0000 ),
-    gen_rr_value_test( "sll", 0x00007fff, 0x0000000c, 0x07fff000 ),
-
-    gen_rr_value_test( "sll", 0x00080000, 0x0000002c, 0x80000000 ),
-    gen_rr_value_test( "sll", 0x00800000, 0x00000007, 0x40000000 ), 
-       
-    gen_rr_value_test( "sll", 0xfffffff7, 0x00000001, 0xffffffee ),
-    gen_rr_value_test( "sll", 0xfffffffb, 0x00000001, 0xfffffff6 ),
-    gen_rr_value_test( "sll", 0xffffffff, 0x0000003f, 0x80000000 ),    
+    gen_rr_value_test( "sll", 0xf0f0f0f0, 0x00000015, 0x1e000000 ),
+    gen_rr_value_test( "sll", 0xf0f0f0f0, 0x00000025, 0x1e1e1e00 ),       
+    gen_rr_value_test( "sll", 0x89000000, 0xffff0005, 0x20000000 ),
+    gen_rr_value_test( "sll", 0xf0f0f0f0, 0xffffff15, 0x1e000000 ),
+    gen_rr_value_test( "sll", 0xf0f0f0f0, 0xffff0025, 0x1e1e1e00 ),  
   ]
 #-------------------------------------------------------------------------
 # gen_random_test

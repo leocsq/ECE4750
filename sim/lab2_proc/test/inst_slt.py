@@ -125,24 +125,16 @@ def gen_value_test():
   return [
 
     gen_rr_value_test( "slt", 0x00000000, 0x00000000, 0x00000000 ),
-    gen_rr_value_test( "slt", 0x00000001, 0x00000001, 0x00000000 ),
-    gen_rr_value_test( "slt", 0x00000003, 0x00000007, 0x00000001 ),
+    gen_rr_value_test( "slt", 0x00000100, 0x00000000, 0x00000000 ),
+    gen_rr_value_test( "slt", 0x00000400, 0x00004fff, 0x00000001 ),
 
-    gen_rr_value_test( "slt", 0x00000000, 0xffff8000, 0x00000000 ),
-    gen_rr_value_test( "slt", 0x80000000, 0x00000000, 0x00000001 ),
+    gen_rr_value_test( "slt", 0xffffff00, 0xffff8000, 0x00000000 ),
+    gen_rr_value_test( "slt", 0x8fffffff, 0x8fffffff, 0x00000000 ),
     gen_rr_value_test( "slt", 0x80000000, 0xffff8000, 0x00000001 ),
 
-    gen_rr_value_test( "slt", 0x00000000, 0x00007fff, 0x00000001 ),
-    gen_rr_value_test( "slt", 0x7fffffff, 0x00000000, 0x00000000 ),
-    gen_rr_value_test( "slt", 0x7fffffff, 0x00007fff, 0x00000000 ),
-
-    gen_rr_value_test( "slt", 0x80000000, 0x00007fff, 0x00000001 ),
-    gen_rr_value_test( "slt", 0x7fffffff, 0xffff8000, 0x00000000 ),
-
-    gen_rr_value_test( "slt", 0x00000000, 0xffffffff, 0x00000000 ),
-    gen_rr_value_test( "slt", 0xffffffff, 0x00000001, 0x00000001 ),
-    gen_rr_value_test( "slt", 0xffffffff, 0xffffffff, 0x00000000 ),
-
+    gen_rr_value_test( "slt", 0x00004001, 0x40001000, 0x00000001 ),
+    gen_rr_value_test( "slt", 0x7fffffff, 0x80000000, 0x00000000 ),
+    gen_rr_value_test( "slt", 0xffff0000, 0x70000000, 0x00000001 ),
   ]
 
 #-------------------------------------------------------------------------
