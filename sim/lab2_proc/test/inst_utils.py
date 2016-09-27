@@ -577,44 +577,33 @@ def gen_ld_value_test( inst, offset, base, result ):
 #-------------------------------------------------------------------------
 # gen_sd_template
 #-------------------------------------------------------------------------
-# Template for store instructions. We first write the base register before
-# executing the instruction under test. We parameterize the number of
-# nops after writing the base register and the instruction under test to
-# enable using this template for testing various bypass paths. We also
-# parameterize the register specifiers to enable using this template to
-# test situations where the base register is equal to the destination
-# register.
 
 def gen_sd_template(
-  num_nops_base, num_nops_sword, num_nops_dest0, num_nops_dest1,
+  num_nops_sword, num_nops_dest,
   reg_base, reg_sword,
-  inst, offset, base, sword
+  inst, offset, base, sword, result
 ):
   return """
     # Move base value into register
     csrr {reg_base}, mngr2proc < {base}    
-    {nops_base}
-    
+   
     # Move sword value into register
     csrr {reg_sword}, mngr2proc < {sword}
     {nops_sword}    
          
     # Instruction under test
     {inst} {reg_sword}, {offset}({reg_base})
-    {nops_dest0}
+    {nops_dest}
     
-    # Instruction under test
+    # Instruction to extract loaded word
     lw x3, {offset}({reg_base})
-    {nops_dest1}
     
     # Check the result
-    csrw proc2mngr, x3 > {sword}
+    csrw proc2mngr, x3 > {result}
 
   """.format(  
-    nops_base  = gen_nops(num_nops_base ),
     nops_sword = gen_nops(num_nops_sword),    
-    nops_dest0 = gen_nops(num_nops_dest0),
-    nops_dest1 = gen_nops(num_nops_dest1),
+    nops_dest  = gen_nops(num_nops_dest),
     **locals()
   )
 
@@ -625,26 +614,26 @@ def gen_sd_template(
 # inserted between the instruction under test and reading the destination
 # register with a csrr instruction.
 
-def gen_sd_dest_dep_test( num_nops, inst, base, sword ):
-  return gen_sd_template( 0, 8, num_nops, num_nops, "x1", "x2", inst, 0, base, sword )
+def gen_sd_dest_dep_test( num_nops, inst, base, sword, result ):
+  return gen_sd_template( 8, num_nops, "x1", "x2", inst, 0, base, sword, result )
 #-------------------------------------------------------------------------
-# gen_sd_base_dep_test
+# gen_sd_sword_dep_test
 #-------------------------------------------------------------------------
-# Test the base register bypass paths by varying how many nops are
-# inserted between writing the base register and reading this register in
+# Test the sword register bypass paths by varying how many nops are
+# inserted between writing the sword register and reading this register in
 # the instruction under test.
 
-def gen_sd_base_dep_test( num_nops, inst, result, base ):
-  return gen_sd_template( num_nops,8, 0, 0, "x1","x2", inst, 0, result, base )
+def gen_sd_sword_dep_test( num_nops, inst, base, sword, result ):
+  return gen_sd_template( num_nops, 0, "x1","x2", inst, 0, base, sword, result )
 
 #-------------------------------------------------------------------------
-# gen_sd_base_eq_dest_test
+# gen_sd_sword_eq_dest_test
 #-------------------------------------------------------------------------
-# Test situation where the base register specifier is the same as the
+# Test situation where the sword register specifier is the same as the
 # destination register specifier.
 
-def gen_sd_base_eq_dest_test( inst, result, base ):
-  return gen_sd_template( 0, 0, 0, 0, "x3","x2", inst, 0, result, base )
+def gen_sd_sword_eq_dest_test( inst, base, sword, result ):
+  return gen_sd_template( 0, 0, "x3", "x2", inst, 0, base, sword, result )
 
 #-------------------------------------------------------------------------
 # gen_sd_value_test
@@ -652,8 +641,8 @@ def gen_sd_base_eq_dest_test( inst, result, base ):
 # Test the actual operation of a register-register instruction under
 # test. We assume that bypassing has already been tested.
 
-def gen_sd_value_test( inst, offset, result, base ):
-  return gen_sd_template( 0, 0, 0, 0, "x1","x2", inst, offset, result, base )
+def gen_sd_value_test( inst, offset, base, sword, result ):
+  return gen_sd_template( 0, 0, "x1", "x2", inst, offset, base, sword, result )
 
 # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''  
   
