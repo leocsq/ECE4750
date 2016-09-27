@@ -27,7 +27,7 @@ class ProcBaseVRTL( VerilogModel ):
 
   # Constructor
 
-  def __init__( s, num_cores = 1, core_id = 0 ):
+  def __init__( s, num_cores = 1 ):
 
     #---------------------------------------------------------------------
     # Interface
