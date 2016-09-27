@@ -210,7 +210,6 @@ module lab2_proc_ProcAltVRTL
 //''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''
 // Add components
 //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
   //----------------------------------------------------------------------
   // Line tracing
   //----------------------------------------------------------------------
@@ -222,52 +221,61 @@ module lab2_proc_ProcAltVRTL
   logic [`VC_TRACE_NBITS-1:0] str;
   `VC_TRACE_BEGIN
   begin
-
-    $sformat( str, "%x", dpath.pc_F );
-    vc_trace.append_str( trace_str, str );
-
-    vc_trace.append_str( trace_str, "|" );
-
-    if ( ctrl.stall_D ) begin
-      vc_trace.append_str( trace_str, "#" );
-      vc_trace.append_chars( trace_str, " ", 26-1 );
-    end else if ( ctrl.squash_D ) begin
+    if ( !ctrl.val_F )
+      vc_trace.append_chars( trace_str, " ", 8 );
+    else if ( ctrl.squash_F ) begin
       vc_trace.append_str( trace_str, "~" );
-      vc_trace.append_chars( trace_str, " ", 26-1 );
-    end else if ( ctrl.val_D )
-      vc_trace.append_str( trace_str, { 3888'b0, rv2isa.disasm( ctrl.inst_D ) } );
-    else
-      vc_trace.append_chars( trace_str, " ", 26 );
+      vc_trace.append_chars( trace_str, " ", 8-1 );
+    end else if ( ctrl.stall_F ) begin
+      vc_trace.append_str( trace_str, "#" );
+      vc_trace.append_chars( trace_str, " ", 8-1 );
+    end else begin
+      $sformat( str, "%x", dpath.pc_F );
+      vc_trace.append_str( trace_str, str );
+    end
 
     vc_trace.append_str( trace_str, "|" );
 
-    if ( ctrl.stall_X ) begin
+    if ( !ctrl.val_D )
+      vc_trace.append_chars( trace_str, " ", 23 );
+    else if ( ctrl.squash_D ) begin
+      vc_trace.append_str( trace_str, "~" );
+      vc_trace.append_chars( trace_str, " ", 23-1 );
+    end else if ( ctrl.stall_D ) begin
+      vc_trace.append_str( trace_str, "#" );
+      vc_trace.append_chars( trace_str, " ", 23-1 );
+    end else
+      vc_trace.append_str( trace_str, { 3912'b0, rv2isa.disasm( ctrl.inst_D ) } );
+
+    vc_trace.append_str( trace_str, "|" );
+
+    if ( !ctrl.val_X )
+      vc_trace.append_chars( trace_str, " ", 4 );
+    else if ( ctrl.stall_X ) begin
       vc_trace.append_str( trace_str, "#" );
       vc_trace.append_chars( trace_str, " ", 4-1 );
-    end else if ( ctrl.val_X )
+    end else
       vc_trace.append_str( trace_str, { 4064'b0, rv2isa.disasm_tiny( ctrl.inst_X ) } );
-    else
-      vc_trace.append_chars( trace_str, " ", 4 );
 
     vc_trace.append_str( trace_str, "|" );
 
-    if ( ctrl.stall_M ) begin
+    if ( !ctrl.val_M )
+      vc_trace.append_chars( trace_str, " ", 4 );
+    else if ( ctrl.stall_M ) begin
       vc_trace.append_str( trace_str, "#" );
       vc_trace.append_chars( trace_str, " ", 4-1 );
-    end else if ( ctrl.val_M )
+    end else
       vc_trace.append_str( trace_str, { 4064'b0, rv2isa.disasm_tiny( ctrl.inst_M ) } );
-    else
-      vc_trace.append_chars( trace_str, " ", 4 );
 
     vc_trace.append_str( trace_str, "|" );
 
-    if ( ctrl.stall_W ) begin
+    if ( !ctrl.val_W )
+      vc_trace.append_chars( trace_str, " ", 4 );
+    else if ( ctrl.stall_W ) begin
       vc_trace.append_str( trace_str, "#" );
       vc_trace.append_chars( trace_str, " ", 4-1 );
-    end else if ( ctrl.val_W )
+    end else
       vc_trace.append_str( trace_str, { 4064'b0, rv2isa.disasm_tiny( ctrl.inst_W ) } );
-    else
-      vc_trace.append_chars( trace_str, " ", 4 );
 
   end
   `VC_TRACE_END
