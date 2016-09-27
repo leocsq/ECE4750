@@ -239,8 +239,9 @@ class TinyRV2Semantics (object):
     s.PC = s.PC + sext(inst.j_imm)
 
   def execute_jalr( s, inst ):
+    temp = s.R[inst.rs1] + sext(inst.i_imm)
     s.R[inst.rd] = s.PC + 4
-    s.PC = ( s.R[inst.rs1] + sext(inst.i_imm) ) & 0xFFFFFFFE
+    s.PC = temp & 0xFFFFFFFE
 
   #-----------------------------------------------------------------------
   # Conditional branch instructions
