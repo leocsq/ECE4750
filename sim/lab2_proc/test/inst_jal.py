@@ -55,3 +55,8 @@ def gen_basic_test():
 # ''' LAB TASK ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 # Define additional directed and random test cases.
 # '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+def gen_src0_dep_taken_test():
+  return [
+   gen_jal_dest_dep_test( 8, "jal", 2, 0x0228, 0b10, 0b10),
+
+  ]

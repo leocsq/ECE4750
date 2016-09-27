@@ -20,7 +20,11 @@ import inst_addi
 
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_addi.gen_basic_test     ) ,
-
+  asm_test( inst_addi.gen_dest_dep_test  ) ,
+  asm_test( inst_addi.gen_src_dep_test   ) ,
+  asm_test( inst_addi.gen_src_eq_dest_test ) ,
+  asm_test( inst_addi.gen_value_test     ) ,
+  asm_test( inst_addi.gen_random_test    ) ,
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
   # scenarios.
@@ -88,7 +92,11 @@ import inst_slti
 
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_slti.gen_basic_test     ) ,
-
+  asm_test( inst_slti.gen_dest_dep_test  ) ,
+  asm_test( inst_slti.gen_src_dep_test   ) ,
+  asm_test( inst_slti.gen_src_eq_dest_test ) ,
+  asm_test( inst_slti.gen_value_test     ) ,
+  asm_test( inst_slti.gen_random_test    ) ,
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
   # scenarios.
@@ -105,7 +113,11 @@ import inst_sltiu
 
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_sltiu.gen_basic_test     ) ,
-
+  asm_test( inst_sltiu.gen_dest_dep_test  ) ,
+  asm_test( inst_sltiu.gen_src_dep_test   ) ,
+  asm_test( inst_sltiu.gen_src_eq_dest_test ) ,
+  asm_test( inst_sltiu.gen_value_test     ) ,
+  asm_test( inst_sltiu.gen_random_test    ) ,
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
   # scenarios.
@@ -122,6 +134,11 @@ import inst_srai
 
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_srai.gen_basic_test     ) ,
+  asm_test( inst_srai.gen_dest_dep_test  ) ,
+  asm_test( inst_srai.gen_src_dep_test   ) ,
+  asm_test( inst_srai.gen_src_eq_dest_test ) ,
+  asm_test( inst_srai.gen_value_test     ) ,
+  asm_test( inst_srai.gen_random_test    ) ,
 
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
@@ -139,6 +156,11 @@ import inst_srli
 
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_srli.gen_basic_test     ) ,
+  asm_test( inst_srli.gen_dest_dep_test  ) ,
+  asm_test( inst_srli.gen_src_dep_test   ) ,
+  asm_test( inst_srli.gen_src_eq_dest_test ) ,
+  asm_test( inst_srli.gen_value_test     ) ,
+  asm_test( inst_srli.gen_random_test    ) ,
 
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
@@ -156,6 +178,11 @@ import inst_slli
 
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_slli.gen_basic_test     ) ,
+  asm_test( inst_slli.gen_dest_dep_test  ) ,
+  asm_test( inst_slli.gen_src_dep_test   ) ,
+  asm_test( inst_slli.gen_srcs_dest_test ) ,
+  asm_test( inst_slli.gen_value_test     ) ,
+  asm_test( inst_slli.gen_random_test    ) ,
 
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
@@ -173,6 +200,9 @@ import inst_lui
 
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_lui.gen_basic_test    ) ,
+  asm_test( inst_lui.gen_dest_dep_test  ) ,
+  asm_test( inst_lui.gen_value_test     ) ,
+  asm_test( inst_lui.gen_random_test    ) ,
 
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
@@ -190,6 +220,9 @@ import inst_auipc
 
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_auipc.gen_basic_test    ) ,
+  asm_test( inst_auipc.gen_dest_dep_test  ) ,
+  asm_test( inst_auipc.gen_value_test     ) ,
+  asm_test( inst_auipc.gen_random_test    ) ,
 
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
