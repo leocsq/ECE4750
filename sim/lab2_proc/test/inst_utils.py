@@ -586,29 +586,37 @@ def gen_ld_value_test( inst, offset, base, result ):
 # register.
 
 def gen_sd_template(
-  num_nops_base, num_nops_dest,
-  reg_base,
-  inst, offset, result, base
+  num_nops_base, num_nops_sword, num_nops_dest0, num_nops_dest1,
+  reg_base, reg_sword,
+  inst, offset, base, sword
 ):
   return """
-
     # Move base value into register
-    csrr {reg_base}, mngr2proc < {base}
+    csrr {reg_base}, mngr2proc < {base}    
     {nops_base}
-
+    
+    # Move sword value into register
+    csrr {reg_sword}, mngr2proc < {sword}
+    {nops_sword}    
+         
     # Instruction under test
-    {inst} x3, {offset}({reg_base})
-    {nops_dest}
-
+    {inst} {reg_sword}, {offset}({reg_base})
+    {nops_dest0}
+    
+    # Instruction under test
+    lw x3, {offset}({reg_base})
+    {nops_dest1}
+    
     # Check the result
-    csrw proc2mngr, x3 > {result}
+    csrw proc2mngr, x3 > {sword}
 
-  """.format(
-    nops_base = gen_nops(num_nops_base),
-    nops_dest = gen_nops(num_nops_dest),
+  """.format(  
+    nops_base  = gen_nops(num_nops_base ),
+    nops_sword = gen_nops(num_nops_sword),    
+    nops_dest0 = gen_nops(num_nops_dest0),
+    nops_dest1 = gen_nops(num_nops_dest1),
     **locals()
   )
-
 
 #-------------------------------------------------------------------------
 # gen_sd_dest_dep_test
@@ -617,9 +625,37 @@ def gen_sd_template(
 # inserted between the instruction under test and reading the destination
 # register with a csrr instruction.
 
-def gen_sd_dest_dep_test( num_nops, inst, result, base ):
-  return gen_sd_template( 8, num_nops, "x1", inst, 0, result, base )
-  
+def gen_sd_dest_dep_test( num_nops, inst, base, sword ):
+  return gen_sd_template( 0, 8, num_nops, num_nops, "x1", "x2", inst, 0, base, sword )
+#-------------------------------------------------------------------------
+# gen_sd_base_dep_test
+#-------------------------------------------------------------------------
+# Test the base register bypass paths by varying how many nops are
+# inserted between writing the base register and reading this register in
+# the instruction under test.
+
+def gen_sd_base_dep_test( num_nops, inst, result, base ):
+  return gen_sd_template( num_nops,8, 0, 0, "x1","x2", inst, 0, result, base )
+
+#-------------------------------------------------------------------------
+# gen_sd_base_eq_dest_test
+#-------------------------------------------------------------------------
+# Test situation where the base register specifier is the same as the
+# destination register specifier.
+
+def gen_sd_base_eq_dest_test( inst, result, base ):
+  return gen_sd_template( 0, 0, 0, 0, "x3","x2", inst, 0, result, base )
+
+#-------------------------------------------------------------------------
+# gen_sd_value_test
+#-------------------------------------------------------------------------
+# Test the actual operation of a register-register instruction under
+# test. We assume that bypassing has already been tested.
+
+def gen_sd_value_test( inst, offset, result, base ):
+  return gen_sd_template( 0, 0, 0, 0, "x1","x2", inst, offset, result, base )
+
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''  
   
 #=========================================================================
 # TestHarness
