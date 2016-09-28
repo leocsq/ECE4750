@@ -338,7 +338,7 @@ def gen_rimm_value_test( inst, src, imm, result ):
 def gen_imm_template( num_nops_dest, inst, imm, result ):
   return """
 
-    # Instruction under test
+    # Instruction under test      #PC = 0x200
     {inst} x3, {imm}
     {nops_dest}
 

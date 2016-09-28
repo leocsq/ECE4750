@@ -45,9 +45,6 @@ def gen_basic_test():
     nop
   """
 
-# ''' LAB TASK ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# Define additional directed and random test cases.
-# '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # gen_dest_dep_test
 #-------------------------------------------------------------------------
@@ -92,25 +89,13 @@ def gen_src_eq_dest_test():
 def gen_value_test():
   return [
 
-    gen_rimm_value_test( "slti", 0x00000000, 0x00000000, 0x00000000 ),
-    gen_rimm_value_test( "slti", 0x00000001, 0x00000001, 0x00000000 ),
-    gen_rimm_value_test( "slti", 0x00000003, 0x00000007, 0x00000001 ),
+    gen_rimm_value_test( "slti", -1, -20, 0 ),
+    gen_rimm_value_test( "slti",  5,  6,  1 ),
+    gen_rimm_value_test( "slti",  6,  5,  0 ),
 
-    gen_rimm_value_test( "slti", 0x00000000, 0xffff8000, 0x00000000 ),
-    gen_rimm_value_test( "slti", 0x80000000, 0x00000000, 0x00000000 ),
-    gen_rimm_value_test( "slti", 0x80000000, 0xffff8000, 0x00000000 ),
-
-    gen_rimm_value_test( "slti", 0x00000000, 0x00007fff, 0x00000001 ),
-    gen_rimm_value_test( "slti", 0x7fffffff, 0x00000000, 0x7fffffff ),
-    gen_rimm_value_test( "slti", 0x7fffffff, 0x00007fff, 0x80007ffe ),
-
-    gen_rimm_value_test( "slti", 0x80000000, 0x00007fff, 0x80007fff ),
-    gen_rimm_value_test( "slti", 0x7fffffff, 0xffff8000, 0x7fff7fff ),
-
-    gen_rimm_value_test( "slti", 0x00000000, 0xffffffff, 0xffffffff ),
-    gen_rimm_value_test( "slti", 0xffffffff, 0x00000001, 0x00000000 ),
-    gen_rimm_value_test( "slti", 0xffffffff, 0xffffffff, 0xfffffffe ),
-
+    gen_rimm_value_test( "slti", 12, 21,  1 ),
+    gen_rimm_value_test( "slti", 21, 12,  0 ),
+    gen_rimm_value_test( "slti", 34, -43, 0 ),
   ]
 #-------------------------------------------------------------------------
 # gen_random_test
@@ -118,19 +103,19 @@ def gen_value_test():
 
 def gen_random_test():
   asm_code = []
-  for i in xrange(100):
+  for i in xrange(100):  
     src = Bits( 32, random.randint(0,0xffffffff) )
-    imm = Bits( 32, random.randint(0,0xffffffff) )
-    temp = src[31]^~sext(imm,32) 
+    imm = Bits( 12, random.randint(0,0xfff) )
+    temp = src[31]^~imm[11] 
     if (temp>0):
-      if (src<imm):
+      if (src<sext(imm,32)):
         dest = Bits( 32, 1 )
       else:
-       dest = Bits( 32, 0 )
+        dest = Bits( 32, 0 )
     else:
-     if (src[31]>0):
-      dest = Bits( 32, 1 )
-    else:
-      dest = Bits( 32, 0 )
-    asm_code.append( gen_rimm_value_test( "slti", src.uint(), imm.uint(), dest.uint() ) )
+      if (src[31]>0):
+        dest = Bits( 32, 1 )
+      else:
+        dest = Bits( 32, 0 ) 
+    asm_code.append( gen_rimm_value_test( "slti", src.uint(), imm.uint(), dest.uint()) )
   return asm_code
