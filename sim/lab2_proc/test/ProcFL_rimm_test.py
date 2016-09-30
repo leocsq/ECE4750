@@ -19,25 +19,12 @@ from lab2_proc.ProcFL import ProcFL
 import inst_addi
 
 @pytest.mark.parametrize( "name,test", [
-<<<<<<< HEAD
-  asm_test( inst_addi.gen_basic_test     ) ,
-  asm_test( inst_addi.gen_dest_dep_test  ) ,
-  asm_test( inst_addi.gen_src_dep_test   ) ,
-  asm_test( inst_addi.gen_src_eq_dest_test),
-  asm_test( inst_addi.gen_value_test     ) ,
-  asm_test( inst_addi.gen_random_test    ) ,
-  # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  # Add more rows to the test case table to test more complicated
-  # scenarios.
-  # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-=======
   asm_test( inst_addi.gen_basic_test      ) ,
   asm_test( inst_addi.gen_dest_dep_test   ) ,
   asm_test( inst_addi.gen_src_dep_test    ) ,
   asm_test( inst_addi.gen_src_eq_dest_test) ,
   asm_test( inst_addi.gen_value_test      ) ,
   asm_test( inst_addi.gen_random_test     ) ,
->>>>>>> 7b3e337f9740612c8a9eebeb264c9a14c8a69abe
 ])
 def test_addi( name, test, dump_vcd ):
   run_test( ProcFL, test, dump_vcd )

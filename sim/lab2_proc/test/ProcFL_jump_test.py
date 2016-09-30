@@ -20,16 +20,12 @@ import inst_jal
 
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_jal.gen_basic_test        ) ,
-<<<<<<< HEAD
   asm_test( inst_jal.gen_nops_dep_taken_test),
   asm_test( inst_jal.gen_random_test),
-=======
-  asm_test( inst_jal.gen_src0_dep_taken_test),
-  # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
   # scenarios.
   # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
->>>>>>> 7b3e337f9740612c8a9eebeb264c9a14c8a69abe
 ])
 def test_jal( name, test, dump_vcd ):
   run_test( ProcFL, test, dump_vcd )
