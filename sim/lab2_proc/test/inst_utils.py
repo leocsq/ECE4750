@@ -167,7 +167,7 @@ def gen_rr_src10_template(
 # register with a csrr instruction.
 
 def gen_rr_dest_dep_test( num_nops, inst, src0, src1, result ):
-  return gen_rr_src01_template( 0, 8, num_nops, "x1", "x2",
+  return gen_rr_src01_template( 0, 0, num_nops, "x1", "x2",
                                 inst, src0, src1, result )
 
 #-------------------------------------------------------------------------
@@ -338,13 +338,13 @@ def gen_rimm_value_test( inst, src, imm, result ):
 def gen_imm_template( num_nops_dest, inst, imm, result ):
   return """
 
-    # Instruction under test
+    # Instruction under test      #PC = 0x200
     {inst} x3, {imm}
     {nops_dest}
 
     # Check the result
     csrw proc2mngr, x3 > {result}
-
+    
   """.format(
     nops_dest = gen_nops(num_nops_dest),
     **locals()
@@ -370,7 +370,7 @@ def gen_imm_value_test( inst, imm, result ):
   return gen_imm_template( 0, inst, imm, result )
 
 #-------------------------------------------------------------------------
-# gen_br2_template
+# gen_2_template
 #-------------------------------------------------------------------------
 # Template for branch instructions with two sources. We test two forward
 # branches and one backwards branch. The way we actually do the test is
@@ -646,6 +646,134 @@ def gen_sd_value_test( inst, offset, base, sword, result ):
 
 # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''  
   
+
+#-------------------------------------------------------------------------
+# gen_jal_template
+#-------------------------------------------------------------------------
+gen_jal_template_id = 0
+
+def gen_jal_template(num_nops_addi_a,num_nops_addi_b,PC1, inst):
+  
+  global gen_jal_template_id
+  id_a = "lobal_{}".format(gen_jal_template_id+1)
+  id_b = "lobal_{}".format(gen_jal_template_id+2)
+  id_c = "lobal_{}".format(gen_jal_template_id+3)
+  gen_jal_template_id += 3
+  
+  return """
+    # x3 will track the control flow pattern
+    addi x3, x0, 0                   
+    # Instruction under test
+    {inst} x1, {id_a}                                                  
+    addi x3, x3, 0b01 
+                  
+{id_b}: 
+    addi x3, x3, 0b11
+    {inst} x1, {id_c}                                     
+    addi x3, x3, 0b110              
+    {nops_addi_b}
+
+{id_a}:                                    
+    addi x3, x3, 0b10              
+    {inst} x1, {id_b} 
+    addi x3, x3, 0b100
+    {nops_addi_a}
+
+{id_c}:                                    
+    addi x3, x3, 0b111              
+     
+    # Check the link address
+    csrw  proc2mngr, x1 > {PC1}
+    # Only the second bit should be set if jump was taken
+    csrw  proc2mngr, x3 > 0b1100
+
+  """.format(
+    nops_addi_a = gen_nops(num_nops_addi_a),
+    nops_addi_b = gen_nops(num_nops_addi_b),
+    **locals()
+  ) 
+ 
+def gen_jal_dest_dep_test( num_nops_a, num_nops_b,inst,PC1):
+  return gen_jal_template( num_nops_a, num_nops_b, PC1, inst)
+ 
+ 
+#-------------------------------------------------------------------------
+# gen_jal_value_test
+#-------------------------------------------------------------------------
+# Test the correct jal resolution based on various source values.
+
+def gen_jal_value_test( inst, PC1):
+  return gen_jal_template( 0, 0, PC1, inst ) 
+# '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' 
+ 
+ 
+#-------------------------------------------------------------------------
+# gen_jalr_template
+#-------------------------------------------------------------------------
+gen_jalr_template_id = 0
+
+def gen_jalr_template(num_nops_addi_a, num_nops_addi_b, PC1, inst ):
+  
+  global gen_jalr_template_id
+  id_a = "lobal_{}".format(gen_jalr_template_id+1)
+  id_b = "lobal_{}".format(gen_jalr_template_id+2)
+  id_c = "l0bal_{}".format(gen_jalr_template_id+3)
+  gen_jalr_template_id += 3
+  
+  return """
+    # x3 will track the control flow pattern
+    addi x3, x0, 0                 
+    lui x1, %hi[{id_a}]              
+    addi x1, x1, %lo[{id_a}]
+                
+    # Instruction under test
+    {inst} x31, x1, 0                                                  
+    addi x3, x3, 0b01                   
+    
+{id_b}: 
+    addi x3, x3, 0b11
+    lui x1, %hi[{id_c}]              
+    addi x1, x1, %lo[{id_c}]
+    {inst} x31, x1, 0                                    
+    addi x3, x3, 0b110              
+    {nops_addi_b}
+
+{id_a}:                                    
+    addi x3, x3, 0b10
+    lui x1, %hi[{id_b}]              
+    addi x1, x1, %lo[{id_b}]              
+    {inst} x31, x1,0
+    addi x3, x3, 0b100
+    {nops_addi_a}
+
+{id_c}:                                    
+    addi x3, x3, 0b111              
+
+    # Check the link address
+    csrw  proc2mngr, x31 > {PC1}
+    # Only the second bit should be set if jump was taken
+    csrw  proc2mngr, x3 > 0b1100
+  """.format(
+    nops_addi_a = gen_nops(num_nops_addi_a),
+    nops_addi_b = gen_nops(num_nops_addi_b),
+    **locals()
+  ) 
+ 
+def gen_jalr_dest_dep_test( num_nops_a, num_nops_b, inst, PC1 ):
+  return gen_jalr_template( num_nops_a, num_nops_b, PC1, inst )
+ 
+ 
+#-------------------------------------------------------------------------
+# gen_jalr_value_test
+#-------------------------------------------------------------------------
+# Test the correct jal resolution based on various source values.
+
+def gen_jalr_value_test(inst, PC1):
+  return gen_jalr_template( 0, 0, PC1, inst)  
+
+
+
+ 
 #=========================================================================
 # TestHarness
 #=========================================================================

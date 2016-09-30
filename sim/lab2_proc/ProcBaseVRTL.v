@@ -86,7 +86,9 @@ module lab2_proc_ProcBaseVRTL
   logic        imemreq_enq_rdy;
 
   // dmem req before pack
-
+ 
+  logic [2 :0] dmemreq_type;
+  logic [31:0] dmemreq_msg_data;
   logic [31:0] dmemreq_msg_addr;
 
   // dmemreq after pack before bypass queue
@@ -116,12 +118,16 @@ module lab2_proc_ProcBaseVRTL
   logic [1:0]  pc_sel_F;
 
   logic        reg_en_D;
+  logic        op1_sel_D;
   logic [1:0]  op2_sel_D;
   logic [1:0]  csrr_sel_D;
   logic [2:0]  imm_type_D;
+  logic        imul_req_val_D;
 
   logic        reg_en_X;
   logic [3:0]  alu_fn_X;
+  logic        imul_resp_rdy_X;
+  logic [1:0]  ex_result_sel_X;
 
   logic        reg_en_M;
   logic        wb_result_sel_M;
@@ -130,11 +136,16 @@ module lab2_proc_ProcBaseVRTL
   logic [4:0]  rf_waddr_W;
   logic        rf_wen_W;
   logic        stats_en_wen_W;
+  
 
   // status signals (dpath->ctrl)
 
   logic [31:0] inst_D;
+  logic        imul_req_rdy_D;
   logic        br_cond_eq_X;
+  logic        br_cond_lt_X;
+  logic        br_cond_ltu_X;
+  logic        imul_resp_val_X;
 
   //----------------------------------------------------------------------
   // Pack Memory Request Messages
@@ -146,11 +157,11 @@ module lab2_proc_ProcBaseVRTL
   assign imemreq_enq_msg.len    = 2'd0;
   assign imemreq_enq_msg.data   = 32'bx;
 
-  assign dmemreq_enq_msg.type_  = `VC_MEM_REQ_MSG_TYPE_READ;
+  assign dmemreq_enq_msg.type_  = dmemreq_type;
   assign dmemreq_enq_msg.opaque = 8'b0;
   assign dmemreq_enq_msg.addr   = dmemreq_msg_addr;
   assign dmemreq_enq_msg.len    = 2'd0;
-  assign dmemreq_enq_msg.data   = 32'b0;
+  assign dmemreq_enq_msg.data   = dmemreq_msg_data;
 
   //----------------------------------------------------------------------
   // Imem Drop Unit
@@ -200,6 +211,7 @@ module lab2_proc_ProcBaseVRTL
     .dmemreq_rdy            (dmemreq_enq_rdy),
     .dmemresp_val           (dmemresp_val),
     .dmemresp_rdy           (dmemresp_rdy),
+    .dmemreq_type           (dmemreq_type),
 
     // mngr communication ports
 
@@ -214,12 +226,16 @@ module lab2_proc_ProcBaseVRTL
     .pc_sel_F               (pc_sel_F),
 
     .reg_en_D               (reg_en_D),
+    .op1_sel_D              (op1_sel_D),
     .op2_sel_D              (op2_sel_D),
     .csrr_sel_D             (csrr_sel_D),
     .imm_type_D             (imm_type_D),
+    .imul_req_val_D         (imul_req_val_D),
 
     .reg_en_X               (reg_en_X),
     .alu_fn_X               (alu_fn_X),
+    .imul_resp_rdy_X        (imul_resp_rdy_X),
+    .ex_result_sel_X        (ex_result_sel_X),
 
     .reg_en_M               (reg_en_M),
     .wb_result_sel_M        (wb_result_sel_M),
@@ -232,7 +248,11 @@ module lab2_proc_ProcBaseVRTL
     // status signals (dpath->ctrl)
 
     .inst_D                 (inst_D),
+    .imul_req_rdy_D         (imul_req_rdy_D),
     .br_cond_eq_X           (br_cond_eq_X),
+    .br_cond_lt_X           (br_cond_lt_X),
+    .br_cond_ltu_X          (br_cond_ltu_X),
+    .imul_resp_val_X        (imul_resp_val_X),
 
     .commit_inst            (commit_inst)
   );
@@ -309,6 +329,7 @@ module lab2_proc_ProcBaseVRTL
 
     // Data Memory Port
 
+    .dmemreq_msg_data        (dmemreq_msg_data),
     .dmemreq_msg_addr        (dmemreq_msg_addr),
     .dmemresp_msg_data       (dmemresp_msg.data),
 
@@ -327,12 +348,16 @@ module lab2_proc_ProcBaseVRTL
     .pc_sel_F                (pc_sel_F),
 
     .reg_en_D                (reg_en_D),
+    .op1_sel_D               (op1_sel_D),
     .op2_sel_D               (op2_sel_D),
     .csrr_sel_D              (csrr_sel_D),
     .imm_type_D              (imm_type_D),
+    .imul_req_val_D          (imul_req_val_D),
 
     .reg_en_X                (reg_en_X),
     .alu_fn_X                (alu_fn_X),
+    .imul_resp_rdy_X         (imul_resp_rdy_X),
+    .ex_result_sel_X         (ex_result_sel_X),
 
     .reg_en_M                (reg_en_M),
     .wb_result_sel_M         (wb_result_sel_M),
@@ -345,7 +370,11 @@ module lab2_proc_ProcBaseVRTL
     // status signals (dpath->ctrl)
 
     .inst_D                  (inst_D),
+    .imul_req_rdy_D          (imul_req_rdy_D),
     .br_cond_eq_X            (br_cond_eq_X),
+    .br_cond_lt_X            (br_cond_lt_X),
+    .br_cond_ltu_X           (br_cond_ltu_X),
+    .imul_resp_val_X         (imul_resp_val_X),
 
     // stats_en
 

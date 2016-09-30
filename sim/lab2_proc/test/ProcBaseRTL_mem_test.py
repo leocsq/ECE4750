@@ -37,7 +37,11 @@ import inst_sw
 
 @pytest.mark.parametrize( "name,test", [
   asm_test( inst_sw.gen_basic_test     ),
-
+  asm_test( inst_sw.gen_dest_dep_test  ) ,
+  asm_test( inst_sw.gen_sword_dep_test ) ,
+  asm_test( inst_sw.gen_srcs_dest_test ) ,
+  asm_test( inst_sw.gen_value_test     ) ,
+  asm_test( inst_sw.gen_random_test    ) ,
   # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # Add more rows to the test case table to test more complicated
   # scenarios.
