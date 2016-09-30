@@ -67,6 +67,7 @@ def gen_nops_dep_taken_test():
 # gen_random_test
 #-------------------------------------------------------------------------
 
+<<<<<<< HEAD
 def gen_random_test():
   asm_code = []
   for i in xrange(25):
@@ -75,3 +76,13 @@ def gen_random_test():
     result = src0
     asm_code.append( gen_jal_value_test("jal", op ) )
   return asm_code
+=======
+# ''' LAB TASK ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# Define additional directed and random test cases.
+# '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+def gen_src0_dep_taken_test():
+  return [
+   gen_jal_dest_dep_test( 8, "jal", 2, 0x0228, 0b10, 0b10),
+
+  ]
+>>>>>>> 7b3e337f9740612c8a9eebeb264c9a14c8a69abe
