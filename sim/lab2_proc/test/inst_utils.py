@@ -646,47 +646,6 @@ def gen_sd_value_test( inst, offset, base, sword, result ):
 
 # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''  
  
- 
-
-#-------------------------------------------------------------------------
-# gen_jal_template
-#-------------------------------------------------------------------------
-
-def gen_jal_template( num_nops_addi0, num_nops_addi1, inst, imm, PC, imm1, result ):
-  return """
-    # x3 will track the control flow pattern
-    addi x3, x0, 0                    # PC=0x200
-    {nops_addi0}                      # PC+=(nops_addi0)*4
-    
-    # Instruction under test
-    {inst} x1, {imm}                  # PC += 4
-    
-    addi x3, x3, 0b01                 
-    {nops_addi1}
-    
-{imm}:                                    
-    addi   x3, x3, {imm1}             # PC += 4
-    
-    # Check the link address
-    csrw  proc2mngr, x1 > PC
-
-    # Only the second bit should be set if jump was taken
-    csrw  proc2mngr, x3 > {result}
-
-  """.format(
-    nops_addi0 = gen_nops(num_nops_addi0),
-    nops_addi1 = gen_nops(num_nops_addi1),
-    **locals()
-  ) 
- 
-def gen_jal_dest_dep_test( num_nops, inst, imm, PC,imm1, result ):
-  return gen_jal_template( 8, num_nops, inst, imm, PC, imm1, result ) 
- 
- 
- 
- 
- 
-  
 
 #-------------------------------------------------------------------------
 # gen_jal_template
