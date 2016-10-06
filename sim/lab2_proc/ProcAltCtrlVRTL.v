@@ -482,10 +482,7 @@ module lab2_proc_ProcAltCtrlVRTL
     if ( val_D && ( jr_type_D == jr_jal ) ) begin
       pc_redirect_D = 1'b1;
       pc_sel_D      = 2'd2;          // use jal target
-    end else if ( val_D && ( jr_type_D == jr_jalr ) ) begin
-      pc_redirect_D = 1'b1;
-      pc_sel_D      = 2'd3;          // use jalr target
-    end
+    end 
     else begin
       pc_redirect_D = 1'b0;
       pc_sel_D      = 2'b0;          // use pc+4
