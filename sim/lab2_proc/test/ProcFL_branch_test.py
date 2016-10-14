@@ -5,9 +5,6 @@
 import pytest
 import random
 
-# Fix the random seed so results are reproducible
-random.seed(0xdeadbeef)
-
 from pymtl   import *
 from harness import *
 from lab2_proc.ProcFL import ProcFL

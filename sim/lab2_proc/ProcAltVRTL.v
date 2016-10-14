@@ -169,9 +169,9 @@ module lab2_proc_ProcAltVRTL
   // Imem Drop Unit
   //----------------------------------------------------------------------
 
-  mem_req_4B_t imemresp_msg_drop;
+  mem_resp_4B_t imemresp_msg_drop;
 
-  vc_DropUnit #($bits(mem_req_4B_t)) imem_drop_unit
+  vc_DropUnit #($bits(mem_resp_4B_t)) imem_drop_unit
   (
     .clk      (clk),
     .reset    (reset),
@@ -423,7 +423,7 @@ module lab2_proc_ProcAltVRTL
       vc_trace.append_str( trace_str, "#" );
       vc_trace.append_chars( trace_str, " ", 23-1 );
     end else
-      vc_trace.append_str( trace_str, { 3912'b0, rv2isa.disasm( ctrl.inst_D ) } );
+      vc_trace.append_str( trace_str, { 3896'b0, rv2isa.disasm( ctrl.inst_D ) } );
 
     vc_trace.append_str( trace_str, "|" );
 

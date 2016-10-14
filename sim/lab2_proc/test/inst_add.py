@@ -4,9 +4,6 @@
 
 import random
 
-# Fix the random seed so results are reproducible
-random.seed(0xdeadbeef)
-
 from pymtl import *
 from inst_utils import *
 
@@ -52,12 +49,12 @@ def gen_basic_test():
 
 def gen_dest_dep_test():
   return [
-    gen_rr_dest_dep_test( 5, "add",   1,  1,  2 ),
-    gen_rr_dest_dep_test( 4, "add",   2, -1,  1 ),
-    gen_rr_dest_dep_test( 3, "add",  -3,  1, -2 ),
-    gen_rr_dest_dep_test( 2, "add",  -4, -1, -5 ),
-    gen_rr_dest_dep_test( 1, "add",   5,  1,  6 ),
-    gen_rr_dest_dep_test( 0, "add",   6,  1,  7 ),
+    gen_rr_dest_dep_test( 5, "add", 1, 1, 2 ),
+    gen_rr_dest_dep_test( 4, "add", 2, 1, 3 ),
+    gen_rr_dest_dep_test( 3, "add", 3, 1, 4 ),
+    gen_rr_dest_dep_test( 2, "add", 4, 1, 5 ),
+    gen_rr_dest_dep_test( 1, "add", 5, 1, 6 ),
+    gen_rr_dest_dep_test( 0, "add", 6, 1, 7 ),
   ]
 
 #-------------------------------------------------------------------------
@@ -80,12 +77,12 @@ def gen_src0_dep_test():
 
 def gen_src1_dep_test():
   return [
-    gen_rr_src1_dep_test( 5, "add",  13,  1,  14 ),
-    gen_rr_src1_dep_test( 4, "add",  14, -1,  13 ),
-    gen_rr_src1_dep_test( 3, "add", -15,  1, -14 ),
-    gen_rr_src1_dep_test( 2, "add", -16, -1, -17 ),
-    gen_rr_src1_dep_test( 1, "add",  17,  1,  18 ),
-    gen_rr_src1_dep_test( 0, "add",  18,  1,  19 ),
+    gen_rr_src1_dep_test( 5, "add", 1, 13, 14 ),
+    gen_rr_src1_dep_test( 4, "add", 1, 14, 15 ),
+    gen_rr_src1_dep_test( 3, "add", 1, 15, 16 ),
+    gen_rr_src1_dep_test( 2, "add", 1, 16, 17 ),
+    gen_rr_src1_dep_test( 1, "add", 1, 17, 18 ),
+    gen_rr_src1_dep_test( 0, "add", 1, 18, 19 ),
   ]
 
 #-------------------------------------------------------------------------
@@ -94,12 +91,12 @@ def gen_src1_dep_test():
 
 def gen_srcs_dep_test():
   return [
-    gen_rr_srcs_dep_test( 5, "add",  19,  1,  20 ),
-    gen_rr_srcs_dep_test( 4, "add",  20, -1,  19 ),
-    gen_rr_srcs_dep_test( 3, "add", -21,  1, -20 ),
-    gen_rr_srcs_dep_test( 2, "add", -22, -1, -23 ),
-    gen_rr_srcs_dep_test( 1, "add",  23,  1,  24 ),
-    gen_rr_srcs_dep_test( 0, "add",  24,  1,  25 ),
+    gen_rr_srcs_dep_test( 5, "add", 12, 2, 14 ),
+    gen_rr_srcs_dep_test( 4, "add", 13, 3, 16 ),
+    gen_rr_srcs_dep_test( 3, "add", 14, 4, 18 ),
+    gen_rr_srcs_dep_test( 2, "add", 15, 5, 20 ),
+    gen_rr_srcs_dep_test( 1, "add", 16, 6, 22 ),
+    gen_rr_srcs_dep_test( 0, "add", 17, 7, 24 ),
   ]
 
 #-------------------------------------------------------------------------

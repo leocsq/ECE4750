@@ -131,7 +131,7 @@ module rv2isa_InstTasks();
   // Immediate decoding -- only outputs signals at the width required for
   // line tracing
   //----------------------------------------------------------------------
-  function [10:0] imm_i( input [`RV2ISA_INST_NBITS-1:0] inst );
+  function [11:0] imm_i( input [`RV2ISA_INST_NBITS-1:0] inst );
   begin
     // I-type immediate
     imm_i = { inst[31], inst[30:25], inst[24:21], inst[20] };
@@ -145,7 +145,7 @@ module rv2isa_InstTasks();
   end
   endfunction
 
-  function [10:0] imm_s( input [`RV2ISA_INST_NBITS-1:0] inst );
+  function [11:0] imm_s( input [`RV2ISA_INST_NBITS-1:0] inst );
   begin
     // S-type immediate
     imm_s = { inst[31], inst[30:25], inst[11:8], inst[7] };

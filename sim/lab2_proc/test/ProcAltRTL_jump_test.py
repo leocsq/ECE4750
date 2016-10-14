@@ -5,9 +5,6 @@
 import pytest
 import random
 
-# Fix the random seed so results are reproducible
-random.seed(0xdeadbeef)
-
 from pymtl   import *
 from harness import *
 from lab2_proc.ProcAltRTL import ProcAltRTL
@@ -23,8 +20,13 @@ import inst_jal
   asm_test( inst_jal.gen_nops_dep_taken_test),
   asm_test( inst_jal.gen_random_test),
 ])
+
 def test_jal( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
+
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 #-------------------------------------------------------------------------
 # jalr
@@ -37,5 +39,10 @@ import inst_jalr
   asm_test( inst_jalr.gen_nops_dep_taken_test),
   asm_test( inst_jalr.gen_random_test),
 ])
+
 def test_jalr( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
+
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

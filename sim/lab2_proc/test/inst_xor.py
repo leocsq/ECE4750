@@ -4,9 +4,6 @@
 
 import random
 
-# Fix the random seed so results are reproducible
-random.seed(0xdeadbeef)
-
 from pymtl import *
 from inst_utils import *
 
@@ -52,12 +49,12 @@ def gen_basic_test():
 
 def gen_dest_dep_test():
   return [
-    gen_rr_dest_dep_test( 5, "xor", 0x00000f0f, 0x000000ff, 0x00000ff0 ),
-    gen_rr_dest_dep_test( 4, "xor", 0x0000f0f0, 0x00000ff0, 0x0000ff00 ),
-    gen_rr_dest_dep_test( 3, "xor", 0x000f0f00, 0x0000ff00, 0x000ff000 ),
-    gen_rr_dest_dep_test( 2, "xor", 0x00f0f000, 0x000ff000, 0x00ff0000 ),
-    gen_rr_dest_dep_test( 1, "xor", 0x0f0f0000, 0x00ff0000, 0x0ff00000 ),
-    gen_rr_dest_dep_test( 0, "xor", 0xf0f00000, 0x0ff00000, 0xff000000 ),
+    gen_rr_dest_dep_test( 5, "xor", 0x0000000f, 0x0000000f, 0x00000000 ),
+    gen_rr_dest_dep_test( 4, "xor", 0x000000f0, 0x0000000f, 0x000000ff ),
+    gen_rr_dest_dep_test( 3, "xor", 0x00000f0f, 0x0000000f, 0x00000f00 ),
+    gen_rr_dest_dep_test( 2, "xor", 0x0000f0f0, 0x0000000f, 0x0000f0ff ),
+    gen_rr_dest_dep_test( 1, "xor", 0x000f0f00, 0x0000000f, 0x000f0f0f ),
+    gen_rr_dest_dep_test( 0, "xor", 0x00f0f000, 0x0000000f, 0x00f0f00f ),
   ]
 
 #-------------------------------------------------------------------------
@@ -66,12 +63,12 @@ def gen_dest_dep_test():
 
 def gen_src0_dep_test():
   return [
-    gen_rr_src0_dep_test( 5, "xor", 0x0f00000f, 0xff000000, 0xf000000f ),
-    gen_rr_src0_dep_test( 4, "xor", 0xf00000f0, 0xf000000f, 0x000000ff ),
-    gen_rr_src0_dep_test( 3, "xor", 0x00000f0f, 0x000000ff, 0x00000ff0 ),
-    gen_rr_src0_dep_test( 2, "xor", 0x0000f0f0, 0x00000ff0, 0x0000ff00 ),
-    gen_rr_src0_dep_test( 1, "xor", 0x000f0f00, 0x0000ff00, 0x000ff000 ),
-    gen_rr_src0_dep_test( 0, "xor", 0x00f0f000, 0x000ff000, 0x00ff0000 ),
+    gen_rr_src0_dep_test( 5, "xor", 0x0000000f, 0x0000000f, 0x00000000 ),
+    gen_rr_src0_dep_test( 4, "xor", 0x000000f0, 0x0000000f, 0x000000ff ),
+    gen_rr_src0_dep_test( 3, "xor", 0x00000f0f, 0x0000000f, 0x00000f00 ),
+    gen_rr_src0_dep_test( 2, "xor", 0x0000f0f0, 0x0000000f, 0x0000f0ff ),
+    gen_rr_src0_dep_test( 1, "xor", 0x000f0f00, 0x0000000f, 0x000f0f0f ),
+    gen_rr_src0_dep_test( 0, "xor", 0x00f0f000, 0x0000000f, 0x00f0f00f ),
   ]
 
 #-------------------------------------------------------------------------
@@ -80,12 +77,12 @@ def gen_src0_dep_test():
 
 def gen_src1_dep_test():
   return [
-    gen_rr_src1_dep_test( 5, "xor", 0x0f0f0000, 0x00ff0000, 0x0ff00000 ),
-    gen_rr_src1_dep_test( 4, "xor", 0xf0f00000, 0x0ff00000, 0xff000000 ),
-    gen_rr_src1_dep_test( 3, "xor", 0x0f00000f, 0xff000000, 0xf000000f ),
-    gen_rr_src1_dep_test( 2, "xor", 0xf00000f0, 0xf000000f, 0x000000ff ),
-    gen_rr_src1_dep_test( 1, "xor", 0x00000f0f, 0x000000ff, 0x00000ff0 ),
-    gen_rr_src1_dep_test( 0, "xor", 0x0000f0f0, 0x00000ff0, 0x0000ff00 ),
+    gen_rr_src1_dep_test( 5, "xor", 0x0000000f, 0x0000000f, 0x00000000 ),
+    gen_rr_src1_dep_test( 4, "xor", 0x0000000f, 0x000000f0, 0x000000ff ),
+    gen_rr_src1_dep_test( 3, "xor", 0x0000000f, 0x00000f0f, 0x00000f00 ),
+    gen_rr_src1_dep_test( 2, "xor", 0x0000000f, 0x0000f0f0, 0x0000f0ff ),
+    gen_rr_src1_dep_test( 1, "xor", 0x0000000f, 0x000f0f00, 0x000f0f0f ),
+    gen_rr_src1_dep_test( 0, "xor", 0x0000000f, 0x00f0f000, 0x00f0f00f ),
   ]
 
 #-------------------------------------------------------------------------

@@ -5,9 +5,6 @@
 import pytest
 import random
 
-# Fix the random seed so results are reproducible
-random.seed(0xdeadbeef)
-
 from pymtl   import *
 from harness import *
 from lab2_proc.ProcAltRTL import ProcAltRTL
@@ -30,7 +27,11 @@ import inst_add
 ])
 def test_add( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
- 
+
+def test_add_rand_delays( dump_vcd ):
+  run_test( ProcAltRTL, inst_add.gen_random_test, dump_vcd,
+            src_delay=3, sink_delay=5, mem_stall_prob=0.5, mem_latency=3 )
+
 #-------------------------------------------------------------------------
 # sub
 #-------------------------------------------------------------------------
@@ -50,6 +51,9 @@ import inst_sub
 def test_sub( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # mul
 #-------------------------------------------------------------------------
@@ -69,6 +73,9 @@ import inst_mul
 def test_mul( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # and
 #-------------------------------------------------------------------------
@@ -87,6 +94,10 @@ import inst_and
 ])
 def test_and( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
+
+def test_and_rand_delays( dump_vcd ):
+  run_test( ProcAltRTL, inst_and.gen_random_test, dump_vcd,
+            src_delay=3, sink_delay=5, mem_stall_prob=0.5, mem_latency=3 )
 
 #-------------------------------------------------------------------------
 # or
@@ -107,6 +118,10 @@ import inst_or
 def test_or( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
 
+def test_or_rand_delays( dump_vcd ):
+  run_test( ProcAltRTL, inst_or.gen_random_test, dump_vcd,
+            src_delay=3, sink_delay=5, mem_stall_prob=0.5, mem_latency=3 )
+
 #-------------------------------------------------------------------------
 # xor
 #-------------------------------------------------------------------------
@@ -125,6 +140,10 @@ import inst_xor
 ])
 def test_xor( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
+
+def test_xor_rand_delays( dump_vcd ):
+  run_test( ProcAltRTL, inst_xor.gen_random_test, dump_vcd,
+            src_delay=3, sink_delay=5, mem_stall_prob=0.5, mem_latency=3 )
 
 #-------------------------------------------------------------------------
 # slt
@@ -145,6 +164,9 @@ import inst_slt
 def test_slt( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # sltu
 #-------------------------------------------------------------------------
@@ -165,6 +187,9 @@ import inst_sltu
 def test_sltu( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # sra
 #-------------------------------------------------------------------------
@@ -184,6 +209,9 @@ import inst_sra
 def test_sra( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # srl
 #-------------------------------------------------------------------------
@@ -203,6 +231,9 @@ import inst_srl
 def test_srl( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # sll
 #-------------------------------------------------------------------------
@@ -222,5 +253,6 @@ import inst_sll
 def test_sll( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
 
-
-         
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

@@ -86,7 +86,7 @@ def parse_cmdline():
   p.add_argument( "--dump-vcd",                     action="store_true"    )
   p.add_argument( "--mem-latency", default=0,       type=int               )
   p.add_argument( "--mem-dprob",   default=0.0,     type=float             )
-  p.add_argument( "--max-cycles",  default=8000,    type=int               )
+  p.add_argument( "--max-cycles",  default=15000,   type=int               )
 
   opts = p.parse_args()
   if opts.help: p.error()

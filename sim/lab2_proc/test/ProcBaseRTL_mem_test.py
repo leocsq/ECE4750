@@ -5,9 +5,6 @@
 import pytest
 import random
 
-# Fix the random seed so results are reproducible
-random.seed(0xdeadbeef)
-
 from pymtl   import *
 from harness import *
 from lab2_proc.ProcBaseRTL import ProcBaseRTL
@@ -28,6 +25,10 @@ import inst_lw
 ])
 def test_lw( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
+
+def test_lw_rand_delays( dump_vcd ):
+  run_test( ProcBaseRTL, inst_lw.gen_random_test, dump_vcd,
+            src_delay=3, sink_delay=5, mem_stall_prob=0.5, mem_latency=3 )
 
 #-------------------------------------------------------------------------
 # sw
@@ -50,3 +51,6 @@ import inst_sw
 def test_sw( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
