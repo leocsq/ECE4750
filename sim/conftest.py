@@ -3,6 +3,7 @@
 #=========================================================================
 
 import pytest
+import random
 
 def pytest_addoption(parser):
 
@@ -25,6 +26,11 @@ def pytest_addoption(parser):
 
   parser.addoption( "--vrtl", action="store_true",
                     help="use VRTL implementations" )
+
+@pytest.fixture(autouse=True)
+def fix_randseed():
+  """Set the random seed prior to each test case."""
+  random.seed(0xdeadbeef)
 
 @pytest.fixture()
 def dump_vcd(request):

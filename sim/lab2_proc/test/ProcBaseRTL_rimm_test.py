@@ -5,9 +5,6 @@
 import pytest
 import random
 
-# Fix the random seed so results are reproducible
-random.seed(0xdeadbeef)
-
 from pymtl   import *
 from harness import *
 from lab2_proc.ProcBaseRTL import ProcBaseRTL
@@ -29,6 +26,9 @@ import inst_addi
 def test_addi( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # andi
 #-------------------------------------------------------------------------
@@ -45,6 +45,10 @@ import inst_andi
 ])
 def test_andi( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
+
+def test_andi_rand_delays( dump_vcd ):
+  run_test( ProcBaseRTL, inst_andi.gen_random_test, dump_vcd,
+            src_delay=3, sink_delay=5, mem_stall_prob=0.5, mem_latency=3 )
 
 #-------------------------------------------------------------------------
 # ori
@@ -63,6 +67,10 @@ import inst_ori
 def test_ori( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
 
+def test_ori_rand_delays( dump_vcd ):
+  run_test( ProcBaseRTL, inst_ori.gen_random_test, dump_vcd,
+            src_delay=3, sink_delay=5, mem_stall_prob=0.5, mem_latency=3 )
+
 #-------------------------------------------------------------------------
 # xori
 #-------------------------------------------------------------------------
@@ -79,6 +87,10 @@ import inst_xori
 ])
 def test_xori( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
+
+def test_xori_rand_delays( dump_vcd ):
+  run_test( ProcBaseRTL, inst_xori.gen_random_test, dump_vcd,
+            src_delay=3, sink_delay=5, mem_stall_prob=0.5, mem_latency=3 )
 
 #-------------------------------------------------------------------------
 # slti
@@ -97,6 +109,9 @@ import inst_slti
 def test_slti( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # sltiu
 #-------------------------------------------------------------------------
@@ -113,7 +128,10 @@ import inst_sltiu
 ])
 def test_sltiu( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
- 
+
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # srai
 #-------------------------------------------------------------------------
@@ -131,6 +149,9 @@ import inst_srai
 def test_srai( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # srli
 #-------------------------------------------------------------------------
@@ -148,6 +169,9 @@ import inst_srli
 def test_srli( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # slli
 #-------------------------------------------------------------------------
@@ -165,6 +189,9 @@ import inst_slli
 def test_slli( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # lui
 #-------------------------------------------------------------------------
@@ -182,6 +209,9 @@ import inst_lui
 def test_lui( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # auipc
 #-------------------------------------------------------------------------
@@ -198,4 +228,7 @@ import inst_auipc
 ])
 def test_auipc( name, test, dump_vcd ):
   run_test( ProcBaseRTL, test, dump_vcd )
-  
+
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

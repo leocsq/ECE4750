@@ -109,7 +109,7 @@ module vc_ResetRegfile_1r1w
       always_ff @( posedge clk )
         if ( reset )
           rfile[i] <= p_reset_value;
-        else if ( write_en && (i == write_addr) )
+        else if ( write_en && (i[c_addr_nbits-1:0] == write_addr) )
           rfile[i] <= write_data;
     end
   endgenerate

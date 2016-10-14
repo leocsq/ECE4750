@@ -565,9 +565,10 @@ class ProcBaseCtrlPRTL( Model ):
     def comb_W():
       s.reg_en_W.value = ~s.stall_W
 
-    s.inst_type_W      = Wire( 8 )
-    s.proc2mngr_val_W  = Wire( 1 )
-    s.rf_wen_pending_W = Wire( 1 )
+    s.inst_type_W            = Wire( 8 )
+    s.proc2mngr_val_W        = Wire( 1 )
+    s.rf_wen_pending_W       = Wire( 1 )
+    s.stats_en_wen_pending_W = Wire( 1 )
 
     @s.posedge_clk
     def reg_W():
@@ -576,12 +577,12 @@ class ProcBaseCtrlPRTL( Model ):
         s.val_W.next            = 0
         s.stats_en_wen_W.next   = 0
       elif s.reg_en_W:
-        s.val_W.next            = s.next_val_M
-        s.rf_wen_pending_W.next = s.rf_wen_pending_M
-        s.inst_type_W.next      = s.inst_type_M
-        s.rf_waddr_W.next       = s.rf_waddr_M
-        s.proc2mngr_val_W.next  = s.proc2mngr_val_M
-        s.stats_en_wen_W.next   = s.stats_en_wen_M
+        s.val_W.next                  = s.next_val_M
+        s.rf_wen_pending_W.next       = s.rf_wen_pending_M
+        s.inst_type_W.next            = s.inst_type_M
+        s.rf_waddr_W.next             = s.rf_waddr_M
+        s.proc2mngr_val_W.next        = s.proc2mngr_val_M
+        s.stats_en_wen_pending_W.next = s.stats_en_wen_M
 
     s.ostall_proc2mngr_W = Wire( 1 )
 
@@ -589,7 +590,8 @@ class ProcBaseCtrlPRTL( Model ):
     def comb_W():
       # set RF write enable if valid
 
-      s.rf_wen_W.value      = s.val_W & s.rf_wen_pending_W
+      s.rf_wen_W.value       = s.val_W & s.rf_wen_pending_W
+      s.stats_en_wen_W.value = s.val_W & s.stats_en_wen_pending_W
 
       # ostall due to proc2mngr
 

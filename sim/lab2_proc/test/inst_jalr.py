@@ -4,9 +4,6 @@
 
 import random
 
-# Fix the random seed so results are reproducible
-random.seed(0xdeadbeef)
-
 from pymtl import *
 from inst_utils import *
 

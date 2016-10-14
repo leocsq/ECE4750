@@ -8,7 +8,7 @@ import os
 from subprocess import check_output, CalledProcessError
 
 impls  = [ "fl", "base", "alt" ]
-inputs = [ "vvadd-unopt", "vvadd-opt", "cmult", "bsearch", "mfilt" ]
+inputs = [ "vvadd-unopt", "vvadd-opt", "cmult", "mfilt", "bsearch" ]
 
 eval_runs = []
 
@@ -36,7 +36,7 @@ for eval_run in eval_runs:
   impl   = eval_run[0]
   input_ = eval_run[1]
 
-  cmd = [ sim, "--impl", impl, "--input", input_, "--stats", "--verify", "--max-cycles",  "10000", ]
+  cmd = [ sim, "--impl", impl, "--input", input_, "--stats", "--verify", "--max-cycles",  "15000", ]
 
   try:
     result = check_output( cmd ).strip()

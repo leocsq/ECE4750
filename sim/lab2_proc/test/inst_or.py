@@ -4,9 +4,6 @@
 
 import random
 
-# Fix the random seed so results are reproducible
-random.seed(0xdeadbeef)
-
 from pymtl import *
 from inst_utils import *
 
@@ -52,12 +49,12 @@ def gen_basic_test():
 
 def gen_dest_dep_test():
   return [
-    gen_rr_dest_dep_test( 5, "or", 0x00000f0f, 0x000000ff, 0x00000fff ),
-    gen_rr_dest_dep_test( 4, "or", 0x0000f0f0, 0x00000ff0, 0x0000fff0 ),
-    gen_rr_dest_dep_test( 3, "or", 0x000f0f00, 0x0000ff00, 0x000fff00 ),
-    gen_rr_dest_dep_test( 2, "or", 0x00f0f000, 0x000ff000, 0x00fff000 ),
-    gen_rr_dest_dep_test( 1, "or", 0x0f0f0000, 0x00ff0000, 0x0fff0000 ),
-    gen_rr_dest_dep_test( 0, "or", 0xf0f00000, 0x0ff00000, 0xfff00000 ),
+    gen_rr_dest_dep_test( 5, "or", 0x0000000f, 0x0000000f, 0x0000000f ),
+    gen_rr_dest_dep_test( 4, "or", 0x000000f0, 0x0000000f, 0x000000ff ),
+    gen_rr_dest_dep_test( 3, "or", 0x00000f00, 0x0000000f, 0x00000f0f ),
+    gen_rr_dest_dep_test( 2, "or", 0x0000f000, 0x0000000f, 0x0000f00f ),
+    gen_rr_dest_dep_test( 1, "or", 0x000f0000, 0x0000000f, 0x000f000f ),
+    gen_rr_dest_dep_test( 0, "or", 0x00f00000, 0x0000000f, 0x00f0000f ),
   ]
 
 #-------------------------------------------------------------------------
@@ -66,12 +63,12 @@ def gen_dest_dep_test():
 
 def gen_src0_dep_test():
   return [
-    gen_rr_src0_dep_test( 5, "or", 0x0f00000f, 0xff000000, 0xff00000f ),
-    gen_rr_src0_dep_test( 4, "or", 0xf00000f0, 0xf000000f, 0xf00000ff ),
-    gen_rr_src0_dep_test( 3, "or", 0x00000f0f, 0x000000ff, 0x00000fff ),
-    gen_rr_src0_dep_test( 2, "or", 0x0000f0f0, 0x00000ff0, 0x0000fff0 ),
-    gen_rr_src0_dep_test( 1, "or", 0x000f0f00, 0x0000ff00, 0x000fff00 ),
-    gen_rr_src0_dep_test( 0, "or", 0x00f0f000, 0x000ff000, 0x00fff000 ),
+    gen_rr_src0_dep_test( 5, "or", 0x0000000f, 0x0000000f, 0x0000000f ),
+    gen_rr_src0_dep_test( 4, "or", 0x000000f0, 0x0000000f, 0x000000ff ),
+    gen_rr_src0_dep_test( 3, "or", 0x00000f00, 0x0000000f, 0x00000f0f ),
+    gen_rr_src0_dep_test( 2, "or", 0x0000f000, 0x0000000f, 0x0000f00f ),
+    gen_rr_src0_dep_test( 1, "or", 0x000f0000, 0x0000000f, 0x000f000f ),
+    gen_rr_src0_dep_test( 0, "or", 0x00f00000, 0x0000000f, 0x00f0000f ),
   ]
 
 #-------------------------------------------------------------------------
@@ -80,12 +77,12 @@ def gen_src0_dep_test():
 
 def gen_src1_dep_test():
   return [
-    gen_rr_src1_dep_test( 5, "or", 0x0f0f0000, 0x00ff0000, 0x0fff0000 ),
-    gen_rr_src1_dep_test( 4, "or", 0xf0f00000, 0x0ff00000, 0xfff00000 ),
-    gen_rr_src1_dep_test( 3, "or", 0x0f00000f, 0xff000000, 0xff00000f ),
-    gen_rr_src1_dep_test( 2, "or", 0xf00000f0, 0xf000000f, 0xf00000ff ),
-    gen_rr_src1_dep_test( 1, "or", 0x00000f0f, 0x000000ff, 0x00000fff ),
-    gen_rr_src1_dep_test( 0, "or", 0x0000f0f0, 0x00000ff0, 0x0000fff0 ),
+    gen_rr_src1_dep_test( 5, "or", 0x0000000f, 0x0000000f, 0x0000000f ),
+    gen_rr_src1_dep_test( 4, "or", 0x0000000f, 0x000000f0, 0x000000ff ),
+    gen_rr_src1_dep_test( 3, "or", 0x0000000f, 0x00000f00, 0x00000f0f ),
+    gen_rr_src1_dep_test( 2, "or", 0x0000000f, 0x0000f000, 0x0000f00f ),
+    gen_rr_src1_dep_test( 1, "or", 0x0000000f, 0x000f0000, 0x000f000f ),
+    gen_rr_src1_dep_test( 0, "or", 0x0000000f, 0x00f00000, 0x00f0000f ),
   ]
 
 #-------------------------------------------------------------------------

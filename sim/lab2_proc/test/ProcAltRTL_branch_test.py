@@ -5,9 +5,6 @@
 import pytest
 import random
 
-# Fix the random seed so results are reproducible
-random.seed(0xdeadbeef)
-
 from pymtl   import *
 from harness import *
 from lab2_proc.ProcAltRTL import ProcAltRTL
@@ -28,6 +25,10 @@ import inst_beq
 ])
 def test_beq( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
+
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 #-------------------------------------------------------------------------
 # bne
@@ -50,6 +51,9 @@ import inst_bne
 def test_bne( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #-------------------------------------------------------------------------
 # bge
 #-------------------------------------------------------------------------
@@ -66,6 +70,10 @@ import inst_bge
 ])
 def test_bge( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
+
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 #-------------------------------------------------------------------------
 # bgeu
@@ -84,6 +92,10 @@ import inst_bgeu
 def test_bgeu( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
 #-------------------------------------------------------------------------
 # blt
 #-------------------------------------------------------------------------
@@ -100,6 +112,10 @@ import inst_blt
 ])
 def test_blt( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
+
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 #-------------------------------------------------------------------------
 # bltu
@@ -118,3 +134,6 @@ import inst_bltu
 def test_bltu( name, test, dump_vcd ):
   run_test( ProcAltRTL, test, dump_vcd )
 
+# ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# random stall and delay
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

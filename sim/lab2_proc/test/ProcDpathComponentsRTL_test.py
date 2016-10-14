@@ -5,9 +5,6 @@
 import pytest
 import random
 
-# Fix the random seed so results are reproducible
-random.seed(0xdeadbeef)
-
 from pymtl      import *
 from harness    import *
 from pclib.test import mk_test_case_table, run_sim
