@@ -115,7 +115,7 @@ def resp( type_, opaque, test, len, data ):
   return msg
 
 #----------------------------------------------------------------------
-# Test Case: read hit path
+# Test Case: read hit path for clean lines
 #----------------------------------------------------------------------
 # The test field in the response message: 0 == MISS, 1 == HIT
 
@@ -151,12 +151,25 @@ def read_hit_dmap( base_addr ):
     #    type  opq  addr       len data                type  opq  test len data
     req( 'wr', 0x0, 0x00000000, 0, 0xdeadbeef ), resp( 'wr', 0x0, 0,   0,  0          ), # compulsory miss
     req( 'wr', 0x1, 0x00001000, 0, 0x00c0ffee ), resp( 'wr', 0x1, 0,   0,  0          ), # compulsory miss
-    req( 'rd', 0x2, 0x00000000, 0, 0          ), resp( 'rd', 0x2, 0,   0,  0xdeadbeef ), # confilict miss
-    req( 'rd', 0x3, 0x00001000, 0, 0          ), resp( 'rd', 0x3, 0,   0,  0x00c0ffee ), # confilict miss
-  ]
+    req( 'rd', 0x2, 0x00000000, 0, 0          ), resp( 'rd', 0x2, 0,   0,  0xdeadbeef ), # conflict miss
+    req( 'rd', 0x3, 0x00001000, 0, 0          ), resp( 'rd', 0x3, 0,   0,  0x00c0ffee ), # conflict miss
 
+  ]
 #-------------------------------------------------------------------------
-# Test Case: write hit path
+# Test Case: read hit path for dirty lines, coded by feng qi 10/17
+#-------------------------------------------------------------------------
+# The test field in the response message: 0 == MISS, 1 == HIT
+
+def read_hit_1word_dirty( base_addr ):
+  return [
+    #    type  opq  addr      len data                type  opq  test len data
+    req( 'in', 0x0, 0x00000000, 0, 0xdeadbeef ), resp( 'in', 0x0, 0,   0,  0          ),
+    req( 'rd', 0x1, 0x00000000, 0, 0          ), resp( 'rd', 0x1, 1,   0,  0xdeadbeef ),
+    req( 'wr', 0x2, 0x00000100, 0, 0xdeadbfef ), resp( 'wr', 0x2, 0,   0,  0          ), # evict dirty line
+    req( 'rd', 0x3, 0x00000100, 0, 0          ), resp( 'rd', 0x3, 1,   0,  0xdeadbfef ),
+  ]
+#-------------------------------------------------------------------------
+# Test Case: write hit path for clean lines
 #-------------------------------------------------------------------------
 
 def write_hit_1word_clean( base_addr ):
@@ -166,9 +179,24 @@ def write_hit_1word_clean( base_addr ):
     req( 'wr', 0x01, base_addr, 0, 0xbeefbeeb ), resp('wr', 0x01, 1,   0,  0          ), # write word  0x00000000
     req( 'rd', 0x02, base_addr, 0, 0          ), resp('rd', 0x02, 1,   0,  0xbeefbeeb ), # read  word  0x00000000
   ]
+#-------------------------------------------------------------------------
+# Test Case: read write path for dirty lines, coded by feng qi 10/17
+#-------------------------------------------------------------------------
+# The test field in the response message: 0 == MISS, 1 == HIT
+
+def write_hit_1word_dirty( base_addr ):
+  return [
+    #    type  opq  addr      len data                type  opq  test len data
+    req( 'in', 0x0, 0x00000000, 0, 0x0a0b0c0d ), resp( 'in', 0x0, 0,   0,  0          ),
+    req( 'wr', 0x1, 0x00000000, 0, 0xdeadbeef ), resp( 'wr', 0x1, 1,   0,  0          ),
+    req( 'wr', 0x2, 0x00000000, 0, 0xdeadbeff ), resp( 'wr', 0x2, 1,   0,  0          ), # evict dirty line
+    req( 'rd', 0x3, 0x00000000, 0, 0          ), resp( 'rd', 0x3, 1,   0,  0xdeadbeff ),
+  ]
+
+
 
 #-------------------------------------------------------------------------
-# Test Case: read miss path
+# Test Case: read miss path with refill and no eviction
 #-------------------------------------------------------------------------
 
 def read_miss_1word_msg( base_addr ):
@@ -176,6 +204,7 @@ def read_miss_1word_msg( base_addr ):
     #    type  opq   addr      len  data               type  opq test len  data
     req( 'rd', 0x00, 0x00000000, 0, 0          ), resp('rd', 0x00, 0, 0, 0xdeadbeef ), # read word  0x00000000
     req( 'rd', 0x01, 0x00000004, 0, 0          ), resp('rd', 0x01, 1, 0, 0x00c0ffee ), # read word  0x00000004
+    req( 'rd', 0x02, 0x00000008, 0, 0          ), resp('rd', 0x02, 1, 0, 0xaaaabbbb ), # read word  0x00000008
   ]
 
 # Data to be loaded into memory before running the test
@@ -185,7 +214,13 @@ def read_miss_1word_mem( base_addr ):
     # addr      data (in int)
     0x00000000, 0xdeadbeef,
     0x00000004, 0x00c0ffee,
+    0x00000008, 0xaaaabbbb,
   ]
+#-------------------------------------------------------------------------
+# Test Case: Write miss path with refill and no eviction
+#-------------------------------------------------------------------------
+
+
 
 #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 # LAB TASK: Add more test cases
@@ -213,9 +248,13 @@ def read_miss_1word_mem( base_addr ):
 test_case_table_generic = mk_test_case_table([
   (                         "msg_func               mem_data_func         nbank stall lat src sink"),
   [ "read_hit_1word_clean",  read_hit_1word_clean,  None,                 0,    0.0,  0,  0,  0    ],
+  [ "read_hit_1word_dirty",  read_hit_1word_dirty,  None,                 0,    0.0,  0,  0,  0    ],
   [ "read_miss_1word",       read_miss_1word_msg,   read_miss_1word_mem,  0,    0.0,  0,  0,  0    ],
   [ "read_hit_1word_4bank",  read_hit_1word_clean,  None,                 4,    0.0,  0,  0,  0    ],
+  [ "write_hit_1word_clean", write_hit_1word_clean, None,                 0,    0.0,  0,  0,  0    ],
+  [ "write_hit_1word_dirty", write_hit_1word_dirty, None,                 0,    0.0,  0,  0,  0    ],
 
+#  [ "write_miss_1word",      write_miss_1word_msg,  write_miss_1word_mem, 0,    0.0,  0,  0,  0    ],
   #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   # LAB TASK: Add test cases to this table
   #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -247,9 +286,9 @@ test_case_table_set_assoc = mk_test_case_table([
   (                             "msg_func        mem_data_func    nbank stall lat src sink"),
   [ "read_hit_asso",             read_hit_asso,  None,            0,    0.0,  0,  0,  0    ],
 
-  #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  #
   # LAB TASK: Add test cases to this table
-  #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  #
 
 ])
 
@@ -279,9 +318,9 @@ test_case_table_dir_mapped = mk_test_case_table([
   (                                  "msg_func              mem_data_func          nbank stall lat src sink"),
   [ "read_hit_dmap",                  read_hit_dmap,        None,                  0,    0.0,  0,  0,  0    ],
 
-  #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  #
   # LAB TASK: Add test cases to this table
-  #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  #
 
 ])
 
