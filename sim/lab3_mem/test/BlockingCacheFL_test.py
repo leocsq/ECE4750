@@ -8,6 +8,8 @@ import pytest
 import random
 import struct
 
+random.seed(0xa4e28cc2)
+
 from pymtl      import *
 from pclib.test import mk_test_case_table, run_sim
 from pclib.test import TestSource
@@ -149,10 +151,10 @@ def read_hit_asso( base_addr ):
 def read_hit_dmap( base_addr ):
   return [
     #    type  opq  addr       len data                type  opq  test len data
-    req( 'wr', 0x0, 0x00000000, 0, 0xdeadbeef ), resp( 'wr', 0x0, 0,   0,  0          ), # compulsory miss
-    req( 'wr', 0x1, 0x00001000, 0, 0x00c0ffee ), resp( 'wr', 0x1, 0,   0,  0          ), # compulsory miss
-    req( 'rd', 0x2, 0x00000000, 0, 0          ), resp( 'rd', 0x2, 0,   0,  0xdeadbeef ), # confilict miss
-    req( 'rd', 0x3, 0x00001000, 0, 0          ), resp( 'rd', 0x3, 0,   0,  0x00c0ffee ), # confilict miss
+    req( 'wr', 0x0, 0x00000000, 0, 0xdeadbeef ), resp( 'wr', 0x0, 0,   0,  0          ),
+    req( 'wr', 0x1, 0x00000080, 0, 0x00c0ffee ), resp( 'wr', 0x1, 0,   0,  0          ),
+    req( 'rd', 0x2, 0x00000000, 0, 0          ), resp( 'rd', 0x2, 1,   0,  0xdeadbeef ),
+    req( 'rd', 0x3, 0x00000080, 0, 0          ), resp( 'rd', 0x3, 1,   0,  0x00c0ffee ),
   ]
 
 #-------------------------------------------------------------------------
