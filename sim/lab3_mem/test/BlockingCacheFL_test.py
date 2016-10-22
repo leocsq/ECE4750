@@ -8,6 +8,8 @@ import pytest
 import random
 import struct
 
+random.seed(0xa4e28cc2)
+
 from pymtl      import *
 from pclib.test import mk_test_case_table, run_sim
 from pclib.test import TestSource

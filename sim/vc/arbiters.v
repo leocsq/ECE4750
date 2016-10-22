@@ -254,6 +254,66 @@ module vc_RoundRobinArbChain
 endmodule
 
 //------------------------------------------------------------------------
+// vc_RoundRobinArbEn
+//------------------------------------------------------------------------
+// Ensures strong fairness among the requesters. The requester which wins
+// the grant will be the lowest priority requester the next cycle. Has an
+// enable bit to control whether priorities should actually update.
+//
+//  NOTE : Ideally we would just instantiate the vc_RoundRobinArbChain
+//         and wire up kin to zero, but VCS seems to have trouble with
+//         correctly elaborating the parameteres in that situation. So
+//         for now we just duplicate the code from vc_RoundRobinArbChain
+//
+
+module vc_RoundRobinArbEn #( parameter p_num_reqs = 2 )
+(
+  input  logic                clk,
+  input  logic                reset,
+  input  logic                en,        // 1 = update priorities
+  input  logic [p_num_reqs-1:0] reqs,    // 1 = making a req, 0 = no req
+  output logic [p_num_reqs-1:0] grants   // (one-hot) 1 is req won grant
+);
+
+  // We only update the priority if a requester actually received a grant
+
+  logic priority_en;
+  assign priority_en = |grants && en;
+
+  // Next priority is just the one-hot grant vector left rotated by one
+
+  logic [p_num_reqs-1:0] priority_next;
+  assign priority_next = { grants[p_num_reqs-2:0], grants[p_num_reqs-1] };
+
+  // State for the one-hot priority vector
+
+  logic [p_num_reqs-1:0] priority_;
+
+  vc_EnResetReg#(p_num_reqs,1) priority_reg
+  (
+    .clk   (clk),
+    .reset (reset),
+    .en    (priority_en),
+    .d     (priority_next),
+    .q     (priority_)
+  );
+
+  // Variable arbiter chain
+
+  logic dummy_kout;
+
+  vc_VariableArbChain#(p_num_reqs) variable_arb_chain
+  (
+    .kin       (1'b0),
+    .priority_ (priority_),
+    .reqs      (reqs),
+    .grants    (grants),
+    .kout      (dummy_kout)
+  );
+
+endmodule
+
+//------------------------------------------------------------------------
 // vc_RoundRobinArb
 //------------------------------------------------------------------------
 // Ensures strong fairness among the requesters. The requester which wins
