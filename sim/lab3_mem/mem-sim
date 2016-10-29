@@ -81,12 +81,7 @@ def parse_cmdline():
   p.add_argument( "-v", "--verbose",  action="store_true"                                          )
   p.add_argument( "-h", "--help",     action="store_true"                                          )
   p.add_argument(       "--impl",     choices=["base", "alt"],                   default="base"    )
-
-  #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  # LAB TASK: Add choices to --pattern option to use your new patterns
-  #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-  p.add_argument(       "--pattern",  choices=["loop-1d", "loop-2d", "loop-3d"], default="loop-1d" )
+  p.add_argument(       "--pattern",  choices=["loop-1d", "loop-2d", "loop-3d","loop-2d-modified","loop-mix"], default="loop-1d" )
   p.add_argument(       "--dump-vcd", action="store_true"                                          )
   p.add_argument(       "--stats",    action="store_true"                                          )
   p.add_argument(       "--trace",    action="store_true"                                          )
@@ -140,7 +135,6 @@ def ustride( size ):
 
 def loop_1d( size = 100 ):
   return ustride( size )
-
 #-------------------------------------------------------------------------
 # Pattern: loop-2d
 #-------------------------------------------------------------------------
@@ -170,7 +164,36 @@ def loop_2d( size = 100 ):
       sink_msgs.append( mk_resp( 0, 0, data    ) )
 
   return [ src_msgs, sink_msgs, mem_data ]
+  
+#-------------------------------------------------------------------------
+# Pattern: loop-2d-modified
+#-------------------------------------------------------------------------
 
+def loop_2d_modified( size = 100 ):
+
+  src_msgs  = []
+  sink_msgs = []
+
+  mem_data  = []
+  mem_word  = Bits( 32 )
+
+  # Initialize memory
+  addr = 0
+  for i in xrange( size ):
+    mem_word.value = i
+    mem_data.append( addr )
+    mem_data.append( mem_word.uint() )
+    addr += 4
+
+  # Read from memory
+  for i in xrange( 100 ):
+    for j in xrange( size ):
+      addr = j*4
+      data = j
+      src_msgs.append ( mk_req ( 0, addr, 0, 0 ) )
+      sink_msgs.append( mk_resp( 0, 0, data    ) )
+
+  return [ src_msgs, sink_msgs, mem_data ]
 #-------------------------------------------------------------------------
 # Pattern: loop-3d
 #-------------------------------------------------------------------------
@@ -204,9 +227,40 @@ def loop_3d():
 
   return [ src_msgs, sink_msgs, mem_data ]
 
-#'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# LAB TASK: Add more memory access patterns to evaluate your cache
-#'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#-------------------------------------------------------------------------
+# Pattern: loop-mix
+#-------------------------------------------------------------------------
+
+def loop_mix( size = 100 ):
+
+  src_msgs  = []
+  sink_msgs = []
+
+  mem_data  = []
+  mem_word  = Bits( 32 )
+
+  # Initialize memory
+  addr = 0
+  for i in xrange( 2 ):
+    for j in xrange( 8 ):
+      addr           = i*256 + j*16
+      mem_word.value = i*64  + j*4
+      mem_data.append( addr )
+      mem_data.append( mem_word.uint() )
+      addr += 4
+
+  # Read and Write from memory
+  for i in xrange( 5 ):
+    for j in xrange( 2 ):
+      for k in xrange( 8 ):
+        addr = j*256 + k*16
+        data = j*64  + k*4
+        src_msgs.append ( mk_req ( 0, addr, 0, 0 ) )
+        sink_msgs.append( mk_resp( 0, 0, data    ) )
+        src_msgs.append ( mk_req ( 1, addr, 0, data ) )
+        sink_msgs.append( mk_resp( 1, 0, data    ) )
+
+  return [ src_msgs, sink_msgs, mem_data ]
 
 #-------------------------------------------------------------------------
 # Main
@@ -228,10 +282,8 @@ def main():
     'loop-1d' : loop_1d,
     'loop-2d' : loop_2d,
     'loop-3d' : loop_3d,
-
-    #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    # LAB TASK: Add your new patterns to this Python dict
-    #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    'loop-2d-modified':loop_2d_modified,
+    'loop-mix':loop_mix,
 
   }
 

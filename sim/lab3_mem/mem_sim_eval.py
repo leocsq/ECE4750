@@ -8,7 +8,7 @@ import os
 from subprocess import check_output, CalledProcessError
 
 impls  = [ "base", "alt" ]
-inputs = [ "loop-1d", "loop-2d", "loop-3d","loop-2d-c","loop-2d-w","mix"]
+inputs = [ "loop-1d", "loop-2d", "loop-3d","loop-2d-modified","loop-mix"]
 
 eval_runs = []
 
