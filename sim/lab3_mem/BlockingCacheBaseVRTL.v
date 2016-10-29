@@ -55,6 +55,7 @@ module lab3_mem_BlockingCacheBaseVRTL
   input  mem_resp_16B_t  memresp_msg,
   input  logic           memresp_val,
   output logic           memresp_rdy
+  
 );
 
   localparam size = 256; // Number of bytes in the cache
@@ -83,6 +84,7 @@ module lab3_mem_BlockingCacheBaseVRTL
   logic [2:0]  cacheresp_type;
   logic [2:0]  memreq_type;
   logic [1:0]  hit;
+
   
   // Status Signals  (dpath->ctrl)
 
@@ -128,12 +130,14 @@ module lab3_mem_BlockingCacheBaseVRTL
    .data_array_wben     (data_array_wben),
    .read_data_reg_en    (read_data_reg_en),
    .evict_addr_reg_en   (evict_addr_reg_en),
-	.memreq_addr_mux_sel (memreq_addr_mux_sel),
+   .memreq_addr_mux_sel (memreq_addr_mux_sel),
    .read_word_mux_sel   (read_word_mux_sel),
    .cacheresp_type      (cacheresp_type),
    .memreq_type         (memreq_type),
    .hit                 (hit),
+   
     // Status signals (dpath->ctrl)
+
 
    .cachereq_type       (cachereq_type),
    .cachereq_addr       (cachereq_addr),
@@ -161,7 +165,8 @@ module lab3_mem_BlockingCacheBaseVRTL
    .memreq_msg        (memreq_msg),
    // Memory Response
    .memresp_msg       (memresp_msg),
-
+   
+  
    // Control signals (ctrl->dpath)
 
    .cachereq_en         (cachereq_en),
@@ -230,6 +235,7 @@ module lab3_mem_BlockingCacheBaseVRTL
   `VC_TRACE_BEGIN
   begin
 
+
      case ( ctrl.state_reg )
 
        ctrl.I :        vc_trace.append_str( trace_str, "(I )" );
@@ -246,6 +252,7 @@ module lab3_mem_BlockingCacheBaseVRTL
 	   ctrl.W :        vc_trace.append_str( trace_str, "(W )" );
 	   
        default:        vc_trace.append_str( trace_str, "(? )" );
+
 
      endcase
 

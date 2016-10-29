@@ -7,8 +7,11 @@
 
 `include "vc/mem-msgs.v"
 `include "vc/assert.v"
-`include "vc/regfiles.v"
 `include "vc/regs.v"
+`include "vc/arithmetic.v"
+`include "vc/regfiles.v"
+
+
 //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 // LAB TASK: Include necessary files
 //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -58,6 +61,24 @@ module lab3_mem_BlockingCacheBaseCtrlVRTL
   input  logic                        tag_match
  );
 
+
+
+  //----------------------------------------------------------------------
+  // State Defions
+  //----------------------------------------------------------------------
+  localparam STATE_IDLE                 = 2'd0;
+  localparam STATE_TAG_CHECK            = 2'd1;
+  localparam STATE_INIT_DATA_ACCESS     = 2'd2;
+  localparam STATE_READ_DATA_ACCESS     = 2'd3;
+  localparam STATE_WRITE_DATA_ACCESS    = 2'd4;
+  localparam STATE_EVICT_PREPARE        = 2'd5;
+  localparam STATE_EVICT_REQUEST        = 2'd6;
+  localparam STATE_EVICT_WAIT           = 2'd7;
+  localparam STATE_REFILL_REQUEST       = 2'd8;
+  localparam STATE_REFILL_WAIT          = 2'd9;
+  localparam STATE_EVICT_UPDATE         = 2'd10;
+  localparam STATE_WAIT                 = 2'd11;
+  
   // local parameters not meant to be set from outside
   localparam size = 256;             // Cache size in bytes
   localparam dbw  = 32;              // Short name for data bitwidth
@@ -328,11 +349,11 @@ module lab3_mem_BlockingCacheBaseCtrlVRTL
 	  RD: cs( n,    n,    n,    n,     n,    n,     wd_x,   y,  n,  y,   n,  wb_y,   y,     n,   ma_x,     rw_y,   type_x,   y,   es_v,   n    ); 
       WD: cs( n,    n,    n,    n,     n,    n,     wd_cq,  y,  n,  n,   y,  wb_y,   n,     n,   ma_x,     rw_n,   type_x,   y,   es_d,   n    ); 
       EP: cs( n,    n,    n,    n,     n,    n,     wd_x,   y,  n,  y,   n,  wb_n,   y,     y,   ma_ev,    rw_n,   type_w,   y,   es_c,   n    );
-	  ER: cs( n,    n,    y,    n,     n,    y,     wd_x,   n,  n,  n,   n,  wb_n,   n,     n,   ma_ev,    rw_n,   type_w,   n,   es_x,   n    );
-	  EW: cs( n,    n,    n,    y,     n,    y,     wd_x,   n,  n,  n,   n,  wb_n,   n,     n,   ma_ev,    rw_n,   type_w,   n,   es_x,   n    );
-	  RR: cs( n,    n,    y,    n,     n,    y,     wd_mp,  n,  n,  n,   y,  wb_a,   n,     n,   ma_rf,    rw_n,   type_r,   n,   es_x,   n    );
-	  RW: cs( n,    n,    n,    y,     n,    y,     wd_mp,  n,  n,  n,   y,  wb_a,   n,     n,   ma_rf,    rw_n,   type_r,   n,   es_x,   n    );
-	  RU: cs( n,    n,    n,    n,     n,    n,     wd_mp,  n,  n,  n,   y,  wb_a,   n,     n,   ma_rf,    rw_n,   type_x,   n,   es_x,   n    ); 
+	  ER: cs( n,    n,    y,    n,     n,    y,     wd_x,   y,  n,  n,   n,  wb_n,   n,     n,   ma_ev,    rw_n,   type_w,   n,   es_x,   n    );
+	  EW: cs( n,    n,    n,    y,     n,    y,     wd_x,   y,  n,  n,   n,  wb_n,   n,     n,   ma_ev,    rw_n,   type_w,   n,   es_x,   n    );
+	  RR: cs( n,    n,    y,    n,     n,    y,     wd_mp,  y,  n,  n,   y,  wb_a,   n,     n,   ma_rf,    rw_n,   type_r,   n,   es_x,   n    );
+	  RW: cs( n,    n,    n,    y,     n,    y,     wd_mp,  y,  n,  n,   y,  wb_a,   n,     n,   ma_rf,    rw_n,   type_r,   n,   es_x,   n    );
+	  RU: cs( n,    n,    n,    n,     n,    n,     wd_mp,  y,  n,  n,   y,  wb_a,   n,     n,   ma_rf,    rw_n,   type_x,   n,   es_x,   n    ); 
       W : cs( n,    y,    n,    n,     n,    n,     wd_x,   y,  y,  y,   n,  wb_n,   y,     n,   ma_x,     rw_y,   type_x,   n,   es_x,   n    );
 		
       default: 

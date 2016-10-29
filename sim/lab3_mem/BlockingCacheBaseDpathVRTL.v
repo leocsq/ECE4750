@@ -51,7 +51,6 @@ module lab3_mem_BlockingCacheBaseDpathVRTL
   output logic [2:0]                  cachereq_type,
   output logic [31:0]                 cachereq_addr,
   output logic                        tag_match
-  
 );
 
   // local parameters not meant to be set from outside
@@ -260,6 +259,9 @@ module lab3_mem_BlockingCacheBaseDpathVRTL
   assign memreq_msg.len    = 4'd0;
   assign memreq_msg.data   = cache_data;
   
+
 endmodule
 
+
 `endif
+

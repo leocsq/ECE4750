@@ -292,7 +292,7 @@ module lab1_imul_IntMulBaseCtrl
   (
     input logic       cs_req_rdy,
     input logic       cs_resp_val,
-	input logic       cs_result_en,
+    input logic       cs_result_en,
     input logic       cs_a_mux_sel,
     input logic       cs_b_mux_sel,
     input logic       cs_result_mux_sel,
@@ -304,8 +304,8 @@ module lab1_imul_IntMulBaseCtrl
     result_en      = cs_result_en;
     a_mux_sel      = cs_a_mux_sel;
     b_mux_sel      = cs_b_mux_sel;
-	result_mux_sel = cs_result_mux_sel;
-	add_mux_sel    = cs_add_mux_sel;
+    result_mux_sel = cs_result_mux_sel;
+    add_mux_sel    = cs_add_mux_sel;
   end
   endtask
 
