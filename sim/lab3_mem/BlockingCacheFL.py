@@ -59,14 +59,14 @@ class BlockingCacheFL( Model ):
         len_ = s.cachereq.msg.len
 
       if s.cachereq.msg.type_ == MemReqMsg.TYPE_WRITE_INIT:
-        s.memreq.msg.type_ = MemReqMsg.TYPE_WRITE
+        s.memreq.msg.type_.value = MemReqMsg.TYPE_WRITE
       else:
-        s.memreq.msg.type_ = s.cachereq.msg.type_
+        s.memreq.msg.type_.value = s.cachereq.msg.type_
 
-      s.memreq.msg.opaque  = s.cachereq.msg.opaque
-      s.memreq.msg.addr    = s.cachereq.msg.addr
-      s.memreq.msg.len     = len_
-      s.memreq.msg.data    = zext( s.cachereq.msg.data, 128 )
+      s.memreq.msg.opaque.value  = s.cachereq.msg.opaque
+      s.memreq.msg.addr.value    = s.cachereq.msg.addr
+      s.memreq.msg.len.value     = len_
+      s.memreq.msg.data.value    = zext( s.cachereq.msg.data, 128 )
 
       # Pass through responses: just copy all of the fields over, except
       # we truncate the data field.
@@ -75,11 +75,11 @@ class BlockingCacheFL( Model ):
       if len_ == 4:
         len_ = 0
 
-      s.cacheresp.msg.type_  = s.memresp.msg.type_
-      s.cacheresp.msg.opaque = s.memresp.msg.opaque
-      s.cacheresp.msg.test   = 0                        # "miss"
-      s.cacheresp.msg.len    = len_
-      s.cacheresp.msg.data   = s.memresp.msg.data[0:32]
+      s.cacheresp.msg.type_.value  = s.memresp.msg.type_
+      s.cacheresp.msg.opaque.value = s.memresp.msg.opaque
+      s.cacheresp.msg.test.value   = 0                        # "miss"
+      s.cacheresp.msg.len.value    = len_
+      s.cacheresp.msg.data.value   = s.memresp.msg.data[0:32]
 
   def line_trace(s):
     return "(forw)"

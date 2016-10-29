@@ -212,5 +212,39 @@ module vc_RightLogicalShifter
 
 endmodule
 
+//------------------------------------------------------------------------
+// CacheReqDataReplicate
+//------------------------------------------------------------------------
+
+module vc_repl
+#(
+  parameter p_in_nbits  = 1,
+  parameter p_out_nbits = 4
+)(
+  input  logic [p_in_nbits-1:0]  in,
+  output logic [p_out_nbits-1:0] out
+);
+
+  assign out = { 4 { in[31:0] } };
+
+endmodule
+
+//------------------------------------------------------------------------
+// CacheTagMakeAddr
+//------------------------------------------------------------------------
+
+module vc_mkaddr
+#(
+  parameter p_in_nbits  = 28,
+  parameter p_out_nbits = 32
+)(
+  input  logic [p_in_nbits-1:0]  in,
+  output logic [p_out_nbits-1:0] out
+);
+
+  assign out = { in, {4'b0000} };
+
+endmodule
+
 `endif /* VC_ARITHMETIC_V */
 

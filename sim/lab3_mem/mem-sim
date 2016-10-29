@@ -86,7 +86,7 @@ def parse_cmdline():
   # LAB TASK: Add choices to --pattern option to use your new patterns
   #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-  p.add_argument(       "--pattern",  choices=["loop-1d", "loop-2d", "loop-3d"], default="loop-1d" )
+  p.add_argument(       "--pattern",  choices=["loop-1d", "loop-2d", "loop-3d","loop-2d-c","loop-2d-w","mix"], default="loop-1d" )
   p.add_argument(       "--dump-vcd", action="store_true"                                          )
   p.add_argument(       "--stats",    action="store_true"                                          )
   p.add_argument(       "--trace",    action="store_true"                                          )
@@ -140,7 +140,40 @@ def ustride( size ):
 
 def loop_1d( size = 100 ):
   return ustride( size )
+#-------------------------------------------------------------------------
+# Pattern: mix
+#-------------------------------------------------------------------------
 
+def mix( size = 100 ):
+
+  src_msgs  = []
+  sink_msgs = []
+
+  mem_data  = []
+  mem_word  = Bits( 32 )
+
+  # Initialize memory
+  addr = 0
+  for i in xrange( size ):
+    mem_word.value = i
+    mem_data.append( addr )
+    mem_data.append( mem_word.uint() )
+    addr += 4
+
+  # Write from memory
+  for j in xrange( size ):
+    addr = j*4
+    data = j
+    src_msgs.append ( mk_req ( 1, addr, 0, data ) )
+    #sink_msgs.append( mk_resp( 1, 0, 0    ) )
+  # Read from memory
+  for j in xrange( size ):
+    addr = j*4
+    data = j
+    #src_msgs.append ( mk_req ( 0, addr, 0, 0 ) )
+    sink_msgs.append( mk_resp( 0, 0, data    ) )
+    
+  return [ src_msgs, sink_msgs, mem_data ]
 #-------------------------------------------------------------------------
 # Pattern: loop-2d
 #-------------------------------------------------------------------------
@@ -170,7 +203,65 @@ def loop_2d( size = 100 ):
       sink_msgs.append( mk_resp( 0, 0, data    ) )
 
   return [ src_msgs, sink_msgs, mem_data ]
+#-------------------------------------------------------------------------
+# Pattern: loop-2d first colunm then row
+#-------------------------------------------------------------------------
 
+def loop_2d_c( size = 100 ):
+
+  src_msgs  = []
+  sink_msgs = []
+
+  mem_data  = []
+  mem_word  = Bits( 32 )
+
+  # Initialize memory
+  addr = 0
+  for i in xrange( size ):
+    mem_word.value = i
+    mem_data.append( addr )
+    mem_data.append( mem_word.uint() )
+    addr += 4
+
+  # Read from memory
+  for j in xrange( size ):
+    for i in xrange( 5 ):
+      addr = j*4
+      data = j
+      src_msgs.append ( mk_req ( 0, addr, 0, 0 ) )
+      sink_msgs.append( mk_resp( 0, 0, data    ) )
+  return [ src_msgs, sink_msgs, mem_data ]
+
+#-------------------------------------------------------------------------
+# Pattern: loop-2d for write
+#-------------------------------------------------------------------------
+
+def loop_2d_w( size = 100 ):
+
+  src_msgs  = []
+  sink_msgs = []
+
+  mem_data  = []
+  mem_word  = Bits( 32 )
+
+  # Initialize memory
+  addr = 0
+  for i in xrange( size ):
+    mem_word.value = i
+    mem_data.append( addr )
+    mem_data.append( mem_word.uint() )
+    addr += 4
+
+  # Write from memory
+  for i in xrange( 5 ):
+    for j in xrange( size ):
+      addr = j*4
+      data = j
+      src_msgs.append ( mk_req ( 1, addr, 0, data ) )
+      sink_msgs.append( mk_resp( 1, 0, data    ) )
+
+  return [ src_msgs, sink_msgs, mem_data ]
+  
 #-------------------------------------------------------------------------
 # Pattern: loop-3d
 #-------------------------------------------------------------------------
@@ -204,6 +295,7 @@ def loop_3d():
 
   return [ src_msgs, sink_msgs, mem_data ]
 
+
 #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 # LAB TASK: Add more memory access patterns to evaluate your cache
 #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -227,7 +319,10 @@ def main():
   pattern_dict = {
     'loop-1d' : loop_1d,
     'loop-2d' : loop_2d,
+    'loop-2d-c':loop_2d_c,
     'loop-3d' : loop_3d,
+    'loop-2d-w':loop_2d_w,
+    'mix': mix,
 
     #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # LAB TASK: Add your new patterns to this Python dict

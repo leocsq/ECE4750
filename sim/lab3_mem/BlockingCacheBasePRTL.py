@@ -55,6 +55,8 @@ class BlockingCacheBasePRTL( Model ):
     #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     # LAB TASK: Connect control unit and datapath
     #'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    
+    
 
   def line_trace( s ):
 
