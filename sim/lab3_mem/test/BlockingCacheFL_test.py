@@ -7,6 +7,7 @@ from __future__ import print_function
 import pytest
 import random
 import struct
+import math
 
 random.seed(0xa4e28cc2)
 

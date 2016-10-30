@@ -128,8 +128,8 @@ def ustride( size ):
   for i in xrange( size ):
     addr = i*4
     data = i
-    src_msgs.append ( mk_req ( 0, addr, 0, 0 ) )
-    sink_msgs.append( mk_resp( 0, 0, data    ) )
+    src_msgs.append ( mk_req ( 'rd', addr, 0, 0 ) )
+    sink_msgs.append( mk_resp( 'rd', 0, data    ) )
 
   return [ src_msgs, sink_msgs, mem_data ]
 
@@ -160,8 +160,8 @@ def loop_2d( size = 100 ):
     for j in xrange( size ):
       addr = j*4
       data = j
-      src_msgs.append ( mk_req ( 0, addr, 0, 0 ) )
-      sink_msgs.append( mk_resp( 0, 0, data    ) )
+      src_msgs.append ( mk_req ( 'rd', addr, 0, 0 ) )
+      sink_msgs.append( mk_resp( 'rd', 0, data    ) )
 
   return [ src_msgs, sink_msgs, mem_data ]
   
@@ -222,8 +222,8 @@ def loop_3d():
       for k in xrange( 8 ):
         addr = j*256 + k*16
         data = j*64  + k*4
-        src_msgs.append ( mk_req ( 0, addr, 0, 0 ) )
-        sink_msgs.append( mk_resp( 0, 0, data    ) )
+        src_msgs.append ( mk_req ( 'rd', addr, 0, 0 ) )
+        sink_msgs.append( mk_resp( 'rd', 0, data    ) )
 
   return [ src_msgs, sink_msgs, mem_data ]
 

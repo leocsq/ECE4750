@@ -1,17 +1,18 @@
 //========================================================================
 // net-msgs : Network Messages
 //========================================================================
-// Payload field width (payload_nbits), opaque filed width (opaque_nbits)
-// source and destination field widths (p_srcdest_nbits) are adjustable
-// via parameterized macro definitions.
+// Network messages are split into two parts: a fixed header, and a
+// variable-width payload. The header provides source and destination
+// information for a 4-node network, along with an 8-bit opaque field.
+// The payload is sent as an additional signal, sent at the same time as
+// the header.
 //
-// Example message format for payload_nbits = 32, srcdest_nbits = 3,
-// opaque_nbits = 4
+// This is the format defined by the header struct
 //
-// 41   39 38  36 35    32 31                            0
-// +------+------+--------+-------------------------------+
-// | dest | src  | opaque | payload                       |
-// +------+------+--------+-------------------------------+
+// 11   10 9    8 7      0 
+// +------+------+--------+
+// | dest | src  | opaque |
+// +------+------+--------+
 //
 
 `ifndef VC_NET_MSGS_V
@@ -33,13 +34,13 @@ typedef struct packed {
 // Trace message
 //------------------------------------------------------------------------
 
-module vc_NetMsgTrace
+module vc_NetHdrTrace
 (
   input  logic     clk,
   input  logic     reset,
   input  logic     val,
   input  logic     rdy,
-  input  net_hdr_t msg
+  input  net_hdr_t hdr
 );
 
   // Extract fields
@@ -47,6 +48,10 @@ module vc_NetMsgTrace
   logic [1:0]    dest;
   logic [1:0]    src;
   logic [7:0]    opaque;
+
+  assign dest   = hdr.dest;
+  assign src    = hdr.src;
+  assign opaque = hdr.opaque;
 
   // Line tracing
 
