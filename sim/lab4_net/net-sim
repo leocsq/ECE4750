@@ -265,7 +265,7 @@ def main():
     print()
     print( "{:<20} | {:<20}".format( "Injection rate (%)", "Avg. Latency" ) )
 
-    inj             = 5
+    inj             = 0
     avg_lat         = 0
     zero_load_lat   = 0
     running_avg_lat = 0.0
@@ -275,13 +275,13 @@ def main():
 
     while avg_lat <= 100:
 
-      results = simulate( impl_dict[ opts.impl ], inj, opts.pattern, 500, opts.dump_vcd, opts.trace, opts.verbose )
+      results = simulate( impl_dict[ opts.impl ], max(inj,1), opts.pattern, 500, opts.dump_vcd, opts.trace, opts.verbose )
 
       avg_lat = results[0]
 
-      print( "{:<20} | {:<20.2f}".format( inj, avg_lat ) )
+      print( "{:<20} | {:<20.1f}".format( max(inj,1), avg_lat ) )
 
-      if inj == 5:
+      if inj == 0:
         zero_load_lat = avg_lat
 
       # dynamically reduce inj_step depending on the slope
@@ -297,7 +297,7 @@ def main():
       inj += inj_step
 
     print()
-    print( "Zero-load latency = %d" % zero_load_lat )
+    print( "Zero-load latency = %.1f" % zero_load_lat )
     print()
 
   # Single run mode:
@@ -315,7 +315,7 @@ def main():
       print( "Pattern:        " + opts.pattern )
       print( "Injection rate: %d" % opts.injection_rate )
       print()
-      print( "Average Latency = %.2f" % results[0] )
+      print( "Average Latency = %.1f" % results[0] )
       print( "Num Packets     = %d" % results[1] )
       print( "Total cycles    = %d" % results[2] )
       print()
