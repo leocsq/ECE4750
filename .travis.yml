@@ -50,4 +50,5 @@ before_script:
 
 script:
  - py.test --verbose ../lab3_mem
-
+ - python ../lab3_mem/mem_sim_eval.py
+ - python ../lab3_mem/mem_sim_staff_eval.py
