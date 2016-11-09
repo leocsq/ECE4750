@@ -6,7 +6,7 @@
 `define LAB4_NET_ROUTER_DPATH_V
 
 `include "vc/net-msgs.v"
-
+`include "vc/crossbars.v"
 //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 // LAB TASK: Include necessary files
 //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

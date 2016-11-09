@@ -31,36 +31,33 @@ module lab4_net_BusNetVRTL
   // your design does not need to support other values of c_nports.
   localparam c_nports = 4;
 
-  // control signals (ctrl->dpath)
-  
-  logic      [c_nports-1:0]                      inq_rdy,
-  logic      [1:0]                               sel,
-  
-  // status signals (dpath->ctrl)
-  
-  logic      [c_nports-1:0]                      inq_val,
-  logic      [1:0]                               inq_dest0,
-  logic      [1:0]                               inq_dest1,
-  logic      [1:0]                               inq_dest2,
-  logic      [1:0]                               inq_dest3,
+
+  // control signals (ctrl-> dpath)
+  logic [1:0]                                          bus_sel;
+  logic [c_nports-1:0]                                 inq_rdy;
+
+  // status signals (dpath -> ctrl)
+  logic [1:0]                                          inq_dest0;
+  logic [1:0]                                          inq_dest1;
+  logic [1:0]                                          inq_dest2;
+  logic [1:0]                                          inq_dest3;
+  logic [c_nports-1:0]                                 inq_val;
+
 
   lab4_net_BusNetCtrlVRTL ctrl
   (
     .clk             (clk),
     .reset           (reset),
 
-    .out_val         (out_val),
-    .out_rdy         (out_rdy),
-
-    .inq_rdy         (inq_rdy),
-    .sel             (sel),
-    
-    .inq_val         (inq_val),
-    .inq_dest0       (inq_dest0),
-    .inq_dest1       (inq_dest1),
-    .inq_dest2       (inq_dest2),
-    .inq_dest3       (inq_dest3)
-    
+    // ctrl -> dpath
+    .bus_sel  (bus_sel),
+    .inq_rdy   (inq_rdy),
+    // dpath -> ctrl
+    .inq_val  (inq_val),
+    .inq_dest0 (inq_dest0),
+    .inq_dest1 (inq_dest1),
+    .inq_dest2 (inq_dest2),
+    .inq_dest3 (inq_dest3)
   );
 
   lab4_net_BusNetDpathVRTL #(p_payload_nbits) dpath
@@ -75,16 +72,17 @@ module lab4_net_BusNetVRTL
 
     .out_msg_hdr     (out_msg_hdr),
     .out_msg_payload (out_msg_payload),
+    
+    // ctrl-> dpath
+    .bus_sel   (bus_sel),
+    .inq_rdy   (inq_rdy),
+    // dpath -> ctrl
+    .inq_dest0 (inq_dest0),
+    .inq_dest1 (inq_dest1),
+    .inq_dest2 (inq_dest2),
+    .inq_dest3 (inq_dest3),
+    .inq_val   (inq_val)
 
-    .inq_rdy         (inq_rdy),
-    .sel             (sel),
-    
-    .inq_val         (inq_val),
-    .inq_dest0       (inq_dest0),
-    .inq_dest1       (inq_dest1),
-    .inq_dest2       (inq_dest2),
-    .inq_dest3       (inq_dest3)
-    
   );
 
   //----------------------------------------------------------------------
