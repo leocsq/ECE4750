@@ -31,9 +31,16 @@ module lab4_net_BusNetVRTL
   // your design does not need to support other values of c_nports.
   localparam c_nports = 4;
 
-  //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  // LAB TASK: Define wires
-  //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  // control signals (ctrl-> dpath)
+  logic [1:0] bus_sel;
+  logic [c_nports-1:0] inq_rdy;
+
+  // status signals (dpath -> ctrl)
+  logic [1:0] inq_dest0;
+  logic [1:0] inq_dest1;
+  logic [1:0] inq_dest2;
+  logic [1:0] inq_dest3;
+  logic [c_nports-1:0] inq_val;
 
   lab4_net_BusNetCtrlVRTL ctrl
   (
@@ -43,9 +50,17 @@ module lab4_net_BusNetVRTL
     .out_val  (out_val),
     .out_rdy  (out_rdy),
 
-    //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    // LAB TASK: Connect control unit
-    //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    // ctrl -> dpath
+    .bus_sel  (bus_sel),
+    .inq_rdy   (inq_rdy),
+    // dpath -> ctrl
+    .inq_val  (inq_val),
+    .inq_dest0 (inq_dest0),
+    .inq_dest1 (inq_dest1),
+    .inq_dest2 (inq_dest2),
+    .inq_dest3 (inq_dest3)
+
+
   );
 
   lab4_net_BusNetDpathVRTL #(p_payload_nbits) dpath
@@ -61,9 +76,15 @@ module lab4_net_BusNetVRTL
     .out_msg_hdr     (out_msg_hdr),
     .out_msg_payload (out_msg_payload),
 
-    //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    // LAB TASK: Connect datapath
-    //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    // ctrl-> dpath
+    .bus_sel   (bus_sel),
+    .inq_rdy   (inq_rdy),
+    // dpath -> ctrl
+    .inq_dest0 (inq_dest0),
+    .inq_dest1 (inq_dest1),
+    .inq_dest2 (inq_dest2),
+    .inq_dest3 (inq_dest3),
+    .inq_val   (inq_val)
   );
 
   //----------------------------------------------------------------------

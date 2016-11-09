@@ -165,12 +165,12 @@ def one_pkt_msgs():
 
   return mk_net_msgs( nports,
 #       src dest opaque payload
-    [ ( 0,  2,   0x00,  0xab ),
+    [ ( 0,  2,  0x00,  0xab ),
     ]
   )
 
 #-------------------------------------------------------------------------
-# Test case: single destination
+# Test case: every source to every destination
 #-------------------------------------------------------------------------
 
 def single_dest_msgs():
@@ -183,29 +183,144 @@ def single_dest_msgs():
       ( 1,  0,   0x01,  0xff ),
       ( 2,  0,   0x02,  0x80 ),
       ( 3,  0,   0x03,  0xc0 ),
+      ( 0,  1,   0x04,  0xce ),
+      ( 1,  1,   0x05,  0xff ),
+      ( 2,  1,   0x06,  0x80 ),
+      ( 3,  1,   0x07,  0xc0 ),
+      ( 0,  2,   0x08,  0xce ),
+      ( 1,  2,   0x09,  0xff ),
+      ( 2,  2,   0x0a,  0x80 ), 
+      ( 3,  2,   0x0b,  0xc0 ),
+      ( 0,  3,   0x0c,  0xce ),
+      ( 1,  3,   0x0d,  0xff ),
+      ( 2,  3,   0x0e,  0x80 ),
+      ( 3,  3,   0x0f,  0xc0 ),
     ]
   )
 
-#'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# LAB TASK: Add new test cases
-#'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#-------------------------------------------------------------------------
+# Test case: single source to every destination 
+#-------------------------------------------------------------------------
 
+def single_src_msgs():
+
+  nports = 4
+
+  return mk_net_msgs( nports,
+#       src dest opaque payload
+    [ ( 0,  0,   0x00,  0xce ),
+      ( 0,  1,   0x01,  0xff ),
+      ( 0,  2,   0x02,  0x80 ),
+      ( 0,  3,   0x03,  0xc0 ),
+      ( 1,  0,   0x04,  0xce ),
+      ( 1,  1,   0x05,  0xff ),
+      ( 1,  2,   0x06,  0x80 ),
+      ( 1,  3,   0x07,  0xc0 ),
+      ( 2,  0,   0x08,  0xce ),
+      ( 2,  1,   0x09,  0xff ),
+      ( 2,  2,   0x0a,  0x80 ), 
+      ( 2,  3,   0x0b,  0xc0 ),
+      ( 3,  0,   0x0c,  0xce ),
+      ( 3,  1,   0x0d,  0xff ),
+      ( 3,  2,   0x0e,  0x80 ),
+      ( 3,  3,   0x0f,  0xc0 ),
+
+    ]
+  )
+
+#-------------------------------------------------------------------------
+# Test case: one pkt from each node to its neighbor
+#-------------------------------------------------------------------------
+
+def neighbor_msgs():
+
+  nports = 4
+
+  return mk_net_msgs( nports,
+#       src dest opaque payload
+    [ ( 0,  1,   0x00,  0xce ),
+      ( 1,  2,   0x01,  0xff ),
+      ( 2,  3,   0x02,  0x80 ),
+      ( 3,  0,   0x03,  0xc0 ),
+      ( 0,  2,   0x04,  0xce ),
+      ( 2,  0,   0x05,  0xff ),
+      ( 0,  3,   0x06,  0x80 ),
+      ( 3,  2,   0x07,  0xc0 ),
+      ( 2,  1,   0x08,  0xce ),
+      ( 1,  0,   0x09,  0xff ),
+    ]
+  )
+
+#-------------------------------------------------------------------------
+# Test case: fully_random (random ports, random opaque, random message)
+#-------------------------------------------------------------------------
+
+def fully_random():
+
+  nports = 4
+  msgs = []
+  ports = [0,1,2,3]
+  for i in range(100):
+#                src                   dest                  opaque payload
+    msgs.append((random.choice(ports), random.choice(ports), i%16, i))
+
+  return mk_net_msgs( nports,msgs)
+
+#-------------------------------------------------------------------------
+# Test case: hotspot_src, prolonged traffic to a single scource node 0
+#-------------------------------------------------------------------------
+
+def hotspot_src():
+
+  nports = 4
+  msgs = []
+  ports = [0,1,2,3]
+  for i in range(1000):
+#                src dest                  opaque payload
+    msgs.append((0,  random.choice(ports), i%16,  i))
+    
+  return mk_net_msgs( nports, msgs )
+
+#-------------------------------------------------------------------------
+# Test case: hotspot_dest, prolonged traffic to a single destination node 0
+#-------------------------------------------------------------------------
+
+def hotspot_dest():
+
+  nports = 4
+  msgs = []
+  ports = [0,1,2,3]
+  for i in range(1000):
+#                src                   dest  opaque payload
+    msgs.append((random.choice(ports), 0,    i%16,  i))
+    
+  return mk_net_msgs( nports, msgs )
 #-------------------------------------------------------------------------
 # Test Case Table
 #-------------------------------------------------------------------------
 
+# list for random delay
+delay_list = []
+for i in range(25):
+  delay_list.append(i)
+
 test_case_table = mk_test_case_table([
-  (                      "msgs                 src_delay sink_delay"),
-  [ "one_pkt",            one_pkt_msgs(),      0,        0          ],
-  [ "single_dest",        single_dest_msgs(),  0,        0          ],
-
-  # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  # Add more rows to the test case table to leverage the additional lists
-  # of request/response messages defined above, but also to test
-  # different source/sink random delays.
-  # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
+  (                                   "msgs                     src_delay                    sink_delay"              ),
+  [ "one_pkt",                        one_pkt_msgs(),           0,                           0                        ],
+  [ "single_dest",                    single_dest_msgs(),       0,                           0                        ],
+  [ "single_src",                     single_src_msgs(),        0,                           0                        ], 
+  [ "neighbor",                       neighbor_msgs(),          0,                           0                        ], 
+  [ "neighbor_scr_2delay",            neighbor_msgs(),          2,                           0                        ], # fixed delay
+  [ "neighbor_dest_2delay",           neighbor_msgs(),          0,                           2                        ], # fixed delay
+  [ "neighbor_delay",                 neighbor_msgs(),          random.choice(delay_list),   random.choice(delay_list)],   
+  [ "fully_random",                   fully_random(),           0,                           0                        ], 
+  [ "fully_random_randomdelay",       fully_random(),           random.choice(delay_list),   random.choice(delay_list)],   
+  [ "hotspot_src",                    hotspot_src(),            0,                           0                        ],
+  [ "hotspot_src_randomdelay",        hotspot_src(),            random.choice(delay_list),   random.choice(delay_list)],
+  [ "hotspot_dest",                   hotspot_dest(),           0,                           0                        ],
+  [ "hotspot_dest_randomdelay",       hotspot_dest(),           random.choice(delay_list),   random.choice(delay_list)],
 ])
+
 
 #-------------------------------------------------------------------------
 # Run tests
