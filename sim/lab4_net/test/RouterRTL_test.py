@@ -5,7 +5,7 @@
 from __future__    import print_function
 
 import pytest
-
+import random
 from pymtl         import *
 from pclib.test    import TestSource, TestNetSink, mk_test_case_table
 from pclib.ifcs    import NetMsg
@@ -172,16 +172,97 @@ def very_basic_msgs( i ):
 #       tsrc tsink src  dest opaque payload
     [ ( 0x1, 0x1,  i,   i,   0x00,  0xfe ), # deliver directly to #2
       ( 0x0, 0x2,  pre, nxt, 0x01,  0xde ), # pass it through
+      ( 0x2, 0x0,  nxt, pre, 0x02,  0xee ), # pass it through
     ]
   )
 
-#'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-# LAB TASK: Add new test cases
-#'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+#-------------------------------------------------------------------------
+# Test case: single_src
+#-------------------------------------------------------------------------
+
+def single_src_msgs( i ):
+
+  nrouters = 4
+
+  pre = i-1 if i>0          else nrouters-1
+  nxt = i+1 if i<nrouters-1 else 0
+  mid = i+2 if i<2          else i-2
+
+  if i%2 == 0:
+    return mk_router_msgs( nrouters,
+#        tsrc tsink src  dest    opaque payload
+      [ ( 0x1, 0x1,  i,   i,     0x00,  0xfe ), 
+        ( 0x1, 0x0,  i,   pre,   0x01,  0xfe ),
+        ( 0x1, 0x2,  i,   nxt,   0x02,  0xce ), 
+        ( 0x1, 0x0,  i,   mid,   0x03,  0xee ),
+      ]
+    ) 
+  else:
+    return mk_router_msgs( nrouters,
+#        tsrc tsink src  dest    opaque payload
+      [ ( 0x1, 0x1,  i,   i,     0x00,  0xfe ),
+        ( 0x1, 0x0,  i,   pre,   0x01,  0xfe ),
+        ( 0x1, 0x2,  i,   nxt,   0x02,  0xde ), 
+        ( 0x1, 0x2,  i,   mid,   0x03,  0xee ), 
+      ]
+    ) 
+
+#-------------------------------------------------------------------------
+# Test case: single_dest
+#-------------------------------------------------------------------------
+
+def single_dest_msgs( i ):
+
+  nrouters = 4
+
+  pre  = i-1 if i>0          else nrouters-1
+  nxt  = i+1 if i<nrouters-1 else 0
+  mid  = i+2 if i<2          else i-2
+
+  if i%2 == 0:
+    return mk_router_msgs( nrouters,
+#         tsrc tsink src    dest   opaque payload
+      [ ( 0x1, 0x1,  i,     i,     0x00,  0xfe ), 
+        ( 0x0, 0x1,  pre,   i,     0x01,  0xfe ),
+        ( 0x2, 0x1,  nxt,   i,     0x02,  0xce ), 
+        ( 0x2, 0x1,  mid,   i,     0x03,  0xee ),
+      ]
+    ) 
+  else:
+    return mk_router_msgs( nrouters,
+#       tsrc tsink src  dest opaque payload
+      [ ( 0x1, 0x1,  i,     i,     0x00,  0xfe ),
+        ( 0x0, 0x1,  pre,   i,     0x01,  0xfe ), 
+        ( 0x2, 0x1,  nxt,   i,     0x02,  0xce ), 
+        ( 0x0, 0x1,  mid,   i,     0x03,  0xee ), 
+      ]
+    )
+
+#-------------------------------------------------------------------------
+# Test case: opposite
+#-------------------------------------------------------------------------
+
+def opposite( i ):
+
+  nrouters = 4
+
+  mid  = i+2 if i<2 else i-2
+  msg = []
+
+  for j in xrange(100):
+    if i%2 ==0:
+      msg.append((0x2, 0x1,mid,i,j%16,0xee))
+    else: msg.append((0x0, 0x1,mid,i,j%16,0xee))
+  return mk_router_msgs( nrouters, msg ) 
 
 #-------------------------------------------------------------------------
 # Test Case Table
 #-------------------------------------------------------------------------
+# list for random delay
+delay_list = []
+for i in xrange(100):
+  delay_list.append(i)
 
 test_case_table = mk_test_case_table([
   (                       "msgs                routerid  src_delay sink_delay"),
@@ -189,12 +270,17 @@ test_case_table = mk_test_case_table([
   [ "vbasic_1",            very_basic_msgs(1), 1,        0,        0          ],
   [ "vbasic_2",            very_basic_msgs(2), 2,        0,        0          ],
   [ "vbasic_3",            very_basic_msgs(3), 3,        0,        0          ],
-
-  # ''' LAB TASK '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  # Add more rows to the test case table to leverage the additional lists
-  # of request/response messages defined above, but also to test
-  # different source/sink random delays.
-  # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  [ "vbasic_0_random",     very_basic_msgs(0), 0,        random.choice(delay_list),random.choice(delay_list)],
+  [ "single_src_0",        single_src_msgs(0),      0,        0,        0          ],
+  [ "single_src_1",        single_src_msgs(1),      1,        0,        0          ],
+  [ "single_src_2",        single_src_msgs(2),      2,        0,        0          ], 
+  [ "single_src_3",        single_src_msgs(3),      3,        0,        0          ],
+  [ "single_src_0_random", single_src_msgs(0),      0,        random.choice(delay_list),random.choice(delay_list)],
+  [ "single_dest_0",       single_dest_msgs(0),     0,        0,        0          ],
+  [ "single_dest_1",       single_dest_msgs(1),     1,        0,        0          ],
+  [ "single_dest_2",       single_dest_msgs(2),     2,        0,        0          ],
+  [ "single_dest_3",       single_dest_msgs(3),     3,        0,        0          ],
+  [ "opposite_0",          opposite(0),        0,        0,        0          ],
 ])
 
 #-------------------------------------------------------------------------

@@ -48,6 +48,8 @@ module lab4_net_BusNetVRTL
   (
     .clk             (clk),
     .reset           (reset),
+    .out_val         (out_val),
+    .out_rdy         (out_rdy),
 
     // ctrl -> dpath
     .bus_sel  (bus_sel),

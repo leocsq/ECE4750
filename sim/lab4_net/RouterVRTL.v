@@ -53,7 +53,19 @@ module lab4_net_RouterVRTL
   //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   // LAB TASK: Define wires
   //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  
+  // control signals (ctrl-> dpath)
+  logic [1:0] sel0;
+  logic [1:0] sel1;
+  logic [1:0] sel2;
+  logic [2:0] inq_rdy;
 
+  // status signals (dpath -> ctrl)
+  logic [1:0] inq_dest0;
+  logic [1:0] inq_dest1;
+  logic [1:0] inq_dest2;
+  logic [2:0] inq_val;
+  
   lab4_net_RouterDpathVRTL
   #(
     .p_payload_nbits(p_payload_nbits)
@@ -84,7 +96,17 @@ module lab4_net_RouterVRTL
     .out1_msg_payload (out1_msg_payload),
     .out2_msg_hdr     (out2_msg_hdr),
     .out2_msg_payload (out2_msg_payload),
-
+    
+    .sel0             (sel0),
+    .sel1             (sel1),
+    .sel2             (sel2),
+    
+    .inq_val          (inq_val),
+    .inq_rdy          (inq_rdy),
+    
+    .inq_dest0        (inq_dest0),
+    .inq_dest1        (inq_dest1),
+    .inq_dest2        (inq_dest2)
     //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     // LAB TASK: Connect datapath
     //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -105,7 +127,17 @@ module lab4_net_RouterVRTL
 
     .out2_val         (out2_val),
     .out2_rdy         (out2_rdy),
-
+    
+    .sel0             (sel0),
+    .sel1             (sel1),
+    .sel2             (sel2),
+    
+    .inq_val          (inq_val),
+    .inq_rdy          (inq_rdy),
+    
+    .inq_dest0        (inq_dest0),
+    .inq_dest1        (inq_dest1),
+    .inq_dest2        (inq_dest2)
     //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     // LAB TASK: Connect control unit
     //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
