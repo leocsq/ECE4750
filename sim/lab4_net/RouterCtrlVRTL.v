@@ -74,6 +74,10 @@ module lab4_net_RouterCtrlVRTL
       dest0 = 2'd2;
     else if (inq_dest0 == router_id - 2'd1) 
       dest0 = 2'd0;
+    else if (inq_dest1 == router_id + 2'd3) 
+      dest0 = 2'd0;
+    else if (inq_dest1 == router_id - 2'd3) 
+      dest0 = 2'd2;
     else 
       dest0 = 2'dx;
   end
@@ -90,6 +94,10 @@ module lab4_net_RouterCtrlVRTL
       dest1 = 2'd2;
     else if (inq_dest1 == router_id - 2'd1) 
       dest1 = 2'd0;
+    else if (inq_dest1 == router_id + 2'd3) 
+      dest1 = 2'd0;
+    else if (inq_dest1 == router_id - 2'd3) 
+      dest1 = 2'd2;
     else 
       dest1 = 2'dx;
   end
@@ -106,6 +114,10 @@ module lab4_net_RouterCtrlVRTL
       dest2 = 2'd2;
     else if (inq_dest2 == router_id - 2'd1) 
       dest2 = 2'd0;
+    else if (inq_dest1 == router_id + 2'd3) 
+      dest2 = 2'd0;
+    else if (inq_dest1 == router_id - 2'd3) 
+      dest2 = 2'd2;
     else 
       dest2 = 2'dx;
   end
