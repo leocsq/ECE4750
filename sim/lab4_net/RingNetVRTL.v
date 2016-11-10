@@ -87,7 +87,7 @@ module lab4_net_RingNetVRTL
   logic [43:0]        deqW3_total_msg;
   
   
-  lab4_net_RouterVRTL #(32) Router0
+  lab4_net_RouterVRTL #(32) ROUTER0
   (
    .clk               (clk),
    .reset             (reset),
@@ -154,7 +154,7 @@ module lab4_net_RingNetVRTL
   
   assign inqW0_total_msg = {out0_msg_hdr[1],out0_msg_payload[1]};
    
-  lab4_net_RouterVRTL #(32) Router1
+  lab4_net_RouterVRTL #(32) ROUTER1
   (
    .clk               (clk),
    .reset             (reset),
@@ -221,7 +221,7 @@ module lab4_net_RingNetVRTL
   
    assign inqW1_total_msg = {out0_msg_hdr[2],out0_msg_payload[2]};
    
-  lab4_net_RouterVRTL #(32) Router2
+  lab4_net_RouterVRTL #(32) ROUTER2
   (
    .clk               (clk),
    .reset             (reset),
@@ -240,7 +240,7 @@ module lab4_net_RingNetVRTL
    .in1_msg_hdr       (in_msg_hdr[2]),
    .in1_msg_payload   (in_msg_payload[2]),
    .in1_val           (in_val[2]),
-   .in1_rdy           (in_val[2]),
+   .in1_rdy           (in_rdy[2]),
    
    .out1_msg_hdr      (out_msg_hdr[2]),
    .out1_msg_payload  (out_msg_payload[2]),
@@ -288,7 +288,7 @@ module lab4_net_RingNetVRTL
   
   assign inqW2_total_msg = {out0_msg_hdr[3],out0_msg_payload[3]};
    
-  lab4_net_RouterVRTL #(32) Router3
+  lab4_net_RouterVRTL #(32) ROUTER3
   (
    .clk               (clk),
    .reset             (reset),
@@ -362,6 +362,7 @@ module lab4_net_RingNetVRTL
   //----------------------------------------------------------------------
   // Line tracing
   //----------------------------------------------------------------------
+  genvar i;
   generate
   for (i = 0; i < c_nports; i = i + 1) begin: HEADER
     vc_NetHdrTrace in_hdr_trace
@@ -384,15 +385,24 @@ module lab4_net_RingNetVRTL
   end
   endgenerate
 
-  logic [6*8-1:0] in_str;
-  logic [6*8-1:0] out_str;
+  logic [6*8-1:0] in0_str;
+  logic [6*8-1:0] in1_str;
+  logic [6*8-1:0] in2_str;
 
   `VC_TRACE_BEGIN
   begin
-    ROUTER[0].router.line_trace( trace_str );
-    ROUTER[1].router.line_trace( trace_str );
-    ROUTER[2].router.line_trace( trace_str );
-    ROUTER[3].router.line_trace( trace_str );
+    for (integer i = 0; i < c_nports; i = i + 1) begin
+      $sformat( in0_str, "%x:%x>%x", in0_msg_hdr[i].opaque, in0_msg_hdr[i].src, in0_msg_hdr[i].dest );
+      $sformat( in1_str, "%x:%x>%x", in1_msg_hdr[i].opaque, in1_msg_hdr[i].src, in1_msg_hdr[i].dest );
+      $sformat( in2_str, "%x:%x>%x", in2_msg_hdr[i].opaque, in2_msg_hdr[i].src, in2_msg_hdr[i].dest );
+      vc_trace.append_str( trace_str, "(" );
+      vc_trace.append_val_rdy_str( trace_str, in0_val[i], in0_rdy[i], {{4048{1'b0}}, in0_str} );
+      vc_trace.append_str( trace_str, "|" );
+      vc_trace.append_val_rdy_str( trace_str, in1_val[i], in1_rdy[i], {{4048{1'b0}}, in1_str} );
+      vc_trace.append_str( trace_str, "|" );
+      vc_trace.append_val_rdy_str( trace_str, in2_val[i], in2_rdy[i], {{4048{1'b0}}, in2_str} );
+      vc_trace.append_str( trace_str, ")" );
+    end
   end
   `VC_TRACE_END
 
