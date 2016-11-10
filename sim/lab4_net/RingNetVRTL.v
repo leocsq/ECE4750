@@ -9,6 +9,7 @@
 `include "lab4_net/RouterVRTL.v"
 `include "vc/queues.v"
 
+
 //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 // LAB TASK: Include necessary files
 //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -61,8 +62,14 @@ module lab4_net_RingNetVRTL
   logic [3:0][11:0]   out0_msg_hdr;
   logic [3:0][31:0]   out0_msg_payload;
   
+  logic [3:0][11:0]   out1_msg_hdr;
+  logic [3:0][31:0]   out1_msg_payload;
+  
   logic [3:0][11:0]   out2_msg_hdr;
   logic [3:0][31:0]   out2_msg_payload;
+  
+  logic [3:0][11:0]   in1_msg_hdr;
+  logic [3:0][31:0]   in1_msg_payload;
   
   
   
@@ -86,6 +93,47 @@ module lab4_net_RingNetVRTL
   logic [43:0]        deqW2_total_msg;
   logic [43:0]        deqW3_total_msg;
   
+  assign out_msg_hdr[0].dest     = out1_msg_hdr[0][11:10];
+  assign out_msg_hdr[0].src      = out1_msg_hdr[0][9:8];
+  assign out_msg_hdr[0].opaque   = out1_msg_hdr[0][7:0];
+  assign out_msg_payload[0]      = out1_msg_payload[0];
+  
+  assign out_msg_hdr[1].dest     = out1_msg_hdr[1][11:10];
+  assign out_msg_hdr[1].src      = out1_msg_hdr[1][9:8];
+  assign out_msg_hdr[1].opaque   = out1_msg_hdr[1][7:0];
+  assign out_msg_payload[1] = out1_msg_payload[1];
+  
+  assign out_msg_hdr[2].dest     = out1_msg_hdr[2][11:10];
+  assign out_msg_hdr[2].src      = out1_msg_hdr[2][9:8];
+  assign out_msg_hdr[2].opaque   = out1_msg_hdr[2][7:0];
+  assign out_msg_payload[2] = out1_msg_payload[2];
+  
+  assign out_msg_hdr[3].dest     = out1_msg_hdr[3][11:10];
+  assign out_msg_hdr[3].src      = out1_msg_hdr[3][9:8];
+  assign out_msg_hdr[3].opaque   = out1_msg_hdr[3][7:0];
+  assign out_msg_payload[3]      = out1_msg_payload[3];
+  
+  assign in1_msg_hdr[0]  =  {in_msg_hdr[0].dest,in_msg_hdr[0].src,in_msg_hdr[0].opaque};
+  assign in1_msg_hdr[1]  =  {in_msg_hdr[1].dest,in_msg_hdr[1].src,in_msg_hdr[1].opaque};
+  assign in1_msg_hdr[2]  =  {in_msg_hdr[2].dest,in_msg_hdr[2].src,in_msg_hdr[2].opaque};
+  assign in1_msg_hdr[3]  =  {in_msg_hdr[3].dest,in_msg_hdr[3].src,in_msg_hdr[3].opaque};
+  
+  assign in1_msg_payload[0]      = in_msg_payload[0];
+  assign in1_msg_payload[1]      = in_msg_payload[1]; 
+  assign in1_msg_payload[2]      = in_msg_payload[2];
+  assign in1_msg_payload[3]      = in_msg_payload[3];
+  
+  assign inqE0_total_msg = {out2_msg_hdr[0],out2_msg_payload[0]};
+  assign inqW0_total_msg = {out0_msg_hdr[1],out0_msg_payload[1]};
+  
+  assign inqE1_total_msg = {out2_msg_hdr[1],out2_msg_payload[1]};
+  assign inqW1_total_msg = {out0_msg_hdr[2],out0_msg_payload[2]};
+  
+  assign inqE2_total_msg = {out2_msg_hdr[2],out2_msg_payload[2]};
+  assign inqW2_total_msg = {out0_msg_hdr[3],out0_msg_payload[3]};
+  
+  assign inqE3_total_msg = {out2_msg_hdr[3],out2_msg_payload[3]};
+  assign inqW3_total_msg = {out0_msg_hdr[0],out0_msg_payload[0]};
   
   lab4_net_RouterVRTL #(32) Router0
   (
@@ -103,13 +151,13 @@ module lab4_net_RingNetVRTL
    .out0_val          (out0_val[0]),
    .out0_rdy          (out0_rdy[0]),
    
-   .in1_msg_hdr       (in_msg_hdr[0]),
-   .in1_msg_payload   (in_msg_payload[0]),
+   .in1_msg_hdr       (in1_msg_hdr[0]),
+   .in1_msg_payload   (in1_msg_payload[0]),
    .in1_val           (in_val[0]),
    .in1_rdy           (in_rdy[0]),
    
-   .out1_msg_hdr      (out_msg_hdr[0]),
-   .out1_msg_payload  (out_msg_payload[0]),
+   .out1_msg_hdr      (out1_msg_hdr[0]),
+   .out1_msg_payload  (out1_msg_payload[0]),
    .out1_val          (out_val[0]),
    .out1_rdy          (out_rdy[0]),
    
@@ -124,8 +172,7 @@ module lab4_net_RingNetVRTL
    .out2_rdy          (out2_rdy[0])
   );
   
-  assign inqE0_total_msg = {out2_msg_hdr[0],out2_msg_payload[0]};
-  
+    
       vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) EQ0
   (
    .clk                      (clk),
@@ -152,7 +199,7 @@ module lab4_net_RingNetVRTL
    .num_free_entries         ()
   );
   
-  assign inqW0_total_msg = {out0_msg_hdr[1],out0_msg_payload[1]};
+
    
   lab4_net_RouterVRTL #(32) Router1
   (
@@ -170,13 +217,13 @@ module lab4_net_RingNetVRTL
    .out0_val          (out0_val[1]),
    .out0_rdy          (out0_rdy[1]),
    
-   .in1_msg_hdr       (in_msg_hdr[1]),
-   .in1_msg_payload   (in_msg_payload[1]),
+   .in1_msg_hdr       (in1_msg_hdr[1]),
+   .in1_msg_payload   (in1_msg_payload[1]),
    .in1_val           (in_val[1]),
    .in1_rdy           (in_rdy[1]),
    
-   .out1_msg_hdr      (out_msg_hdr[1]),
-   .out1_msg_payload  (out_msg_payload[1]),
+   .out1_msg_hdr      (out1_msg_hdr[1]),
+   .out1_msg_payload  (out1_msg_payload[1]),
    .out1_val          (out_val[1]),
    .out1_rdy          (out_rdy[1]),
    
@@ -191,7 +238,6 @@ module lab4_net_RingNetVRTL
    .out2_rdy          (out2_rdy[1])
   );
   
-  assign inqE1_total_msg = {out2_msg_hdr[1],out2_msg_payload[1]};
   
       vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) EQ1
   (
@@ -219,7 +265,7 @@ module lab4_net_RingNetVRTL
    .num_free_entries         ()
   );
   
-   assign inqW1_total_msg = {out0_msg_hdr[2],out0_msg_payload[2]};
+   
    
   lab4_net_RouterVRTL #(32) Router2
   (
@@ -237,13 +283,13 @@ module lab4_net_RingNetVRTL
    .out0_val          (out0_val[2]),
    .out0_rdy          (out0_rdy[2]),
    
-   .in1_msg_hdr       (in_msg_hdr[2]),
-   .in1_msg_payload   (in_msg_payload[2]),
+   .in1_msg_hdr       (in1_msg_hdr[2]),
+   .in1_msg_payload   (in1_msg_payload[2]),
    .in1_val           (in_val[2]),
-   .in1_rdy           (in_val[2]),
+   .in1_rdy           (in_rdy[2]),
    
-   .out1_msg_hdr      (out_msg_hdr[2]),
-   .out1_msg_payload  (out_msg_payload[2]),
+   .out1_msg_hdr      (out1_msg_hdr[2]),
+   .out1_msg_payload  (out1_msg_payload[2]),
    .out1_val          (out_val[2]),
    .out1_rdy          (out_rdy[2]),
    
@@ -258,7 +304,6 @@ module lab4_net_RingNetVRTL
    .out2_rdy          (out2_rdy[2])
   );
   
-  assign inqE2_total_msg = {out2_msg_hdr[2],out2_msg_payload[2]};
   
       vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) EQ2
   (
@@ -286,7 +331,7 @@ module lab4_net_RingNetVRTL
    .num_free_entries         ()
   );
   
-  assign inqW2_total_msg = {out0_msg_hdr[3],out0_msg_payload[3]};
+  
    
   lab4_net_RouterVRTL #(32) Router3
   (
@@ -304,13 +349,13 @@ module lab4_net_RingNetVRTL
    .out0_val          (out0_val[3]),
    .out0_rdy          (out0_rdy[3]),
    
-   .in1_msg_hdr       (in_msg_hdr[3]),
-   .in1_msg_payload   (in_msg_payload[3]),
+   .in1_msg_hdr       (in1_msg_hdr[3]),
+   .in1_msg_payload   (in1_msg_payload[3]),
    .in1_val           (in_val[3]),
    .in1_rdy           (in_rdy[3]),
    
-   .out1_msg_hdr      (out_msg_hdr[3]),
-   .out1_msg_payload  (out_msg_payload[3]),
+   .out1_msg_hdr      (out1_msg_hdr[3]),
+   .out1_msg_payload  (out1_msg_payload[3]),
    .out1_val          (out_val[3]),
    .out1_rdy          (out_rdy[3]),
    
@@ -325,7 +370,6 @@ module lab4_net_RingNetVRTL
    .out2_rdy          (out2_rdy[3])
   );
   
-  assign inqE3_total_msg = {out2_msg_hdr[3],out2_msg_payload[3]};
   
       vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) EQ3
   (
@@ -353,7 +397,7 @@ module lab4_net_RingNetVRTL
    .num_free_entries         ()
   );
   
-  assign inqW3_total_msg = {out0_msg_hdr[0],out0_msg_payload[0]};
+  
   
   //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   // LAB TASK: Compose ring network
@@ -362,7 +406,8 @@ module lab4_net_RingNetVRTL
   //----------------------------------------------------------------------
   // Line tracing
   //----------------------------------------------------------------------
-  generate
+  genvar i;
+  generate 
   for (i = 0; i < c_nports; i = i + 1) begin: HEADER
     vc_NetHdrTrace in_hdr_trace
     (
@@ -384,15 +429,28 @@ module lab4_net_RingNetVRTL
   end
   endgenerate
 
-  logic [6*8-1:0] in_str;
-  logic [6*8-1:0] out_str;
+  logic [3:0][6*8-1:0] in_str;
+  logic [3:0][6*8-1:0] out_str;
 
   `VC_TRACE_BEGIN
   begin
-    ROUTER[0].router.line_trace( trace_str );
-    ROUTER[1].router.line_trace( trace_str );
-    ROUTER[2].router.line_trace( trace_str );
-    ROUTER[3].router.line_trace( trace_str );
+    $sformat( in_str[0],  "%x:%x>%x",  in_msg_hdr[0].opaque,  in_msg_hdr[0].src,  in_msg_hdr[0].dest );
+    $sformat( out_str[0], "%x:%x>%x", out_msg_hdr[0].opaque, out_msg_hdr[0].src, out_msg_hdr[0].dest );
+    $sformat( in_str[1],  "%x:%x>%x",  in_msg_hdr[1].opaque,  in_msg_hdr[1].src,  in_msg_hdr[1].dest );
+    $sformat( out_str[1], "%x:%x>%x", out_msg_hdr[1].opaque, out_msg_hdr[1].src, out_msg_hdr[1].dest );
+    $sformat( in_str[2],  "%x:%x>%x",  in_msg_hdr[2].opaque,  in_msg_hdr[2].src,  in_msg_hdr[2].dest );
+    $sformat( out_str[2], "%x:%x>%x", out_msg_hdr[2].opaque, out_msg_hdr[2].src, out_msg_hdr[2].dest );
+    $sformat( in_str[3],  "%x:%x>%x",  in_msg_hdr[3].opaque,  in_msg_hdr[3].src,  in_msg_hdr[3].dest );
+    $sformat( out_str[3], "%x:%x>%x", out_msg_hdr[3].opaque, out_msg_hdr[3].src, out_msg_hdr[3].dest );
+    vc_trace.append_str( trace_str, "(" );
+    vc_trace.append_val_rdy_str( trace_str, in_val[0], in_rdy[0], {{4048{1'b0}}, in_str[0]} );
+    vc_trace.append_str( trace_str, "|" );
+    vc_trace.append_val_rdy_str( trace_str, in_val[1], in_rdy[1], {{4048{1'b0}}, in_str[1]} );
+    vc_trace.append_str( trace_str, "|" );
+    vc_trace.append_val_rdy_str( trace_str, in_val[2], in_rdy[2], {{4048{1'b0}}, in_str[2]} );
+    vc_trace.append_str( trace_str, "|" );
+    vc_trace.append_val_rdy_str( trace_str, in_val[3], in_rdy[3], {{4048{1'b0}}, in_str[3]} );
+    vc_trace.append_str( trace_str, ")" );
   end
   `VC_TRACE_END
 
