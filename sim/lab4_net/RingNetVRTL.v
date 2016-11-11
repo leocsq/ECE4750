@@ -8,6 +8,8 @@
 `include "vc/net-msgs.v"
 `include "lab4_net/RouterVRTL.v"
 `include "vc/queues.v"
+`include "vc/trace.v"
+
 
 //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 // LAB TASK: Include necessary files
@@ -58,24 +60,24 @@ module lab4_net_RingNetVRTL
   logic [3:0]             out2_val;
   logic [3:0]             out2_rdy;
   
-  logic [3:0][11:0]   out0_msg_hdr;
+  net_hdr_t [3:0]     in0_msg_hdr;
+  logic [3:0][31:0]   in0_msg_payload;
+  
+  net_hdr_t [3:0]     out0_msg_hdr;
   logic [3:0][31:0]   out0_msg_payload;
   
-  logic [3:0][11:0]   out2_msg_hdr;
+  net_hdr_t [3:0]     in1_msg_hdr;
+  logic [3:0][31:0]   in1_msg_payload;
+  
+  net_hdr_t [3:0]     out1_msg_hdr;
+  logic [3:0][31:0]   out1_msg_payload;
+  
+  net_hdr_t [3:0]     in2_msg_hdr;
+  logic [3:0][31:0]   in2_msg_payload;
+  
+  net_hdr_t [3:0]     out2_msg_hdr;
   logic [3:0][31:0]   out2_msg_payload;
-  
-  
-  
-  logic [43:0]        inqE0_total_msg;
-  logic [43:0]        inqE1_total_msg;
-  logic [43:0]        inqE2_total_msg;
-  logic [43:0]        inqE3_total_msg;  
-  
-  logic [43:0]        inqW0_total_msg;
-  logic [43:0]        inqW1_total_msg;
-  logic [43:0]        inqW2_total_msg;
-  logic [43:0]        inqW3_total_msg;
-  
+      
   logic [43:0]        deqE0_total_msg;
   logic [43:0]        deqE1_total_msg;
   logic [43:0]        deqE2_total_msg;
@@ -86,15 +88,58 @@ module lab4_net_RingNetVRTL
   logic [43:0]        deqW2_total_msg;
   logic [43:0]        deqW3_total_msg;
   
+  assign in_rdy[0] =  in1_rdy[0];
+  assign in_rdy[1] =  in1_rdy[1];
+  assign in_rdy[2] =  in1_rdy[2];
+  assign in_rdy[3] =  in1_rdy[3];
   
-  lab4_net_RouterVRTL #(32) ROUTER0
+  assign out1_rdy[0] =  out_rdy[0];
+  assign out1_rdy[1] =  out_rdy[1];
+  assign out1_rdy[2] =  out_rdy[2];
+  assign out1_rdy[3] =  out_rdy[3];
+  
+  assign in1_val[0] =  in_val[0];
+  assign in1_val[1] =  in_val[1];
+  assign in1_val[2] =  in_val[2];
+  assign in1_val[3] =  in_val[3];
+  
+  assign out_val[0] =  out1_val[0];
+  assign out_val[1] =  out1_val[1];
+  assign out_val[2] =  out1_val[2];
+  assign out_val[3] =  out1_val[3];
+  
+  
+  
+  assign in1_msg_hdr[0] = in_msg_hdr[0];
+  assign in1_msg_hdr[1] = in_msg_hdr[1];
+  assign in1_msg_hdr[2] = in_msg_hdr[2];
+  assign in1_msg_hdr[3] = in_msg_hdr[3];
+  
+  assign in1_msg_payload[0] = in_msg_payload[0];
+  assign in1_msg_payload[1] = in_msg_payload[1];
+  assign in1_msg_payload[2] = in_msg_payload[2];
+  assign in1_msg_payload[3] = in_msg_payload[3];
+  
+
+  assign out_msg_hdr[0] = out1_msg_hdr[0];
+  assign out_msg_hdr[1] = out1_msg_hdr[1];
+  assign out_msg_hdr[2] = out1_msg_hdr[2];
+  assign out_msg_hdr[3] = out1_msg_hdr[3];
+  
+  assign out_msg_payload[0] = out1_msg_payload[0];
+  assign out_msg_payload[1] = out1_msg_payload[1];
+  assign out_msg_payload[2] = out1_msg_payload[2];
+  assign out_msg_payload[3] = out1_msg_payload[3];
+  
+    
+  lab4_net_RouterVRTL #(32) Router0
   (
    .clk               (clk),
    .reset             (reset),
    
    .router_id         (0),
-   .in0_msg_hdr       (deqE3_total_msg[43:32]),
-   .in0_msg_payload   (deqE3_total_msg[31:0]),
+   .in0_msg_hdr       (in0_msg_hdr[0]),
+   .in0_msg_payload   (in0_msg_payload[0]),
    .in0_val           (in0_val[0]),
    .in0_rdy           (in0_rdy[0]),
    
@@ -103,18 +148,18 @@ module lab4_net_RingNetVRTL
    .out0_val          (out0_val[0]),
    .out0_rdy          (out0_rdy[0]),
    
-   .in1_msg_hdr       (in_msg_hdr[0]),
-   .in1_msg_payload   (in_msg_payload[0]),
-   .in1_val           (in_val[0]),
-   .in1_rdy           (in_rdy[0]),
+   .in1_msg_hdr       (in1_msg_hdr[0]),
+   .in1_msg_payload   (in1_msg_payload[0]),
+   .in1_val           (in1_val[0]),
+   .in1_rdy           (in1_rdy[0]),
    
-   .out1_msg_hdr      (out_msg_hdr[0]),
-   .out1_msg_payload  (out_msg_payload[0]),
-   .out1_val          (out_val[0]),
-   .out1_rdy          (out_rdy[0]),
+   .out1_msg_hdr      (out1_msg_hdr[0]),
+   .out1_msg_payload  (out1_msg_payload[0]),
+   .out1_val          (out1_val[0]),
+   .out1_rdy          (out1_rdy[0]),
    
-   .in2_msg_hdr       (deqW0_total_msg[43:32]),
-   .in2_msg_payload   (deqW0_total_msg[31:0]),
+   .in2_msg_hdr       (in2_msg_hdr[0]),
+   .in2_msg_payload   (in2_msg_payload[0]),
    .in2_val           (in2_val[0]),
    .in2_rdy           (in2_rdy[0]),
    
@@ -124,20 +169,22 @@ module lab4_net_RingNetVRTL
    .out2_rdy          (out2_rdy[0])
   );
   
-  assign inqE0_total_msg = {out2_msg_hdr[0],out2_msg_payload[0]};
-  
+    
       vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) EQ0
   (
    .clk                      (clk),
    .reset                    (reset),
    .enq_val                  (out2_val[0]),
    .enq_rdy                  (out2_rdy[0]),
-   .enq_msg                  (inqE0_total_msg),
+   .enq_msg                  ({out2_msg_hdr[0],out2_msg_payload[0]}),
    .deq_val                  (in0_val[1]),
    .deq_rdy                  (in0_rdy[1]),
    .deq_msg                  (deqE0_total_msg),
    .num_free_entries         ()
   );
+  
+  assign in0_msg_hdr[1]     = deqE0_total_msg[43:32];
+  assign in0_msg_payload[1] = deqE0_total_msg[31:0];
   
       vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) WQ0
   (
@@ -145,14 +192,15 @@ module lab4_net_RingNetVRTL
    .reset                    (reset),
    .enq_val                  (out0_val[1]),
    .enq_rdy                  (out0_rdy[1]),
-   .enq_msg                  (inqW0_total_msg),
+   .enq_msg                  ({out0_msg_hdr[1],out0_msg_payload[1]}),
    .deq_val                  (in2_val[0]),
    .deq_rdy                  (in2_rdy[0]),
    .deq_msg                  (deqW0_total_msg),
    .num_free_entries         ()
   );
   
-  assign inqW0_total_msg = {out0_msg_hdr[1],out0_msg_payload[1]};
+  assign in2_msg_hdr[0]     = deqW0_total_msg[43:32];
+  assign in2_msg_payload[0] = deqW0_total_msg[31:0];
    
   lab4_net_RouterVRTL #(32) ROUTER1
   (
@@ -160,8 +208,8 @@ module lab4_net_RingNetVRTL
    .reset             (reset),
    
    .router_id         (1),
-   .in0_msg_hdr       (deqE0_total_msg[43:32]),
-   .in0_msg_payload   (deqE0_total_msg[31:0]),
+   .in0_msg_hdr       (in0_msg_hdr[1]),
+   .in0_msg_payload   (in0_msg_payload[1]),
    .in0_val           (in0_val[1]),
    .in0_rdy           (in0_rdy[1]),
    
@@ -170,18 +218,18 @@ module lab4_net_RingNetVRTL
    .out0_val          (out0_val[1]),
    .out0_rdy          (out0_rdy[1]),
    
-   .in1_msg_hdr       (in_msg_hdr[1]),
-   .in1_msg_payload   (in_msg_payload[1]),
-   .in1_val           (in_val[1]),
-   .in1_rdy           (in_rdy[1]),
+   .in1_msg_hdr       (in1_msg_hdr[1]),
+   .in1_msg_payload   (in1_msg_payload[1]),
+   .in1_val           (in1_val[1]),
+   .in1_rdy           (in1_rdy[1]),
    
-   .out1_msg_hdr      (out_msg_hdr[1]),
-   .out1_msg_payload  (out_msg_payload[1]),
-   .out1_val          (out_val[1]),
-   .out1_rdy          (out_rdy[1]),
+   .out1_msg_hdr      (out1_msg_hdr[1]),
+   .out1_msg_payload  (out1_msg_payload[1]),
+   .out1_val          (out1_val[1]),
+   .out1_rdy          (out1_rdy[1]),
    
-   .in2_msg_hdr       (deqW1_total_msg[43:32]),
-   .in2_msg_payload   (deqW1_total_msg[31:0]),
+   .in2_msg_hdr       (in2_msg_hdr[1]),
+   .in2_msg_payload   (in2_msg_payload[1]),
    .in2_val           (in2_val[1]),
    .in2_rdy           (in2_rdy[1]),
    
@@ -191,7 +239,6 @@ module lab4_net_RingNetVRTL
    .out2_rdy          (out2_rdy[1])
   );
   
-  assign inqE1_total_msg = {out2_msg_hdr[1],out2_msg_payload[1]};
   
       vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) EQ1
   (
@@ -199,12 +246,15 @@ module lab4_net_RingNetVRTL
    .reset                    (reset),
    .enq_val                  (out2_val[1]),
    .enq_rdy                  (out2_rdy[1]),
-   .enq_msg                  (inqE1_total_msg),
+   .enq_msg                  ({out2_msg_hdr[1],out2_msg_payload[1]}),
    .deq_val                  (in0_val[2]),
    .deq_rdy                  (in0_rdy[2]),
    .deq_msg                  (deqE1_total_msg),
    .num_free_entries         ()
   );
+  
+  assign in0_msg_hdr[2]     = deqE1_total_msg[43:32];
+  assign in0_msg_payload[2] = deqE1_total_msg[31:0];
   
       vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) WQ1
   (
@@ -212,14 +262,15 @@ module lab4_net_RingNetVRTL
    .reset                    (reset),
    .enq_val                  (out0_val[2]),
    .enq_rdy                  (out0_rdy[2]),
-   .enq_msg                  (inqW1_total_msg),
+   .enq_msg                  ({out0_msg_hdr[2],out0_msg_payload[2]}),
    .deq_val                  (in2_val[1]),
    .deq_rdy                  (in2_rdy[1]),
    .deq_msg                  (deqW1_total_msg),
    .num_free_entries         ()
   );
   
-   assign inqW1_total_msg = {out0_msg_hdr[2],out0_msg_payload[2]};
+  assign in2_msg_hdr[1]     = deqW1_total_msg[43:32];
+  assign in2_msg_payload[1] = deqW1_total_msg[31:0];
    
   lab4_net_RouterVRTL #(32) ROUTER2
   (
@@ -227,28 +278,28 @@ module lab4_net_RingNetVRTL
    .reset             (reset),
    
    .router_id         (2),
-   .in0_msg_hdr       (deqE1_total_msg[43:32]),
-   .in0_msg_payload   (deqE1_total_msg[31:0]),
+   .in0_msg_hdr       (in0_msg_hdr[2]),
+   .in0_msg_payload   (in0_msg_payload[2]),
    .in0_val           (in0_val[2]),
    .in0_rdy           (in0_rdy[2]),
    
    .out0_msg_hdr      (out0_msg_hdr[2]),
-   .out0_msg_payload  (out_msg_payload[2]),
+   .out0_msg_payload  (out0_msg_payload[2]),
    .out0_val          (out0_val[2]),
    .out0_rdy          (out0_rdy[2]),
    
-   .in1_msg_hdr       (in_msg_hdr[2]),
-   .in1_msg_payload   (in_msg_payload[2]),
-   .in1_val           (in_val[2]),
-   .in1_rdy           (in_rdy[2]),
+   .in1_msg_hdr       (in1_msg_hdr[2]),
+   .in1_msg_payload   (in1_msg_payload[2]),
+   .in1_val           (in1_val[2]),
+   .in1_rdy           (in1_rdy[2]),
    
-   .out1_msg_hdr      (out_msg_hdr[2]),
-   .out1_msg_payload  (out_msg_payload[2]),
-   .out1_val          (out_val[2]),
-   .out1_rdy          (out_rdy[2]),
+   .out1_msg_hdr      (out1_msg_hdr[2]),
+   .out1_msg_payload  (out1_msg_payload[2]),
+   .out1_val          (out1_val[2]),
+   .out1_rdy          (out1_rdy[2]),
    
-   .in2_msg_hdr       (deqW2_total_msg[43:32]),
-   .in2_msg_payload   (deqW2_total_msg[31:0]),
+   .in2_msg_hdr       (in2_msg_hdr[2]),
+   .in2_msg_payload   (in2_msg_payload[2]),
    .in2_val           (in2_val[2]),
    .in2_rdy           (in2_rdy[2]),
    
@@ -258,7 +309,6 @@ module lab4_net_RingNetVRTL
    .out2_rdy          (out2_rdy[2])
   );
   
-  assign inqE2_total_msg = {out2_msg_hdr[2],out2_msg_payload[2]};
   
       vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) EQ2
   (
@@ -266,12 +316,15 @@ module lab4_net_RingNetVRTL
    .reset                    (reset),
    .enq_val                  (out2_val[2]),
    .enq_rdy                  (out2_rdy[2]),
-   .enq_msg                  (inqE2_total_msg),
+   .enq_msg                  ({out2_msg_hdr[2],out2_msg_payload[2]}),
    .deq_val                  (in0_val[3]),
    .deq_rdy                  (in0_rdy[3]),
    .deq_msg                  (deqE2_total_msg),
    .num_free_entries         ()
   );
+  
+  assign in0_msg_hdr[3]     = deqE2_total_msg[43:32];
+  assign in0_msg_payload[3] = deqE2_total_msg[31:0];
   
       vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) WQ2
   (
@@ -279,14 +332,15 @@ module lab4_net_RingNetVRTL
    .reset                    (reset),
    .enq_val                  (out0_val[3]),
    .enq_rdy                  (out0_rdy[3]),
-   .enq_msg                  (inqW2_total_msg),
+   .enq_msg                  ({out0_msg_hdr[3],out0_msg_payload[3]}),
    .deq_val                  (in2_val[2]),
    .deq_rdy                  (in2_rdy[2]),
    .deq_msg                  (deqW2_total_msg),
    .num_free_entries         ()
   );
   
-  assign inqW2_total_msg = {out0_msg_hdr[3],out0_msg_payload[3]};
+  assign in2_msg_hdr[2]     = deqW2_total_msg[43:32];
+  assign in2_msg_payload[2] = deqW2_total_msg[31:0];  
    
   lab4_net_RouterVRTL #(32) ROUTER3
   (
@@ -294,8 +348,8 @@ module lab4_net_RingNetVRTL
    .reset             (reset),
    
    .router_id         (3),
-   .in0_msg_hdr       (deqE0_total_msg[43:32]),
-   .in0_msg_payload   (deqE0_total_msg[31:0]),
+   .in0_msg_hdr       (in0_msg_hdr[3]),
+   .in0_msg_payload   (in0_msg_payload[3]),
    .in0_val           (in0_val[3]),
    .in0_rdy           (in0_rdy[3]),
    
@@ -304,18 +358,18 @@ module lab4_net_RingNetVRTL
    .out0_val          (out0_val[3]),
    .out0_rdy          (out0_rdy[3]),
    
-   .in1_msg_hdr       (in_msg_hdr[3]),
-   .in1_msg_payload   (in_msg_payload[3]),
-   .in1_val           (in_val[3]),
-   .in1_rdy           (in_rdy[3]),
+   .in1_msg_hdr       (in1_msg_hdr[3]),
+   .in1_msg_payload   (in1_msg_payload[3]),
+   .in1_val           (in1_val[3]),
+   .in1_rdy           (in1_rdy[3]),
    
-   .out1_msg_hdr      (out_msg_hdr[3]),
-   .out1_msg_payload  (out_msg_payload[3]),
-   .out1_val          (out_val[3]),
-   .out1_rdy          (out_rdy[3]),
+   .out1_msg_hdr      (out1_msg_hdr[3]),
+   .out1_msg_payload  (out1_msg_payload[3]),
+   .out1_val          (out1_val[3]),
+   .out1_rdy          (out1_rdy[3]),
    
-   .in2_msg_hdr       (deqW3_total_msg[43:32]),
-   .in2_msg_payload   (deqW3_total_msg[31:0]),
+   .in2_msg_hdr       (in2_msg_hdr[3]),
+   .in2_msg_payload   (in2_msg_payload[3]),
    .in2_val           (in2_val[3]),
    .in2_rdy           (in2_rdy[3]),
    
@@ -325,7 +379,6 @@ module lab4_net_RingNetVRTL
    .out2_rdy          (out2_rdy[3])
   );
   
-  assign inqE3_total_msg = {out2_msg_hdr[3],out2_msg_payload[3]};
   
       vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) EQ3
   (
@@ -333,12 +386,15 @@ module lab4_net_RingNetVRTL
    .reset                    (reset),
    .enq_val                  (out2_val[3]),
    .enq_rdy                  (out2_rdy[3]),
-   .enq_msg                  (inqE3_total_msg),
+   .enq_msg                  ({out2_msg_hdr[3],out2_msg_payload[3]}),
    .deq_val                  (in0_val[0]),
    .deq_rdy                  (in0_rdy[0]),
    .deq_msg                  (deqE3_total_msg),
    .num_free_entries         ()
   );
+  
+  assign in0_msg_hdr[0]     = deqE3_total_msg[43:32];
+  assign in0_msg_payload[0] = deqE3_total_msg[31:0];
   
       vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) WQ3
   (
@@ -346,14 +402,15 @@ module lab4_net_RingNetVRTL
    .reset                    (reset),
    .enq_val                  (out0_val[0]),
    .enq_rdy                  (out0_rdy[0]),
-   .enq_msg                  (inqW3_total_msg),
+   .enq_msg                  ({out0_msg_hdr[0],out0_msg_payload[0]}),
    .deq_val                  (in2_val[3]),
    .deq_rdy                  (in2_rdy[3]),
    .deq_msg                  (deqW3_total_msg),
    .num_free_entries         ()
   );
   
-  assign inqW3_total_msg = {out0_msg_hdr[0],out0_msg_payload[0]};
+  assign in2_msg_hdr[3]     = deqW3_total_msg[43:32];
+  assign in2_msg_payload[3] = deqW3_total_msg[31:0]; 
   
   //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   // LAB TASK: Compose ring network
@@ -364,24 +421,61 @@ module lab4_net_RingNetVRTL
   //----------------------------------------------------------------------
   genvar i;
   generate
-  for (i = 0; i < c_nports; i = i + 1) begin: HEADER
-    vc_NetHdrTrace in_hdr_trace
-    (
-      .clk   (clk),
-      .reset (reset),
-      .val   (in_val[i]),
-      .rdy   (in_rdy[i]),
-      .hdr   (in_msg_hdr[i])
-    );
 
-    vc_NetHdrTrace out_hdr_trace
-    (
-      .clk   (clk),
-      .reset (reset),
-      .val   (out_val[i]),
-      .rdy   (out_rdy[i]),
-      .hdr   (out_msg_hdr[i])
-    );
+  for (i = 0; i < c_nports; i = i + 1) begin: HEADER
+    vc_NetHdrTrace in0_hdr_trace
+  (
+    .clk   (clk),
+    .reset (reset),
+    .val   (in0_val[i]),
+    .rdy   (in0_rdy[i]),
+    .hdr   (in0_msg_hdr[i])
+  );
+
+  vc_NetHdrTrace in1_hdr_trace
+  (
+    .clk   (clk),
+    .reset (reset),
+    .val   (in1_val[i]),
+    .rdy   (in1_rdy[i]),
+    .hdr   (in1_msg_hdr[i])
+  );
+
+  vc_NetHdrTrace in2_hdr_trace
+  (
+    .clk   (clk),
+    .reset (reset),
+    .val   (in2_val[i]),
+    .rdy   (in2_rdy[i]),
+    .hdr   (in2_msg_hdr[i])
+  );
+
+  vc_NetHdrTrace out0_hdr_trace
+  (
+    .clk   (clk),
+    .reset (reset),
+    .val   (out0_val[i]),
+    .rdy   (out0_rdy[i]),
+    .hdr   (out0_msg_hdr[i])
+  );
+
+  vc_NetHdrTrace out1_hdr_trace
+  (
+    .clk   (clk),
+    .reset (reset),
+    .val   (out1_val[i]),
+    .rdy   (out1_rdy[i]),
+    .hdr   (out1_msg_hdr[i])
+  );
+
+  vc_NetHdrTrace out2_hdr_trace
+  (
+    .clk   (clk),
+    .reset (reset),
+    .val   (out2_val[i]),
+    .rdy   (out2_rdy[i]),
+    .hdr   (out2_msg_hdr[i])
+  );
   end
   endgenerate
 
@@ -403,8 +497,9 @@ module lab4_net_RingNetVRTL
       vc_trace.append_val_rdy_str( trace_str, in2_val[i], in2_rdy[i], {{4048{1'b0}}, in2_str} );
       vc_trace.append_str( trace_str, ")" );
     end
+
   end
-  `VC_TRACE_END
+  `VC_TRACE_END  
 
 endmodule
 

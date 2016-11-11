@@ -8,6 +8,7 @@
 `include "vc/net-msgs.v"
 `include "lab4_net/RouterDpathVRTL.v"
 `include "lab4_net/RouterCtrlVRTL.v"
+`include "vc/trace.v"
 
 module lab4_net_RouterVRTL
 #(

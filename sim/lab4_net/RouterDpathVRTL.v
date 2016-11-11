@@ -100,20 +100,7 @@ module lab4_net_RouterDpathVRTL
   
   
   
-  vc_Crossbar3 #(44) Crossbar
-  (
-   .in0      (deq0_total_msg),
-   .in1      (deq1_total_msg),
-   .in2      (deq2_total_msg),
-   
-   .sel0     (sel0),
-   .sel1     (sel1),
-   .sel2     (sel2),
-   
-   .out0     (out0_total_msg),
-   .out1     (out1_total_msg),
-   .out2     (out2_total_msg)
-  );
+  
   
   vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) Q0
   (
@@ -154,6 +141,20 @@ module lab4_net_RouterDpathVRTL
    .num_free_entries         ()
   );
   
+    vc_Crossbar3 #(44) Crossbar
+  (
+   .in0      (deq0_total_msg),
+   .in1      (deq1_total_msg),
+   .in2      (deq2_total_msg),
+   
+   .sel0     (sel0),
+   .sel1     (sel1),
+   .sel2     (sel2),
+   
+   .out0     (out0_total_msg),
+   .out1     (out1_total_msg),
+   .out2     (out2_total_msg)
+  );
   
   //'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   // LAB TASK: Implement datapath
