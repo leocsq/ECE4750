@@ -50,4 +50,4 @@ before_script:
 
 script:
  - py.test --verbose ../lab4_net
-
+ - python ../lab4_net/net_sim_staff_eval.py
