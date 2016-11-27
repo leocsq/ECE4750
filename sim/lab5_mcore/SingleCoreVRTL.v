@@ -170,9 +170,9 @@ module lab5_mcore_SingleCoreVRTL
   // miss/access, miss rate, and committed instruction count
 
   assign commit_inst   = proc_commit_inst;
-  assign icache_miss   = icache_resp_val & icache_resp_val & ~icache_resp_msg.test[0];
+  assign icache_miss   = icache_resp_val & icache_resp_rdy & ~icache_resp_msg.test[0];
   assign icache_access = icache_req_val  & icache_req_rdy;
-  assign dcache_miss   = dcache_resp_val & dcache_resp_val & ~dcache_resp_msg.test[0];
+  assign dcache_miss   = dcache_resp_val & dcache_resp_rdy & ~dcache_resp_msg.test[0];
   assign dcache_access = dcache_req_val  & dcache_req_rdy;
 
   `VC_TRACE_BEGIN
