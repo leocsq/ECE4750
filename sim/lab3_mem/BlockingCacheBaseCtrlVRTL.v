@@ -117,10 +117,10 @@ module lab3_mem_BlockingCacheBaseCtrlVRTL
   (
     .clk        (clk),
     .reset      (reset),
-    .read_addr  (cachereq_addr[7:4]),
+    .read_addr  (cachereq_addr[ofw+idw+p_idx_shamt-1:ofw+p_idx_shamt]),
     .read_data  (entry_state),
     .write_en   (entry_state_wen),
-    .write_addr (cachereq_addr[7:4]),
+    .write_addr (cachereq_addr[ofw+idw+p_idx_shamt-1:ofw+p_idx_shamt]),
     .write_data (entry_state_update)
   );
   
@@ -270,13 +270,13 @@ module lab3_mem_BlockingCacheBaseCtrlVRTL
   (
     input logic        cs_cachereq_rdy,
     input logic        cs_cacheresp_val,
-	input logic        cs_memreq_val,
+    input logic        cs_memreq_val,
     input logic        cs_memresp_rdy,
 	 
     input logic        cs_cachereq_en,
     input logic        cs_memresp_en, 
     input logic        cs_write_data_mux_sel,
-	input logic        cs_tag_array_ren,
+    input logic        cs_tag_array_ren,
     input logic        cs_tag_array_wen,
     input logic        cs_data_array_ren,
     input logic        cs_data_array_wen,
@@ -286,9 +286,9 @@ module lab3_mem_BlockingCacheBaseCtrlVRTL
     input logic        cs_memreq_addr_mux_sel,
     input logic [2:0]  cs_read_word_mux_sel,
     input logic [2:0]  cs_memreq_type,
-	input logic        cs_entry_state_wen,
-	input logic [1:0]  cs_entry_state_update,
-	input logic        cs_entry_state_ren
+    input logic        cs_entry_state_wen,
+    input logic [1:0]  cs_entry_state_update,
+    input logic        cs_entry_state_ren
   );
   begin
     cachereq_rdy        = cs_cachereq_rdy;
@@ -309,9 +309,9 @@ module lab3_mem_BlockingCacheBaseCtrlVRTL
     memreq_addr_mux_sel = cs_memreq_addr_mux_sel;
     read_word_mux_sel   = cs_read_word_mux_sel;
     memreq_type         = cs_memreq_type;
-	entry_state_wen     = cs_entry_state_wen;
-	entry_state_update  = cs_entry_state_update;
-	entry_state_ren     = cs_entry_state_ren;
+    entry_state_wen     = cs_entry_state_wen;
+    entry_state_update  = cs_entry_state_update;
+    entry_state_ren     = cs_entry_state_ren;
   end
   endtask
   
@@ -345,15 +345,15 @@ module lab3_mem_BlockingCacheBaseCtrlVRTL
       //     rdy   val    val   rdy    en    en     muxsel ren wen ren  wen  wben regen  regen  muxsel    muxsel   type    wen   update  ren
       I : cs( y,    n,    n,    n,     y,    n,     wd_x,   n,  n,  n,   n,  wb_n,   n,     n,   ma_x,     rw_n,   type_x,   n,   es_x,   y    );
       TC: cs( n,    n,    n,    n,     n,    n,     wd_x,   y,  n,  n,   n,  wb_n,   n,     n,   ma_x,     rw_n,   type_x,   n,   es_x,   y    );
-	  IN: cs( n,    n,    n,    n,     n,    n,     wd_cq,  n,  y,  n,   y,  wb_a,   n,     n,   ma_x,     rw_n,   type_x,   y,   es_v,   n    );
-	  RD: cs( n,    n,    n,    n,     n,    n,     wd_x,   y,  n,  y,   n,  wb_y,   y,     n,   ma_x,     rw_y,   type_x,   y,   es_v,   n    ); 
+      IN: cs( n,    n,    n,    n,     n,    n,     wd_cq,  n,  y,  n,   y,  wb_a,   n,     n,   ma_x,     rw_n,   type_x,   y,   es_v,   n    );
+      RD: cs( n,    n,    n,    n,     n,    n,     wd_x,   y,  n,  y,   n,  wb_y,   y,     n,   ma_x,     rw_y,   type_x,   y,   es_v,   n    ); 
       WD: cs( n,    n,    n,    n,     n,    n,     wd_cq,  y,  n,  n,   y,  wb_y,   n,     n,   ma_x,     rw_n,   type_x,   y,   es_d,   n    ); 
       EP: cs( n,    n,    n,    n,     n,    n,     wd_x,   y,  n,  y,   n,  wb_n,   y,     y,   ma_ev,    rw_n,   type_w,   y,   es_c,   n    );
-	  ER: cs( n,    n,    y,    n,     n,    y,     wd_x,   y,  n,  n,   n,  wb_n,   n,     n,   ma_ev,    rw_n,   type_w,   n,   es_x,   n    );
-	  EW: cs( n,    n,    n,    y,     n,    y,     wd_x,   y,  n,  n,   n,  wb_n,   n,     n,   ma_ev,    rw_n,   type_w,   n,   es_x,   n    );
-	  RR: cs( n,    n,    y,    n,     n,    y,     wd_mp,  y,  n,  n,   y,  wb_a,   n,     n,   ma_rf,    rw_n,   type_r,   n,   es_x,   n    );
-	  RW: cs( n,    n,    n,    y,     n,    y,     wd_mp,  y,  n,  n,   y,  wb_a,   n,     n,   ma_rf,    rw_n,   type_r,   n,   es_x,   n    );
-	  RU: cs( n,    n,    n,    n,     n,    n,     wd_mp,  y,  n,  n,   y,  wb_a,   n,     n,   ma_rf,    rw_n,   type_x,   n,   es_x,   n    ); 
+      ER: cs( n,    n,    y,    n,     n,    y,     wd_x,   y,  n,  n,   n,  wb_n,   n,     n,   ma_ev,    rw_n,   type_w,   n,   es_x,   n    );
+      EW: cs( n,    n,    n,    y,     n,    y,     wd_x,   y,  n,  n,   n,  wb_n,   n,     n,   ma_ev,    rw_n,   type_w,   n,   es_x,   n    );
+      RR: cs( n,    n,    y,    n,     n,    y,     wd_mp,  y,  n,  n,   y,  wb_a,   n,     n,   ma_rf,    rw_n,   type_r,   n,   es_x,   n    );
+      RW: cs( n,    n,    n,    y,     n,    y,     wd_mp,  y,  n,  n,   y,  wb_a,   n,     n,   ma_rf,    rw_n,   type_r,   n,   es_x,   n    );
+      RU: cs( n,    n,    n,    n,     n,    n,     wd_mp,  y,  n,  n,   y,  wb_a,   n,     n,   ma_rf,    rw_n,   type_x,   n,   es_x,   n    ); 
       W : cs( n,    y,    n,    n,     n,    n,     wd_x,   y,  y,  y,   n,  wb_n,   y,     n,   ma_x,     rw_y,   type_x,   n,   es_x,   n    );
 		
       default: 
