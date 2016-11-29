@@ -5,30 +5,31 @@
 #include "common.h"
 #include "ubmark-quicksort.dat"
 
-
+__attribute__((noinline))
 //------------------------------------------------------------------------
 // partition
 //------------------------------------------------------------------------
 int partition(int* src, int h, int k){
-  int j = h;
-  int i = k;
-  while(j<i){
-    if(src[j+1]<=src[j]){
-      int temp = src[j]; src[j]=src[j+1];src[j+1]=temp;
-      j = j+1;
-    }
-    else{
-      int temp = src[j+1]; src[j+1]=src[j];src[j]=temp;
-      i = i-1;
+  int j;
+  int i = h+1;
+  j = k;
+  while (i <= j) {
+    if (src[i] < src[h]) i= i+1;
+    else if (src[j] > src[h]) j= j-1;
+    else {// {b[j] < x < b[i]}
+      int t1= src[i]; src[i]= src[j]; src[j]= t1;
+      i= i+1; j= j-1;
       }
-    }
-    return j;
+  }
+  int temp = src[h]; src[h] = src[j]; src[j] =temp;
+  return j;
 }
 //------------------------------------------------------------------------
 // sort 
 //------------------------------------------------------------------------
 void sort(int* src, int l, int r)
 {
+    if(r-l+1 < 2) return;
     int j = partition(src, l, r);
     sort(src, l, j-1);
     sort(src, j+1, r);
@@ -36,7 +37,6 @@ void sort(int* src, int l, int r)
 //------------------------------------------------------------------------
 // quicksort-scalar
 //------------------------------------------------------------------------
-__attribute__ ((noinline))
 void quicksort_scalar( int* dest, int* src, int size )
 {
 
