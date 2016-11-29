@@ -497,7 +497,7 @@ module lab2_proc_ProcBaseCtrlVRTL
   // ostall if imul request is not ready
   
   logic  ostall_imul_req_D;
-  assign ostall_imul_req_D = val_D && !imul_req_rdy_D&&!imul_req_val_D;
+  assign ostall_imul_req_D = val_D && !imul_req_rdy_D;
 
   // ostall if write address in X matches rs1 in D
 
