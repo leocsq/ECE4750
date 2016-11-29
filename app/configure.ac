@@ -54,7 +54,7 @@ AS_IF([ test "${host}" != "riscv32-unknown-elf" ],
   [
     AC_SUBST([CXXFLAGS],["-Wall -g -O3"])
   ],[
-    AC_SUBST([CXXFLAGS],["-Wall -g -D_RISCV -fno-builtin -O3 -march=RV32IMXcustom"])
+    AC_SUBST([CXXFLAGS],["-Wall -g -D_RISCV -fno-builtin -fno-exceptions -fno-rtti -O3 -march=RV32IMXcustom"])
     AC_SUBST([LDFLAGS], ["-nostdlib -T../scripts/tinyrv2.ld"])
   ])
 
