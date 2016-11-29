@@ -3021,7 +3021,7 @@ if  test "${host}" != "riscv32-unknown-elf" ; then :
 
 else
 
-    CXXFLAGS="-Wall -g -D_RISCV -fno-builtin -O3 -march=RV32IMXcustom"
+    CXXFLAGS="-Wall -g -D_RISCV -fno-builtin -fno-exceptions -fno-rtti -O3 -march=RV32IMXcustom"
 
     LDFLAGS="-nostdlib -T../scripts/tinyrv2.ld"
 
