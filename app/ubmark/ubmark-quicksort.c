@@ -10,27 +10,9 @@
 // partition
 //------------------------------------------------------------------------
 int partition(int* src, int h, int k){
-    // int j = 0;
-    // int i = h+1;
-    // j = k;
-    // while(i <= j){
-      // if(src[i] < src[h]) i=i+1;
-      // else if(src[j]>src[h]) j=j-1;
-      // else{
-        // int temp = src[i];
-        // src[i] = src[j];
-        // src[j] = temp;
-        // i = i+1;
-        // j = j-1;
-	    // }
-    // }
-    // int t = src[h];
-    // src[h] = src[j];
-    // src[j] = t;
-    // return j;
   int j = h;
   int i = k;
-  while(j>i){
+  while(j<i){
     if(src[j+1]<=src[j]){
       int temp = src[j]; src[j]=src[j+1];src[j+1]=temp;
       j = j+1;
