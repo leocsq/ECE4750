@@ -8,49 +8,65 @@
 typedef struct {
   int* dest;  // pointer to dest array
   int* temp0;  // pointer to src0 array
-  //int* src1;  // pointer to src1 array
   int  begin; // first element this core should process
   int  end;   // (one past) last element this core should process
 } arg_t;
-// '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-// LAB TASK: Implement multicore sorting
-// '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
 __attribute__((noinline))
 void merge(int* temp0, int h, int e, int k)
 {
-	int b[(k+1-h)*2];
-	int i = h, j = e+1, k1 =0;
-	while (i <= e && j <= k) {
-        if (temp0[i] <= temp0[j])
-            b[k1++] = temp0[i++];
+	int i,j,k1;
+	int n1 = e-h+1;
+	int n2 = k-e;
+	int part1[n1], part2[n2];
+	for (i = 0; i < n1; i++)
+        part1[i] = temp0[h + i];
+    for (j = 0; j < n2; j++)
+        part2[j] = temp0[e + 1+ j];
+    
+    
+    i = 0; 
+    j = 0; 
+    k1 = h; 
+    while (i < n1 && j < n2)
+    {
+        if (part1[i] <= part2[j])
+        {
+            temp0[k1] = part1[i];
+            i++;
+        }
         else
-            b[k1++] = temp0[j++];
+        {
+            temp0[k1] = part2[j];
+            j++;
+        }
+        k1++;
     }
-    while (i <= e)
-        b[k1++] = temp0[i++];
-  
-    while (j <= k)
-        b[k1++] = temp0[j++];
-  
-    k1--;
-    while (k1 >= 0) {
-        temp0[h + k1] = b[k1];
-        k1--;
+ 
+    // Copy any remaining elements of part1[]
+    while (i < n1)
+    {
+        temp0[k1] = part1[i];
+        i++;
+        k1++;
+    }
+ 
+    // Copy anyremaining elements of part2[]
+    while (j < n2)
+    {
+        temp0[k1] = part2[j];
+        j++;
+        k1++;
     }
 }
 void mergeSort(int* temp0, int h, int k)
 {
 	if( h>=k ) return;
+	int e  = h+(k-h)/2;
+	mergeSort(temp0, h,  e);  // Sort temp0[h...e]
+	mergeSort(temp0, e+1,k);  // Sort temp0[e+1...k]	
+    merge(temp0, h, e,  k);   // Merge the whole segments
 
-	int el = (h+k)/4;
-	int e  = (h+k)/2;
-	int er = 3*(h+k)/4;
-
-	//mergeSort(b, h,  e);  // Sort temp0[h...e]
-	//mergeSort(b, e+1,k);  // Sort temp0[e+1...k]
-	merge(temp0, h,   el, e); // Merge the 2 segments
-	merge(temp0, e+1, er, k); // Merge the other two segments
-        merge(temp0, h,   e,  k); // Merge the whole segments
 }
 
 void mergeSort_cp(int* dest, int* temp0, int size)
@@ -59,7 +75,8 @@ void mergeSort_cp(int* dest, int* temp0, int size)
   int r = size-1;
   mergeSort(temp0, l ,r );
   // Copy temp0 to dest array
-  for(int i=0;i<size;i++) dest[i] = temp0[i];
+  for(int i=0;i<size;i++) 
+    dest[i] = temp0[i];
 }
 
 int partition(int* temp0, int h, int k){
@@ -96,13 +113,13 @@ void sort_mt(void* arg_vptr)
   int  begin = arg_ptr->begin;
   int  end   = arg_ptr->end;
 
-  int size = end-begin+1;  
+  int len = end-begin+1;  
 
   // Do the actual work.
-  if(size>2) quickSort(dest, begin, end);
+  if( len>2 ) quickSort(dest, begin, end);
 
   //dummy copy temp0 into dest
-  for(int i=0; i<size; i++) dest[i] = temp0[i];
+  for(int i=0; i<len; i++) dest[i] = temp0[i];
 }
 
 void merge_mt(void* arg_vptr)
@@ -116,10 +133,9 @@ void merge_mt(void* arg_vptr)
   int  begin = arg_ptr->begin;
   int  end   = arg_ptr->end;
   
-  int size = end-begin+1;
-  if(size>2) mergeSort_cp( dest, temp0 , size); 
-
-  for(int i=0;i<size;i++) dest[i]=temp0[i];
+  int len = end-begin;
+  
+  if(len>2) mergeSort_cp(dest,temp0 , len); 
 
 }
 
@@ -185,13 +201,10 @@ int main( int argc, char* argv[] )
   bthread_join(1);
   bthread_join(2);
   bthread_join(3);
-//  mergeSort_cp( dest, &arg0, size);
 
-  merge_mt(&arg0);
 
-  // '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  // LAB TASK:
-  // '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  arg_t arg = {dest, temp0, 0, size};
+  merge_mt(&arg);
 
   //--------------------------------------------------------------------
   // Stop counting stats
