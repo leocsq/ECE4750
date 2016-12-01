@@ -307,6 +307,7 @@ module lab2_proc_ProcAltCtrlVRTL
   localparam alu_jalr = 4'd10;
   localparam alu_cp0  = 4'd11;
   localparam alu_cp1  = 4'd12;
+  localparam alu_mul  = 4'd13;
 
   // Immediate Type
   localparam imm_x    = 3'bx;
@@ -354,6 +355,8 @@ module lab2_proc_ProcAltCtrlVRTL
   logic       stats_en_wen_D;
   logic       imul_resp_rdy_D;
   logic [1:0] ex_result_sel_D;
+  logic       imul_req_val;
+  logic       imul_resp_rdy;
 
   task cs
   (
@@ -391,8 +394,8 @@ module lab2_proc_ProcAltCtrlVRTL
     rf_wen_pending_D      = cs_rf_wen_pending;
     csrr_D                = cs_csrr;
     csrw_D                = cs_csrw;
-    imul_req_val_D        = cs_imul_req_val_D;
-    imul_resp_rdy_D       = cs_imul_resp_rdy_D;
+    imul_req_val          = cs_imul_req_val_D;
+    imul_resp_rdy        = cs_imul_resp_rdy_D;
     ex_result_sel_D       = cs_ex_result_sel_D;
   
     
@@ -421,7 +424,7 @@ module lab2_proc_ProcAltCtrlVRTL
       `RV2ISA_INST_SRA     :cs( y, jr_na,  br_na,  imm_x, y, pm_rf, bm_rf,  y, alu_sra , nr, wm_a, y,  n,   n,   n,   n,   ex_alu );
       `RV2ISA_INST_SRL     :cs( y, jr_na,  br_na,  imm_x, y, pm_rf, bm_rf,  y, alu_srl , nr, wm_a, y,  n,   n,   n,   n,   ex_alu );
       `RV2ISA_INST_SLL     :cs( y, jr_na,  br_na,  imm_x, y, pm_rf, bm_rf,  y, alu_sll , nr, wm_a, y,  n,   n,   n,   n,   ex_alu );
-      `RV2ISA_INST_MUL     :cs( y, jr_na,  br_na,  imm_x, y, pm_rf, bm_rf,  y, alu_x   , nr, wm_a, y,  n,   n,   y,   y,   ex_mul );
+      `RV2ISA_INST_MUL     :cs( y, jr_na,  br_na,  imm_x, y, pm_rf, bm_rf,  y, alu_mul , nr, wm_a, y,  n,   n,   y,   y,   ex_mul );
         
       `RV2ISA_INST_ADDI    :cs( y, jr_na,  br_na,  imm_i, y, pm_rf, bm_imm, n, alu_add , nr, wm_a, y,  n,   n,   n,   n,   ex_alu );
       `RV2ISA_INST_ANDI    :cs( y, jr_na,  br_na,  imm_i, y, pm_rf, bm_imm, n, alu_and , nr, wm_a, y,  n,   n,   n,   n,   ex_alu );
@@ -451,8 +454,38 @@ module lab2_proc_ProcAltCtrlVRTL
       default              :cs( n, jr_x ,  br_x,   imm_x, n, pm_x,  bm_x,   n, alu_x   , nr, wm_x, n,  n,   n,   n,   n,   ex_x   );
 
     endcase
+  
+    
   end // always_comb
-
+  
+  logic imul_req_val0;
+  logic imul_req_val1;
+  
+  /*always_ff @( posedge clk ) begin
+    if ( reset ) begin
+      imul_req_val0 <= 1'b0;
+      imul_req_val1 <= 1'b0;
+      end
+    else begin
+      imul_req_val0 <= imul_req_val;
+      imul_req_val1 <= imul_req_val0;
+      end
+  end
+  assign imul_req_val_D = !imul_req_val1 && imul_req_val0;*/
+  
+  always_comb begin
+   if (alu_fn_D == alu_mul)
+      begin 
+      imul_req_val_D = 1'd1;
+      imul_resp_rdy_D = 1'd1;
+      end
+    else
+      begin
+      imul_req_val_D = 1'd0;
+      imul_resp_rdy_D = 1'd0;
+      end
+   end
+  
   logic [4:0] rf_waddr_D;
   assign rf_waddr_D = inst_rd_D;
 
@@ -561,7 +594,7 @@ module lab2_proc_ProcAltCtrlVRTL
   // ostall if imul request is not ready
   
   logic  ostall_imul_req_D;
-  assign ostall_imul_req_D = val_D && !imul_req_rdy_D;
+  assign ostall_imul_req_D = val_D && (!imul_req_rdy_D) && (alu_fn_D == alu_mul);//(!imul_req_rdy_D ||  imul_req_val_D);//&& ( imul_req_val_D == 1 );
 
   // ostall if write address in X matches rs1 in D when load
 
@@ -587,7 +620,7 @@ module lab2_proc_ProcAltCtrlVRTL
 
   // Final ostall signal
 
-  assign ostall_D = val_D && ( ostall_mngr2proc_D || ostall_imul_req_D || ostall_hazard_D );
+  assign ostall_D = /*val_D && */( ostall_mngr2proc_D || ostall_imul_req_D || ostall_hazard_D );
 
   // osquash due to jump instruction in D stage (not implemented yet)
 
@@ -643,9 +676,12 @@ module lab2_proc_ProcAltCtrlVRTL
       stats_en_wen_X  <= stats_en_wen_D;
       jr_type_X       <= jr_type_D;
       br_type_X       <= br_type_D;
-      imul_resp_rdy_X <= imul_resp_rdy_D;
       ex_result_sel_X <= ex_result_sel_D; 
       imul_req_val_X  <= imul_req_val_D;
+      if (imul_resp_rdy_D) 
+        imul_resp_rdy_X  <= 1'b1;
+      else if (imul_resp_val_X)
+        imul_resp_rdy_X  <= 1'b0;
       
       
     end
@@ -694,7 +730,7 @@ module lab2_proc_ProcAltCtrlVRTL
   
   // ostall if imul value is not ready
   logic  ostall_imul_resp_X;
-  assign ostall_imul_resp_X = val_X && ( imul_req_val_X == 1 ) && !imul_resp_val_X;
+  assign ostall_imul_resp_X = val_X && ( alu_fn_X == alu_mul ) && !imul_resp_val_X;
   
   
   // Final ostall signal
