@@ -38,42 +38,43 @@ module lab4_net_BusNetDpathVRTL
   // your design does not need to support other values of c_nports.
   localparam c_nports = 4;
   
-  logic    [c_nports-1:0][43:0]      in_total_msg;
-  logic    [c_nports-1:0][43:0]      deq_total_msg;
-  logic    [c_nports-1:0][43:0]      out_total_msg;
-
-  assign   in_total_msg[0]  =    {in_msg_hdr[0].dest,in_msg_hdr[0].src,in_msg_hdr[0].opaque,in_msg_payload[0]};
-  assign   in_total_msg[1]  =    {in_msg_hdr[1].dest,in_msg_hdr[1].src,in_msg_hdr[1].opaque,in_msg_payload[1]};
-  assign   in_total_msg[2]  =    {in_msg_hdr[2].dest,in_msg_hdr[2].src,in_msg_hdr[2].opaque,in_msg_payload[2]};
-  assign   in_total_msg[3]  =    {in_msg_hdr[3].dest,in_msg_hdr[3].src,in_msg_hdr[3].opaque,in_msg_payload[3]};
-
-  assign out_msg_hdr[0].dest    = out_total_msg[0][43:42];
-  assign out_msg_hdr[0].src     = out_total_msg[0][41:40];
-  assign out_msg_hdr[0].opaque  = out_total_msg[0][39:32];
-  assign out_msg_payload[0]     = out_total_msg[0][31:0 ];
-
-  assign out_msg_hdr[1].dest    = out_total_msg[1][43:42];
-  assign out_msg_hdr[1].src     = out_total_msg[1][41:40];
-  assign out_msg_hdr[1].opaque  = out_total_msg[1][39:32];
-  assign out_msg_payload[1]     = out_total_msg[1][31:0 ];
-
-  assign out_msg_hdr[2].dest    = out_total_msg[2][43:42];
-  assign out_msg_hdr[2].src     = out_total_msg[2][41:40];
-  assign out_msg_hdr[2].opaque  = out_total_msg[2][39:32];
-  assign out_msg_payload[2]     = out_total_msg[2][31:0 ];
-
-  assign out_msg_hdr[3].dest    = out_total_msg[3][43:42];
-  assign out_msg_hdr[3].src     = out_total_msg[3][41:40];
-  assign out_msg_hdr[3].opaque  = out_total_msg[3][39:32];
-  assign out_msg_payload[3]     = out_total_msg[3][31:0 ];
+  logic     [c_nports-1:0][11+p_payload_nbits:0]  in_total_msg;
+  logic     [c_nports-1:0][11+p_payload_nbits:0]  deq_total_msg;
+  logic     [c_nports-1:0][11+p_payload_nbits:0]  out_total_msg;
   
-  assign  inq_dest0 = deq_total_msg[0][43:42];
-  assign  inq_dest1 = deq_total_msg[1][43:42];
-  assign  inq_dest2 = deq_total_msg[2][43:42];
-  assign  inq_dest3 = deq_total_msg[3][43:42];
+  assign in_total_msg[0]        = {in_msg_hdr[0].dest,in_msg_hdr[0].src,in_msg_hdr[0].opaque,in_msg_payload[0]};
+  assign in_total_msg[1]        = {in_msg_hdr[1].dest,in_msg_hdr[1].src,in_msg_hdr[1].opaque,in_msg_payload[1]};
+  assign in_total_msg[2]        = {in_msg_hdr[2].dest,in_msg_hdr[2].src,in_msg_hdr[2].opaque,in_msg_payload[2]};
+  assign in_total_msg[3]        = {in_msg_hdr[3].dest,in_msg_hdr[3].src,in_msg_hdr[3].opaque,in_msg_payload[3]};
+   
+  assign out_msg_hdr[0].dest    = out_total_msg[0][11+p_payload_nbits:10+p_payload_nbits];
+  assign out_msg_hdr[0].src     = out_total_msg[0][9+p_payload_nbits:8+p_payload_nbits];
+  assign out_msg_hdr[0].opaque  = out_total_msg[0][7+p_payload_nbits:p_payload_nbits];
+  assign out_msg_payload[0]     = out_total_msg[0][p_payload_nbits-1:0 ];
+
+  assign out_msg_hdr[1].dest    = out_total_msg[1][11+p_payload_nbits:10+p_payload_nbits];
+  assign out_msg_hdr[1].src     = out_total_msg[1][9+p_payload_nbits:8+p_payload_nbits];
+  assign out_msg_hdr[1].opaque  = out_total_msg[1][7+p_payload_nbits:p_payload_nbits];
+  assign out_msg_payload[1]     = out_total_msg[1][p_payload_nbits-1:0 ];
+
+  assign out_msg_hdr[2].dest    = out_total_msg[2][11+p_payload_nbits:10+p_payload_nbits];
+  assign out_msg_hdr[2].src     = out_total_msg[2][9+p_payload_nbits:8+p_payload_nbits];
+  assign out_msg_hdr[2].opaque  = out_total_msg[2][7+p_payload_nbits:p_payload_nbits];
+  assign out_msg_payload[2]     = out_total_msg[2][p_payload_nbits-1:0 ];
+
+  assign out_msg_hdr[3].dest    = out_total_msg[1][11+p_payload_nbits:10+p_payload_nbits];
+  assign out_msg_hdr[3].src     = out_total_msg[1][9+p_payload_nbits:8+p_payload_nbits];
+  assign out_msg_hdr[3].opaque  = out_total_msg[1][7+p_payload_nbits:p_payload_nbits];
+  assign out_msg_payload[3]     = out_total_msg[1][p_payload_nbits-1:0 ];
   
+  
+  assign  inq_dest0 = deq_total_msg[0][11+p_payload_nbits:10+p_payload_nbits];
+  assign  inq_dest1 = deq_total_msg[1][11+p_payload_nbits:10+p_payload_nbits];
+  assign  inq_dest2 = deq_total_msg[2][11+p_payload_nbits:10+p_payload_nbits];
+  assign  inq_dest3 = deq_total_msg[3][11+p_payload_nbits:10+p_payload_nbits];
+ 
   // input terminal 0
-  vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) Q0
+  vc_Queue #(`VC_QUEUE_NORMAL, 12+p_payload_nbits, 2, 1) Q0
   (
    .clk                      (clk),
    .reset                    (reset),
@@ -87,7 +88,7 @@ module lab4_net_BusNetDpathVRTL
   );
   
   // input terminal 1
-  vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) Q1
+  vc_Queue #(`VC_QUEUE_NORMAL, 12+p_payload_nbits, 2, 1) Q1
   (
    .clk                      (clk),
    .reset                    (reset),
@@ -101,7 +102,7 @@ module lab4_net_BusNetDpathVRTL
   );
   
   // input terminal 2
-  vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) Q2
+  vc_Queue #(`VC_QUEUE_NORMAL, 12+p_payload_nbits, 2, 1) Q2
   (
    .clk                      (clk),
    .reset                    (reset),
@@ -115,7 +116,7 @@ module lab4_net_BusNetDpathVRTL
   );
   
   // input terminal 3
-  vc_Queue #(`VC_QUEUE_NORMAL, 44, 2, 1) Q3
+  vc_Queue #(`VC_QUEUE_NORMAL, 12+p_payload_nbits, 2, 1) Q3
   (
    .clk                      (clk),
    .reset                    (reset),
@@ -129,7 +130,7 @@ module lab4_net_BusNetDpathVRTL
   );
   
   // bus 
-  vc_Bus #(44,4) Bus
+  vc_Bus #(12+p_payload_nbits,4) Bus
   (
    .sel                      (bus_sel),
    .in_                      (deq_total_msg),
