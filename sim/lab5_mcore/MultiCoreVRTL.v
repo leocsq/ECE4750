@@ -124,7 +124,79 @@ module lab5_mcore_MultiCoreVRTL
   assign mainmemresp_refill_val = { {c_num_cores-1{1'b0}}, imemresp_val };
   assign imemresp_rdy = mainmemresp_refill_rdy[0];
   
-  //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  
+  genvar i;
+  generate
+  for ( i = 0; i < c_num_cores; i = i + 1 ) begin: CORES_CACHES
+
+    // instruction cache
+
+    lab3_mem_BlockingCacheAltVRTL
+    #(0) icache_i
+    (
+      .clk           (clk),
+      .reset         (reset),
+
+      .cachereq_msg  (ICache_req_msg[i]),
+      .cachereq_val  (ICache_req_val[i]),
+      .cachereq_rdy  (ICache_req_rdy[i]),
+
+      .cacheresp_msg (ICache_resp_msg[i]),
+      .cacheresp_val (ICache_resp_val[i]),
+      .cacheresp_rdy (ICache_resp_rdy[i]),
+
+      .memreq_msg    (MemNet_req_msg[i]),
+      .memreq_val    (MemNet_req_val[i]),
+      .memreq_rdy    (MemNet_req_rdy[i]),
+
+      .memresp_msg   (MemNet_resp_msg[i]),
+      .memresp_val   (MemNet_resp_val[i]),
+      .memresp_rdy   (MemNet_resp_rdy[i])
+
+    );
+    
+    // porcessor
+    
+    lab2_proc_ProcAltVRTL #(c_num_cores) proc_i
+    (
+      .clk           (clk),
+      .reset         (reset),
+
+      .core_id       (i),
+
+      .imemreq_msg   (ICache_req_msg[i]),
+      .imemreq_val   (ICache_req_val[i]),
+      .imemreq_rdy   (ICache_req_rdy[i]),
+
+      .imemresp_msg  (ICache_resp_msg[i]),
+      .imemresp_val  (ICache_resp_val[i]),
+      .imemresp_rdy  (ICache_resp_rdy[i]),
+
+      .dmemreq_msg   (DProc_req_msg[i]),
+      .dmemreq_val   (DProc_req_val[i]),
+      .dmemreq_rdy   (DProc_req_rdy[i]),
+
+      .dmemresp_msg  (DProc_resp_msg[i]),
+      .dmemresp_val  (DProc_resp_val[i]),
+      .dmemresp_rdy  (DProc_resp_rdy[i]),
+
+      .mngr2proc_msg (mngr2proc_msg[i]),
+      .mngr2proc_val (mngr2proc_val[i]),
+      .mngr2proc_rdy (mngr2proc_rdy[i]),
+
+      .proc2mngr_msg (proc2mngr_msg[i]),
+      .proc2mngr_val (proc2mngr_val[i]),
+      .proc2mngr_rdy (proc2mngr_rdy[i]),
+
+      .stats_en      (stats_en),
+      .commit_inst   (commit_inst[i])
+  );
+
+    
+  end
+  endgenerate
+  
+  /*//''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   // ICache 0
   //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   
@@ -248,10 +320,12 @@ module lab5_mcore_MultiCoreVRTL
 
   );
 
-  //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  *///''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   // Proc 0
   //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  
+
+   
+  /*
   lab2_proc_ProcAltVRTL #(c_num_cores) proc_0
   (
     .clk           (clk),
@@ -404,6 +478,7 @@ module lab5_mcore_MultiCoreVRTL
     .commit_inst   (commit_inst[3])
   );
 
+  */
   //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   // McoreDataCache
   //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -435,29 +510,29 @@ module lab5_mcore_MultiCoreVRTL
   
   //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
   // LAB TASK:
-  //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  /*''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
- // `VC_TRACE_BEGIN
-//  begin
+  /*`VC_TRACE_BEGIN
+   begin
 
-    // This is staffs' line trace, which assume the processors and icaches
-    // are instantiated in using generate statement, and the data cache
-    // system is instantiated with the name dcache. You can add net to the
-    // line trace.
-    // Feel free to revamp it or redo it based on your need.
+     /*This is staffs' line trace, which assume the processors and icaches
+     are instantiated in using generate statement, and the data cache
+     system is instantiated with the name dcache. You can add net to the
+     line trace.
+     Feel free to revamp it or redo it based on your need.*/
 
-//    CORES_CACHES[0].icache_0.line_trace( trace_str );
-//    CORES_CACHES[0].proc_0.line_trace( trace_str );
-//    CORES_CACHES[1].icache_1.line_trace( trace_str );
-//    CORES_CACHES[1].proc_1.line_trace( trace_str );
-//    CORES_CACHES[2].icache_2.line_trace( trace_str );
-//    CORES_CACHES[2].proc_2.line_trace( trace_str );
-//    CORES_CACHES[3].icache_3.line_trace( trace_str );
-//    CORES_CACHES[3].proc_3.line_trace( trace_str );
-//  end
-//  `VC_TRACE_END
+  /*   CORES_CACHES[0].icache_0.line_trace( trace_str );
+     CORES_CACHES[0].proc_0.line_trace( trace_str );
+     CORES_CACHES[1].icache_1.line_trace( trace_str );
+     CORES_CACHES[1].proc_1.line_trace( trace_str );
+     CORES_CACHES[2].icache_2.line_trace( trace_str );
+     CORES_CACHES[2].proc_2.line_trace( trace_str );
+     CORES_CACHES[3].icache_3.line_trace( trace_str );
+     CORES_CACHES[3].proc_3.line_trace( trace_str );
+  end
+  `VC_TRACE_END */
+  
 
 endmodule
 
 `endif /* LAB5_MCORE_MULTI_CORE_V */
-
