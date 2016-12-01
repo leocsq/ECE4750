@@ -109,10 +109,10 @@ module lab3_mem_BlockingCacheAltCtrlVRTL
   (
     .clk        (clk),
     .reset      (reset),
-    .read_addr  (cachereq_addr[6:4]),
+    .read_addr  (cachereq_addr[ofw+idw+p_idx_shamt-1:ofw+p_idx_shamt]),
     .read_data  (entry_state_in0),
     .write_en   (entry_state_wen0),
-    .write_addr (cachereq_addr[6:4]),
+    .write_addr (cachereq_addr[ofw+idw+p_idx_shamt-1:ofw+p_idx_shamt]),
     .write_data (entry_state_update)
   );
   
@@ -120,10 +120,10 @@ module lab3_mem_BlockingCacheAltCtrlVRTL
   (
     .clk        (clk),
     .reset      (reset),
-    .read_addr  (cachereq_addr[6:4]),
+    .read_addr  (cachereq_addr[ofw+idw+p_idx_shamt-1:ofw+p_idx_shamt]),
     .read_data  (entry_state_in1),
     .write_en   (entry_state_wen1),
-    .write_addr (cachereq_addr[6:4]),
+    .write_addr (cachereq_addr[ofw+idw+p_idx_shamt-1:ofw+p_idx_shamt]),
     .write_data (entry_state_update)
   );
   
@@ -157,10 +157,10 @@ module lab3_mem_BlockingCacheAltCtrlVRTL
   (
     .clk        (clk),
     .reset      (reset),
-    .read_addr  (cachereq_addr[6:4]),
+    .read_addr  (cachereq_addr[ofw+idw+p_idx_shamt-1:ofw+p_idx_shamt]),
     .read_data  (use_state),
     .write_en   (use_wen),
-    .write_addr (cachereq_addr[6:4]),
+    .write_addr (cachereq_addr[ofw+idw+p_idx_shamt-1:ofw+p_idx_shamt]),
     .write_data (use_update)
   );
   
@@ -169,8 +169,8 @@ module lab3_mem_BlockingCacheAltCtrlVRTL
   logic dirty;
   
   
-  assign match = (tag_match0 & entry_state0[1]) || (tag_match1 & entry_state1[1]);
-  assign match1 =  tag_match1 & entry_state1[1];
+  assign match = (tag_match0 & entry_state_in0[1]) || (tag_match1 & entry_state_in1[1]);
+  assign match1 =  tag_match1 & entry_state_in1[1];
   assign victim = match? match1 : use_state;
   assign dirty = victim? entry_state_in1[0] : entry_state_in0[0];
   assign hit = {1'b0,match}; 
