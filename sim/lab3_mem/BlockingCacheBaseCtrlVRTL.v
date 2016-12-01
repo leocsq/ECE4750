@@ -184,7 +184,7 @@ module lab3_mem_BlockingCacheBaseCtrlVRTL
   logic dirty;
   
   assign match = tag_match && entry_state_out[1];
-  assign dirty = entry_state_out[0];
+  assign dirty = entry_state[0];
   assign hit = {1'b0,match}; 
   
   assign idle_go    =  cachereq_val;

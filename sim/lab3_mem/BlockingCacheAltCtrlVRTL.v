@@ -172,7 +172,7 @@ module lab3_mem_BlockingCacheAltCtrlVRTL
   assign match = (tag_match0 & entry_state0[1]) || (tag_match1 & entry_state1[1]);
   assign match1 =  tag_match1 & entry_state1[1];
   assign victim = match? match1 : use_state;
-  assign dirty = entry_state[0];
+  assign dirty = victim? entry_state_in1[0] : entry_state_in0[0];
   assign hit = {1'b0,match}; 
   
  
