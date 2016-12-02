@@ -150,7 +150,7 @@ module lab3_mem_BlockingCacheAltDpathVRTL
   logic [tgw-1:0] cache_tag0;
   logic [idw-1:0] idx;
   
-  assign idx = cachereq_addr[6:4]; 
+  assign idx = cachereq_addr[ofw+idw+p_idx_shamt-1: ofw+p_idx_shamt]; 
   
   vc_CombinationalBitSRAM_1rw
   #(tgw, nby) Tag_Array0
