@@ -234,7 +234,7 @@ module lab5_mcore_MultiCoreVRTL
     .proc2mngr_val (proc2mngr_val[1]),
     .proc2mngr_rdy (proc2mngr_rdy[1]),
 
-    .stats_en      (stats_en),
+    .stats_en      (),
     .commit_inst   (commit_inst[1])
   );
   
@@ -273,7 +273,7 @@ module lab5_mcore_MultiCoreVRTL
     .proc2mngr_val (proc2mngr_val[2]),
     .proc2mngr_rdy (proc2mngr_rdy[2]),
 
-    .stats_en      (stats_en),
+    .stats_en      (),
     .commit_inst   (commit_inst[2])
   );
   
@@ -312,7 +312,7 @@ module lab5_mcore_MultiCoreVRTL
     .proc2mngr_val (proc2mngr_val[3]),
     .proc2mngr_rdy (proc2mngr_rdy[3]),
 
-    .stats_en      (stats_en),
+    .stats_en      (),
     .commit_inst   (commit_inst[3])
   );
 
