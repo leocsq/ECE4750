@@ -50,4 +50,3 @@ before_script:
 
 script:
  - py.test --verbose ../lab5_mcore
-
