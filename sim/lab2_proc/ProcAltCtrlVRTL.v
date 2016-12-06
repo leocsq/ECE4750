@@ -814,26 +814,28 @@ module lab2_proc_ProcAltCtrlVRTL
   logic [31:0] inst_W;
   logic        proc2mngr_val_W;
   logic        rf_wen_pending_W;
+  logic        stats_en_wen_pending_W;
 
   // Pipeline registers
 
   always_ff @( posedge clk ) begin
     if (reset) begin
       val_W            <= 1'b0;
-      stats_en_wen_W   <= 1'b0;
+      stats_en_wen_pending_W   <= 1'b0;
     end else if (reg_en_W) begin
       val_W            <= next_val_M;
       rf_wen_pending_W <= rf_wen_pending_M;
       inst_W           <= inst_M;
       rf_waddr_W       <= rf_waddr_M;
       proc2mngr_val_W  <= proc2mngr_val_M;
-      stats_en_wen_W   <= stats_en_wen_M;
+      stats_en_wen_pending_W   <= stats_en_wen_M;
     end
   end
 
   // write enable
 
-  assign rf_wen_W = val_W && rf_wen_pending_W;
+  assign rf_wen_W       = val_W && rf_wen_pending_W;
+  assign stats_en_wen_W = val_W && stats_en_wen_pending_W;
 
   // ostall due to proc2mngr
 
