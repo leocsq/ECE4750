@@ -99,3 +99,11 @@ penalty on their grade for this course. More information about the Code
 of Academic Integrity can be found here:
 
  * http://www.theuniversityfaculty.cornell.edu/AcadInteg
+
+### Magic Group Number for Lab 5
+
+To ensure that lab group numbers stay private, we have provided each
+group with a unique random number that is used when publishing the
+results for lab 5. The unique random number for your group is:
+
+ * 51
